@@ -1,6 +1,5 @@
 ---
 layout: home
-title: Sudhanshu Pandey
 ---
 
 🛰️ Scientist at **NASA's Jet Propulsion Laboratory**.
