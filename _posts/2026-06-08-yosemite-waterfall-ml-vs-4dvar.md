@@ -159,7 +159,5 @@ learning overtakes hand-built physics?**
 
 ---
 
-*The coding was done using [Claude Code](https://claude.com/claude-code).*
-
-*More about the author Sudhanshu Pandey at
-[sudshu.github.io](https://sudshu.github.io/).*
+*The coding was done using [Claude Code](https://claude.com/claude-code).
+More about the author at [sudshu.github.io](https://sudshu.github.io/).*
