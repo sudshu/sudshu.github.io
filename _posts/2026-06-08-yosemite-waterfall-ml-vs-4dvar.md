@@ -155,3 +155,8 @@ simple physics model cannot represent.
 
 Different systems, same question: **where is the data threshold at which
 learning overtakes hand-built physics?**
+
+---
+
+*More about the author Sudhanshu Pandey at
+[sudshu.github.io](https://sudshu.github.io/).*
