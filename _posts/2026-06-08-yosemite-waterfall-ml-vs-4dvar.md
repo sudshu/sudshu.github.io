@@ -9,11 +9,13 @@ tags: [machine-learning, fluid-dynamics, NWP, waterfall]
 *Yosemite Valley from the Wawona Tunnel View. **The waterfall analysed in
 this post is Bridalveil Falls.***
 
-I went to Yosemite recently and stood in front of Bridalveil Falls,
-watching the water fall cleanly for a moment and then dissolve into spray.
-From far away, the waterfall looked almost steady. Up close, it was chaos:
-mist drifting sideways, white streaks appearing and disappearing, the same
-waterfall every second but never the same frame twice.
+I went to Yosemite recently. It might be the most beautiful place I have
+ever visited. Standing in front of Bridalveil Falls, watching the water
+fall cleanly for a moment and then dissolve into spray, I noticed
+something: from far away, the waterfall looked almost steady. Up close, it
+was chaos — mist drifting sideways, white streaks appearing and
+disappearing, the same waterfall every second but never the same frame
+twice.
 
 That made me wonder something concrete: **when would a neural network be
 able to predict the next few moments of this waterfall better than a
