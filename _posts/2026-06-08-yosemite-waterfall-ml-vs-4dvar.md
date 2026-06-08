@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Yosemite, a Waterfall, a Neural Network, and the Data Threshold Where ML Beats Physics"
+title: "Yosemite, a Waterfall, and the Data Threshold Where ML Beats Physics"
 date: 2026-06-08
 tags: [machine-learning, fluid-dynamics, NWP, waterfall]
 ---
@@ -8,7 +8,8 @@ tags: [machine-learning, fluid-dynamics, NWP, waterfall]
 I went to Yosemite recently. It might be the most beautiful place I've ever
 been — and standing in front of Bridalveil Falls, watching the white sheet
 of water tear itself apart into spray about halfway down, I started thinking
-less like a tourist and more like a scientist.
+of the recent stream of papers showing how AI weather models *are*
+beginning to outperform the operational physics-based forecasts.
 
 The waterfall is a small piece of pure turbulence: water dropping under
 gravity, breaking, mixing with air, throwing off mist that wanders sideways
