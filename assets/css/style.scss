@@ -2,19 +2,18 @@
 ---
 
 /* ------------------------------------------------------------------
- * Color palette
- *   warm-cream background, deep-teal brand, navy headings,
- *   coral accent for highlights. Tuned to feel science-y but warm.
+ * Palette: atmospheric
+ *   pale-sky background, deep-blue brand, amber accent, slate text.
  * ------------------------------------------------------------------ */
 
-$background-color: #faf7f0;          /* warm off-white */
-$text-color:       #2c3340;          /* dark slate, easier than pure black */
-$brand-color:      #1f6e7e;          /* teal */
-$accent-color:     #d97a4f;          /* warm coral, used sparingly */
+$background-color: #f3f7fc;          /* pale sky */
+$text-color:       #1f2937;          /* slate */
+$brand-color:      #1e3a8a;          /* deep blue (link, brand) */
+$accent-color:     #d97706;          /* amber (highlight, hover) */
 
-$grey-color:       #7a8489;
+$grey-color:       #6b7280;
 $grey-color-light: lighten($grey-color, 32%);
-$grey-color-dark:  #1a365d;          /* navy, for headings */
+$grey-color-dark:  #0c1729;          /* near-black navy (headings) */
 
 $base-font-size:   17px;
 $content-width:    820px;
@@ -22,19 +21,25 @@ $content-width:    820px;
 @import "minima";
 
 /* ------------------------------------------------------------------
- * Header / footer band
+ * Body and overall feel
  * ------------------------------------------------------------------ */
 
 body {
+  background: $background-color;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+/* ------------------------------------------------------------------
+ * Header
+ * ------------------------------------------------------------------ */
+
 .site-header {
-  background: linear-gradient(180deg, #ffffff 0%, #f3ecdc 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #e7eef9 100%);
   border-bottom: 3px solid $brand-color;
   border-top: 0;
   min-height: 60px;
+  box-shadow: 0 1px 0 rgba($brand-color, 0.04);
 }
 
 .site-title, .site-title:visited {
@@ -47,8 +52,8 @@ body {
 }
 
 .site-footer {
-  background: #f3ecdc;
-  border-top: 1px solid darken(#f3ecdc, 10%);
+  background: #e7eef9;
+  border-top: 1px solid darken(#e7eef9, 10%);
   color: $grey-color-dark;
 }
 
@@ -64,7 +69,7 @@ h1, h2, h3, h4, h5, h6 {
   color: $grey-color-dark;
   font-size: 2em;
   line-height: 1.18;
-  margin-bottom: 0.3em;
+  margin-bottom: 0.35em;
 }
 
 .post-content h2 {
@@ -105,25 +110,27 @@ a:hover {
   margin: 1.4em auto;
   max-width: 100%;
   border-radius: 6px;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 14px rgba(15, 23, 41, 0.08);
 }
 
 .post-content blockquote {
   font-style: normal;
-  color: lighten($text-color, 12%);
+  color: lighten($text-color, 10%);
   border-left: 4px solid $accent-color;
-  background: #fff6ec;
+  background: #fef3e7;
   padding: 0.5em 1em;
   border-radius: 0 4px 4px 0;
 }
 
 code, pre {
-  background: #f5efe2;
-  border: 1px solid #e6decb;
+  background: #e9eff8;
+  border: 1px solid #cdd9eb;
   border-radius: 4px;
+  color: #1c2c4d;
 }
 pre {
   padding: 0.8em 1em;
+  overflow-x: auto;
 }
 
 /* ------------------------------------------------------------------
@@ -147,17 +154,27 @@ pre {
 .post-list li:last-child { border-bottom: 0; }
 
 /* ------------------------------------------------------------------
- * "Nerd note" style on post pages -- triggered by an h3 starting
- * with the word "Nerd". Falls back gracefully on any h3.
+ * Decorative hr (tapered amber-to-blue gradient)
  * ------------------------------------------------------------------ */
-
-.post-content h3 + p {
-  margin-top: 0.4em;
-}
 
 hr {
   border: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba($brand-color, 0.4), transparent);
+  background: linear-gradient(to right, transparent, rgba($accent-color, 0.5), rgba($brand-color, 0.4), transparent);
   margin: 2.2em 0;
+}
+
+/* ------------------------------------------------------------------
+ * Subtle "card" feel for the main content area on wide screens
+ * ------------------------------------------------------------------ */
+
+@media (min-width: 900px) {
+  .page-content {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(15, 23, 41, 0.07);
+    margin: 24px auto 40px;
+    padding: 20px 36px 32px;
+    max-width: $content-width + 60px;
+  }
 }
