@@ -119,7 +119,7 @@ neural network get to look at?"* That sets the entire context.
 
 ---
 
-### Nerd note
+### Nerdy note
 
 For people who want the technical details:
 
