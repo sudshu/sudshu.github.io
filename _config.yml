@@ -1,0 +1,18 @@
+title: Sudhanshu Pandey
+description: >-
+  Climate, atmospheric science, machine learning. Notes on what I've been
+  building and reading.
+baseurl: ""
+url: "https://sudshu.github.io"
+github_username: sudshu
+
+theme: minima
+plugins:
+  - jekyll-feed
+
+show_excerpts: true
+
+minima:
+  date_format: "%b %-d, %Y"
+  social_links:
+    - { platform: github, user_url: "https://github.com/sudshu" }
