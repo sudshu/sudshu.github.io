@@ -163,6 +163,4 @@ learning overtakes hand-built physics?**
 More about the author at [sudshu.github.io](https://sudshu.github.io/).*
 
 *The views and opinions expressed in this article are those of the author
-and do not necessarily reflect those of the Jet Propulsion Laboratory,
-the California Institute of Technology, or the National Aeronautics and
-Space Administration.*
+alone and do not reflect those of the JPL, NASA and CALTECH.*
