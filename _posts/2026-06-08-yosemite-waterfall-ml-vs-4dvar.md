@@ -5,6 +5,11 @@ date: 2026-06-08
 tags: [machine-learning, fluid-dynamics, NWP, waterfall]
 ---
 
+![Yosemite Valley with Bridalveil Falls]({{ "/assets/figures/hero_yosemite_valley.jpg" | relative_url }})
+*Yosemite Valley from the Wawona Tunnel View. **The waterfall analysed in
+this post is Bridalveil Falls** — the thin white streak halfway up the
+right-hand cliff face.*
+
 I went to Yosemite recently. It might be the most beautiful place I've ever
 been — and standing in front of Bridalveil Falls, watching the white sheet
 of water tear itself apart into spray about halfway down, I started
