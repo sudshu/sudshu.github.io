@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "Yosemite, a waterfall, a neural network, and the data threshold where ML beats physics"
+title: "Yosemite, a waterfall, a neural network, and the data threshold where ML overtakes physics"
 date: 2026-06-08
 tags: [machine-learning, fluid-dynamics, NWP, waterfall]
 image: /assets/figures/og_card.png
-excerpt: "How much waterfall does a neural network need to see before it beats a physics-based forecast?  A toy experiment on a 60-second Bridalveil Falls clip."
+excerpt: "How much waterfall does a neural network need to see before it overtakes a physics-based forecast?  A toy experiment on a 60-second Bridalveil Falls clip."
 ---
 
 ![Yosemite Valley with Bridalveil Falls]({{ "/assets/figures/hero_yosemite_valley.jpg" | relative_url }})
@@ -32,9 +32,9 @@ forecasts, but they do so after learning from enormous archives of past
 weather. My waterfall experiment asks the same question at toy scale:
 **how much data does ML need before it overtakes physics?**
 
-A few weekends of GPU time later, I have an answer. It is not "AI beats
-physics" — it is a **crossover**. Physics wins when data are scarce. ML
-wins once it has watched enough examples.
+A few weekends of GPU time later, I have an answer. It is not "AI overtakes
+physics" once and for all — it is a **crossover**. Physics wins when data
+are scarce. ML wins once it has watched enough examples.
 
 ![Bridalveil Falls with the analysis region boxed]({{ "/assets/figures/figure2_waterfall_video.gif" | relative_url }})
 
@@ -82,7 +82,7 @@ I retrained the neural network on different fractions of the clip — 50
 frames, 100, 200, 400, 700, or all 1,090 — and re-ran the same forecast
 against the same physics model. This is what came out:
 
-![How much waterfall does ML need before it beats physics]({{ "/assets/figures/headline_playful.png" | relative_url }})
+![How much waterfall does ML need before it overtakes physics]({{ "/assets/figures/headline_playful.png" | relative_url }})
 
 *The data threshold. With 50 frames the neural network is much worse than
 the physics model. Around a few hundred frames — roughly 10 seconds of
@@ -110,7 +110,7 @@ That is why the training archive matters. ML weather models like
 forecasts — but only after training on decades of
 [ERA5 reanalysis](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5).
 That archive is their version of the *300 frames of waterfall*. When an
-ML weather model beats a physics-based forecast, the useful question is
+ML weather model overtakes a physics-based forecast, the useful question is
 not only "which model won?" — it is also: **how much data did the ML
 model need before it crossed over?**
 
@@ -151,7 +151,7 @@ model need before it crossed over?**
 
 ## Takeaway
 
-The lesson is not that ML magically beats physics. The lesson is that the
+The lesson is not that ML magically overtakes physics. The lesson is that the
 winner depends on the data regime. With too little waterfall, the physics
 baseline wins because it starts with a useful prior. With enough waterfall,
 the neural network wins because it learns the messy structure that the
