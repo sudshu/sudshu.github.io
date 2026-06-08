@@ -35,7 +35,7 @@ A few weekends of GPU time later, I have an answer. It is not "AI beats
 physics" — it is a **crossover**. Physics wins when data are scarce. ML
 wins once it has watched enough examples.
 
-![Bridalveil Falls — full frame and the cropped region we use]({{ "/assets/figures/figure1_waterfall_and_crop.png" | relative_url }})
+![Bridalveil Falls with the analysis region boxed]({{ "/assets/figures/figure2_waterfall_video.gif" | relative_url }})
 *The clip. We focus on the boxed region — the cliff face, the falling
 column, and the mist envelope — and leave the static rocks and sky out of
 the comparison.*
