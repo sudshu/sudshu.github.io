@@ -141,23 +141,14 @@ end result.
 
 ## What's actually going on?
 
-The physics model in this race is doing something simple and elegant: it
-estimates a smooth velocity field — basically a map of "this is roughly how
-fast and in what direction each part of the picture is moving right now" —
-and uses that map to push the current frame forward in time. That's a
-strong inductive bias. The model already *believes* that water moves in a
-mostly continuous way, mostly downward, mostly under gravity. It doesn't
-need to learn that.
+The physics model carries a strong built-in belief: water moves continuously
+and mostly downward. That belief is free — it doesn't need any data to
+acquire — and it gets you most of the way there.
 
-But real spray, turbulent mixing, light flickering off the water — these
-don't follow a smooth velocity field. They follow patterns that *exist* but
-aren't easy to write down. They are exactly the kind of thing a neural
-network is good at noticing, given enough examples.
-
-So with too few examples, the neural network can't see those patterns yet,
-and it loses to the physics model's solid common-sense prior. With enough
-examples, the neural network has noticed the patterns the physics model
-can't represent, and it edges ahead.
+What it can't capture is the rest: real spray, turbulent mixing, light
+flickering off the water. These follow patterns that *exist* but aren't
+easy to write down as smooth motion. Exactly the kind of thing a neural
+network is good at noticing — given enough examples.
 
 ## Why this matters beyond a waterfall
 
