@@ -32,7 +32,7 @@ wins once it has watched enough examples.
 ![Bridalveil Falls — full frame and the cropped region we use]({{ "/assets/figures/figure1_waterfall_and_crop.png" | relative_url }})
 *The clip. We focus on the boxed region — the cliff face, the falling
 column, and the mist envelope — and leave the static rocks and sky out of
-the comparison. The cropped region is 216 × 88 pixels.*
+the comparison.*
 
 ## The prediction game
 
