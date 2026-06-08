@@ -1,176 +1,171 @@
 ---
 layout: post
-title: "I went to Yosemite. Then I made ML and 4D-Var fight over a waterfall."
+title: "Yosemite, a Waterfall, a Neural Network, and the Data Threshold Where ML Beats Physics"
 date: 2026-06-08
 tags: [machine-learning, fluid-dynamics, NWP, waterfall]
 ---
 
-I went to Yosemite last spring. I came back with a 60-second cell-phone clip of
-Bridalveil Falls and a question that wouldn't go away: **how well can a small
-neural network predict the next frame of a chaotic waterfall, and how does that
-compare to the physics-style methods that weather agencies actually use?**
+I went to Yosemite last spring and stood for a while in front of Bridalveil
+Falls with my phone out. I came back with a 60-second video clip and a
+question that wouldn't leave me alone.
 
-A few weekends of GPU time later, I have an honest answer — and it's more
-interesting than the usual *"ML beats physics, more news at 11"* take.
+**How well can a small neural network predict the next frame of a chaotic
+waterfall?** And how does it stack up against the kind of physics-style
+methods that weather agencies use to forecast the atmosphere?
 
-![Sample frame of Bridalveil Falls]({{ "/assets/figures/bbox_overlay_large.png" | relative_url }})
-*The clip. We crop to the boxed region (216×88 pixels) to focus on the falling
-water and its mist envelope, and discard the static cliff on the right.*
+A few weekends of GPU time later, I have an honest answer. It's more
+interesting than the usual *"AI beats physics, news at 11"* take — because
+the answer depends entirely on **how much waterfall the neural network has
+been allowed to watch**.
 
-## The setup
+![Bridalveil Falls — sample frame and our crop region]({{ "/assets/figures/bbox_overlay_large.png" | relative_url }})
+*The clip. We focus on the boxed region (216 × 88 pixels) — the cliff face,
+the falling column, and the mist envelope — and leave the static rocks out
+of the comparison.*
 
-The clip is 1,824 frames at 30 fps, 1080×1920 portrait, recorded handheld. I
-downsampled to a manageable 192×320, cropped to 216×88 (cliff + falling column
-+ splash), and ran a quick phase-correlation alignment to take out the 1–2 px
-of camera shake from holding the phone. Then I split the timeline three ways:
-first 60% for training, next 20% for validation, last 20% as a held-out test
-set. The goal is **next-frame prediction**, then *autoregressive rollout* —
-keep feeding each prediction back as input and ask: how long can you forecast
-before the error exceeds "just guess yesterday"?
+## A race: does the AI see the future better than physics does?
 
-The two methods compared:
+Two contestants. Same task: see the next frame, then the next, then the next.
+Sixty frames into the future. Two seconds of water that hasn't happened yet.
 
-- **Machine-learning (ML) side:** a 1.7-M-parameter Swin-UNet that takes the
-  last 5 frames and predicts the next frame's change. Curriculum-trained to be
-  stable under autoregressive rollout (predict 1 step → 2 steps → 4 steps).
-- **Physics side:** a 4D-Var-style variational assimilation, the same family of
-  algorithms ECMWF and NOAA use for weather. At each test position, it solves
-  for a single smooth velocity field that best explains the past 5 frames'
-  transitions, then advects the last frame forward at constant velocity.
+- **The neural network** — a small AI model that tries to learn the
+  waterfall's habits from past examples. We give it the last 5 frames and
+  ask it to predict the next one. Then we feed its prediction back as input
+  and ask it again. And again. For two seconds.
+- **The physics model** — the kind of method weather agencies have used
+  for decades. At each starting position, it looks at the recent past,
+  figures out roughly *how* the water appears to be moving, and pushes the
+  image forward by that motion.
 
-Both methods see the same data at inference; only the ML side has a training
-set.
+Both contestants see the same recent past when they make a prediction. Only
+the neural network has been *trained* on a chunk of the clip first.
 
-## What the rollouts actually look like
+Here's what a 2-second forecast looks like, side by side. Real waterfall on
+the left, the two predictions in the middle, and per-frame error growing in
+red and brown bars at the bottom.
 
-Here's a 60-frame (2-second) autoregressive forecast from the same starting
-position, side by side: real waterfall, ML prediction, 4D-Var prediction,
-and per-frame error bars below.
+![ML vs 4D-Var rollout animation]({{ "/assets/figures/compare_with_bars_hires_slow3x.gif" | relative_url }})
 
-![ML vs 4D-Var rollout]({{ "/assets/figures/compare_with_bars_hires_slow3x.gif" | relative_url }})
+Both methods lose detail as the rollout progresses — that's the underlying
+turbulence being chaotic and unpredictable past about a second. The neural
+network stays a little closer to the real waterfall at every step. The red
+bars sit consistently below the brown bars.
 
-You can see both methods losing detail as the rollout progresses, which is
-exactly right — the underlying turbulence is chaotic and unpredictable past
-about a second. ML stays a bit closer to the real frame at every step; the
-red bars (ML error) sit consistently below the brown bars (4D-Var error).
+So the AI wins. End of story?
 
-So ML wins. Story over?
+## Not quite. It depends on practice.
 
-## The actual story: ML wins *only when given enough data*
+Here's the actual fun part. I retrained the neural network on different
+**fractions** of the available video — 50 frames, 100, 200, 400, 700, or
+all 1,090 — and re-ran the same forecast against the same physics model.
+This is what came out:
 
-If the comparison were always "ML wins, physics loses," we wouldn't need
-physics. But here's what happens when I retrain the ML model on subsets of
-the available training data — 50, 100, 200, 400, 700, or all 1,090 training
-frames — and re-evaluate the same rollout on the same test set:
+![How much waterfall does ML need before it beats physics]({{ "/assets/figures/headline_playful.png" | relative_url }})
+*The neural network needs practice. With only 50 frames (less than 2 seconds
+of footage) it is much worse than the physics model. Around 300 frames
+(~10 seconds), it catches up. With the whole clip, it wins. The physics
+model starts strong because it already knows a useful rule — **water
+mostly moves downward** — but it quickly reaches a ceiling, because real
+waterfall spray is more complicated than smooth downward motion.*
 
-![Data sensitivity plot]({{ "/assets/figures/data_sensitivity_combined.png" | relative_url }})
-*Red: ML's prediction error at 1-second lead, as a function of how many training
-images it saw. Brown: 4D-Var's error at the same lead time, as a function of
-how many past frames it uses for analysis at inference (the closest physics
-analog to "data"). They use data differently — but both can have "more" of it.*
+The picture tells the story:
 
-Three things to notice:
+- **The neural network has a slope.** Show it more waterfall, it gets
+  better. With very little video, it's hopeless. With a lot, it wins.
+- **The physics model has a ceiling.** Whether you give it 5 frames or 200
+  to look back at, the answer barely changes. It already knows what it
+  knows.
+- **There's a threshold.** Roughly 300 frames of training video — about 10
+  seconds — is where the AI catches up. Before that, **physics is better.**
+  After that, **AI is better.**
 
-**1. The ML curve has a strong slope.** With only 50 training frames, ML is
-*much* worse than 4D-Var (13.1 vs 7.4 in the L1 error). It needs about 300
-training frames to draw level, and improves smoothly past that. With the
-full 1,090 training frames, it's about 14% better than the best 4D-Var.
+Reasonable people sometimes describe this as "AI beating physics." It's
+better described as **AI beating physics once it's been allowed to watch
+the system enough**. The crossover point matters at least as much as the
+end result.
 
-**2. The 4D-Var curve is essentially flat.** Going from a 5-frame analysis
-window to a 30-frame window barely moves the error (7.37 → 6.95). Going
-beyond 100 frames it actually starts getting *worse* — past observations get
-old enough that they no longer reflect the current turbulent state. The
-physics method has a built-in floor it cannot get below.
+## What's actually going on?
 
-**3. There's a crossover.** Below ~300 training frames, *physics is better*.
-Above ~300, *ML is better*. The boundary is dataset-dependent and
-problem-dependent, but the shape of the picture is universal: ML's slope is
-steep, physics has a floor, and the choice between them is really a question
-about how much labelled data you have for the system you care about.
+The physics model in this race is doing something simple and elegant: it
+estimates a smooth velocity field — basically a map of "this is roughly how
+fast and in what direction each part of the picture is moving right now" —
+and uses that map to push the current frame forward in time. That's a
+strong inductive bias. The model already *believes* that water moves in a
+mostly continuous way, mostly downward, mostly under gravity. It doesn't
+need to learn that.
 
-## Can NWP-style tricks help the physics side?
+But real spray, turbulent mixing, light flickering off the water — these
+don't follow a smooth velocity field. They follow patterns that *exist* but
+aren't easy to write down. They are exactly the kind of thing a neural
+network is good at noticing, given enough examples.
 
-I tried two improvements weather agencies actually use:
-
-- **Total-variation (TV) regularization on the velocity field** — preserves
-  sharp discontinuities, ideal for systems with crisp edges between flowing
-  and stationary regions.
-- **Multi-incremental (coarse-to-fine) optimization** — solve at 1/4
-  resolution first, then 1/2, then full. Avoids shallow local minima.
-
-Multi-incremental gave a marginal ~1% improvement. TV did nothing (the
-waterfall has no genuinely sharp velocity discontinuities). Combined, they
-were no better than multi-incremental alone. The 4D-Var floor stayed at ~7.3
-at the 1-second lead.
-
-That's not a failure of NWP. It's a feature: this physics model (smooth
-advection by a constant velocity field) is already near the best it can be.
-Improving its analysis quality doesn't help, because the limit isn't the
-analysis — it's the model class. To move the floor further, you'd need to
-**change the model**: weak-constraint 4D-Var with a learned residual term,
-which is exactly where operational NWP centres are headed (hybrid AI/physics
-inside the variational system).
+So with too few examples, the neural network can't see those patterns yet,
+and it loses to the physics model's solid common-sense prior. With enough
+examples, the neural network has noticed the patterns the physics model
+can't represent, and it edges ahead.
 
 ## Why this matters beyond a waterfall
 
-The temptation, especially after seeing all the recent ML-beats-NWP papers, is
-to take the "ML always wins" framing at face value. The actual physics is:
+The same shape of picture is showing up across science and engineering. ML
+models like Pangu-Weather, GraphCast, FourCastNet, and Aurora are beating
+operational weather forecasts — but they were trained on **forty years of
+reanalysis data** to do it. That's their "300 frames of waterfall." If you
+tried to train them on a single 60-second clip of weather, they would lose
+to a hand-tuned physics model in a heartbeat.
 
-- **Physics methods have a floor set by their model assumptions.** No amount of
-  optimization, no amount of additional observations, can get below it. If the
-  real dynamics differs from your model class — as it does for spray, turbulent
-  mixing, sub-grid-scale brightness changes — the gap is structural.
-- **ML methods have a *slope* set by data.** With enough data, they can learn
-  arbitrary deviations from the physics model class. With too little data, they
-  fall below the physics floor and the comparison is meaningless.
-
-For weather: NWP has decades of physical-model refinement and assimilates
-millions of observations per cycle. ML weather models like Pangu-Weather,
-GraphCast, FourCastNet, and Aurora work because they're trained on 40+ years
-of ERA5 reanalysis — *that's the "more than 300 training frames" of their
-domain*. If you tried to train them on a single 60-second clip of weather,
-they'd lose to a hand-tuned 4D-Var.
-
-For my waterfall: the dataset is single-clip-scale. The crossover happens at
-N≈300 frames because that's what it takes for the network to see enough
-samples of the local turbulent statistics to model them better than a smooth
-velocity field can.
-
-## Honest caveats
-
-- This is *one clip of one waterfall*. The crossover point and the slope are
-  specific to this system. I can't tell you a priori what they'd be for
-  someone else's video.
-- The physics model is intentionally simple — smooth advection. A real CFD
-  simulation with Navier–Stokes, free-surface tracking, and white-water
-  physics would do dramatically better, at dramatically more cost.
-- The ML model is intentionally small. With a 100× larger model and pretraining
-  on internet-scale video, the curve would shift but the shape would be similar.
-- 4D-Var here uses a much weaker analysis system than operational centres
-  (no flow-dependent B matrix, no hybrid 4D-EnVar, no bias correction).
-  Real operational 4D-Var would push the floor down — but not eliminate it.
-
-## Takeaway
-
-I went up to Yosemite to look at a waterfall. Came back with a small
-benchmark that lets you watch the ML-vs-physics scaling story play out at
-60-second-clip scale: stable, reproducible, runnable on one consumer GPU.
-The headline result isn't "ML wins" — it's that **the choice depends on
-data**, and the comparison only makes sense once you tell people how much
-data the ML side got.
-
-When someone shows you ML beating a physics baseline, ask them how many
-training samples were available, and what happens at half that.
+When someone shows you ML beating a physics baseline, the question to ask
+isn't *"is the neural network better?"* — it's *"how much data did the
+neural network get to look at?"* That sets the entire context.
 
 ---
 
-**Code:** [github.com/sudshu/yosemite-waterfall-ml](https://github.com/sudshu/yosemite-waterfall-ml)
+### Nerd note
 
-Reproducible: `pip install -r requirements.txt`, then `python train_rollout.py
---model swin --temporal-context --frames cache/frames_waterfall_stab_gray.npy`
-will train the headline model in about an hour on a single A10G. The
-data-scaling sweep is `python data_scaling_sweep.py`; the NWP-variants
-benchmark is `python sweep_4dvar_variants_nwp.py`.
+For people who want the technical details:
 
-If you'd like the raw 40-MB MOV file, please email me — I'd rather not check
-it into git.
+The ML model is a **1.7-M-parameter Swin-UNet**. It takes the last 5 frames
+(with channel-wise pairwise differences appended) and predicts the next
+frame as a residual over the most recent one. It's trained with a curriculum
+of 1-step, 2-step, then 4-step autoregressive rollouts, so the gradient
+signal stays meaningful when its own predictions are fed back as inputs.
+
+The physics model is a **4D-Var-style variational data assimilation**. It
+fits a single smooth velocity field `v(x, y)` to the past few frames by
+minimizing `Σ ‖warp(f_i, v) − f_{i+1}‖_1 + λ‖∇v‖²`, then advects the most
+recent frame forward at that constant velocity using a semi-Lagrangian
+warp. I also tried TV regularization (no improvement on this scene — the
+velocity field has no sharp discontinuities) and a multi-incremental
+coarse-to-fine optimizer (~1% improvement). The combined NWP-style
+optimization gets the physics floor down to about 7.32 in the L1 error;
+the ML model at full data reaches 6.29 (about 14% better).
+
+I aligned the camera shake out of the raw clip via phase correlation before
+training. Both methods see the stabilized version. All evaluation is on a
+held-out 20% test slice (last 12 seconds of the clip), and the ML
+data-scaling sweep is the median of three random subsamples per training
+size. Code, training scripts, sweeps, and figure-generating scripts are at
+[github.com/sudshu/yosemite-waterfall-ml](https://github.com/sudshu/yosemite-waterfall-ml).
+
+### Honest caveats
+
+- One clip of one waterfall. The exact crossover frame count and the slope
+  are specific to this system.
+- The physics model is intentionally simple — smooth advection by a single
+  velocity field. A full CFD simulation would do dramatically better, at
+  dramatically more cost.
+- The neural network is also intentionally small. A bigger model with
+  internet-scale video pretraining would shift the curves but the shape of
+  the story would be similar.
+- This is a toy. The point isn't the waterfall. The point is that the same
+  shape of curve — slope versus ceiling, crossover at some data threshold —
+  shows up almost everywhere the comparison gets made.
+
+### The takeaway
+
+The lesson isn't that ML magically beats physics. The lesson is that **ML
+needs to watch the system long enough**. With too little waterfall, physics
+wins. With enough waterfall, the neural network learns the parts of the
+motion the simple physics model cannot represent.
+
+Next time you see a benchmark claiming AI overtakes physics, ask how much
+data the AI got. The answer is the punchline.
