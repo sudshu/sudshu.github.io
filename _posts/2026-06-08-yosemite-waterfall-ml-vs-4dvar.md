@@ -42,6 +42,22 @@ predict the next frame, then feed that prediction back as input and predict
 the *next* one, and so on. Both contestants do this for 60 steps — two
 seconds of water that hasn't happened yet.
 
+```
+real past frames                           predicted future
+                                           (feeds back into itself)
+┌──────────────────────────┐              ┌────────────────────┐
+│  f(t-4) f(t-3) f(t-2)    │              │  f̂(t+1)  f̂(t+2) │
+│  f(t-1) f(t)             │ ─► [model] ─►│   ↓ slide ↓        │
+└──────────────────────────┘              │  predict f̂(t+3)   │
+                                          │   ↓ ... up to t+60 │
+                                          └────────────────────┘
+```
+
+Each step's prediction becomes the newest frame of the input window for the
+next step. Errors made early in the rollout get fed back into the model and
+can compound — which is part of why this task is harder than predicting
+one frame at a time.
+
 - **The neural network** — a small AI model that learns the waterfall's
   habits from past examples (an *optical-flow-aware Swin-UNet*; details in
   the [Nerdy note](#nerdy-note)). At inference, we hand it the last 5
@@ -51,6 +67,17 @@ seconds of water that hasn't happened yet.
   for decades. At each starting position, it looks at the recent past,
   estimates an *optical flow field* (roughly: how each part of the image
   appears to be moving), and pushes the picture forward at that velocity.
+
+A useful trick worth flagging: the neural network doesn't predict the raw
+next-frame pixels directly. Instead, it predicts the **change** Δ from the
+current frame:
+
+> `f̂(t+1)  =  clamp( f(t) + Δ ,  0,  1 )`
+
+Most of the next frame is identical to the current one (the cliff isn't
+moving, only the water is), so the residual signal Δ is concentrated where
+motion actually happens. This makes it a *much* easier target to learn than
+trying to reproduce the whole frame from scratch every step.
 
 Both contestants see the same recent past at inference. Only the neural
 network gets *trained* on a separate chunk of the clip first — that's the
