@@ -46,10 +46,7 @@ one. Then I made it harder: each prediction was fed back as input and the
 model had to predict the *next* one — and so on, for sixty steps. Two
 seconds of water that hasn't happened yet.
 
-The whole experiment — preprocessing the video, training the neural
-network, implementing and tuning the physics baseline, building the
-figures — was carried out using
-[Claude Code](https://claude.com/claude-code), Anthropic's coding agent.
+*The coding was done using [Claude Code](https://claude.com/claude-code).*
 
 The **physics baseline** estimated smooth motion in the image — an
 optical-flow field — and carried the waterfall forward by that motion. It
