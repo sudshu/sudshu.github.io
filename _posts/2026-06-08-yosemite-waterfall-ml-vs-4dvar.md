@@ -3,6 +3,8 @@ layout: post
 title: "Yosemite, a waterfall, a neural network, and the data threshold where ML beats physics"
 date: 2026-06-08
 tags: [machine-learning, fluid-dynamics, NWP, waterfall]
+image: /assets/figures/og_card.png
+excerpt: "How much waterfall does a neural network need to see before it beats a physics-based forecast?  A toy experiment on a 60-second Bridalveil Falls clip."
 ---
 
 ![Yosemite Valley with Bridalveil Falls]({{ "/assets/figures/hero_yosemite_valley.jpg" | relative_url }})

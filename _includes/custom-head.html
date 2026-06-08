@@ -1,0 +1,36 @@
+{%- comment -%}
+  Open Graph + Twitter Card metadata. Minima 2.x looks for
+  _includes/custom-head.html and includes it inside <head>.
+
+  - Post-specific og:image is taken from page.image
+  - Fallback uses a site-wide social card
+{%- endcomment -%}
+
+{%- if page.image -%}
+  {%- assign og_image = page.image | absolute_url -%}
+{%- else -%}
+  {%- assign og_image = "/assets/figures/og_card.png" | absolute_url -%}
+{%- endif -%}
+
+<meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
+<meta property="og:title" content="{{ page.title | default: site.title | escape }}" />
+<meta property="og:url" content="{{ page.url | absolute_url }}" />
+<meta property="og:image" content="{{ og_image }}" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+{%- if page.excerpt %}
+<meta property="og:description" content="{{ page.excerpt | strip_html | strip_newlines | truncate: 200 | escape }}" />
+<meta name="description" content="{{ page.excerpt | strip_html | strip_newlines | truncate: 200 | escape }}" />
+{%- elsif site.description %}
+<meta property="og:description" content="{{ site.description | strip_html | strip_newlines | truncate: 200 | escape }}" />
+<meta name="description" content="{{ site.description | strip_html | strip_newlines | truncate: 200 | escape }}" />
+{%- endif %}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ page.title | default: site.title | escape }}" />
+<meta name="twitter:image" content="{{ og_image }}" />
+{%- if page.excerpt %}
+<meta name="twitter:description" content="{{ page.excerpt | strip_html | strip_newlines | truncate: 200 | escape }}" />
+{%- elsif site.description %}
+<meta name="twitter:description" content="{{ site.description | strip_html | strip_newlines | truncate: 200 | escape }}" />
+{%- endif %}
