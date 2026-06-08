@@ -6,7 +6,7 @@
  *   pale-sky background, deep-blue brand, amber accent, slate text.
  * ------------------------------------------------------------------ */
 
-$background-color: #f3f7fc;          /* pale sky */
+$background-color: #f5f6f8;          /* light cool gray */
 $text-color:       #1f2937;          /* slate */
 $brand-color:      #1e3a8a;          /* deep blue (link, brand) */
 $accent-color:     #d97706;          /* amber (highlight, hover) */
@@ -35,7 +35,7 @@ body {
  * ------------------------------------------------------------------ */
 
 .site-header {
-  background: linear-gradient(180deg, #ffffff 0%, #e7eef9 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #e6e9ee 100%);
   border-bottom: 3px solid $brand-color;
   border-top: 0;
   min-height: 60px;
@@ -52,8 +52,8 @@ body {
 }
 
 .site-footer {
-  background: #e7eef9;
-  border-top: 1px solid darken(#e7eef9, 10%);
+  background: #e6e9ee;
+  border-top: 1px solid darken(#e6e9ee, 10%);
   color: $grey-color-dark;
 }
 
