@@ -5,18 +5,25 @@ date: 2026-06-08
 tags: [machine-learning, fluid-dynamics, NWP, waterfall]
 ---
 
-I went to Yosemite last spring and stood for a while in front of Bridalveil
-Falls with my phone out. I came back with a 60-second video clip and a
-question that wouldn't leave me alone.
+I went to Yosemite recently. It might be the most beautiful place I've ever
+been — and standing in front of Bridalveil Falls, watching the white sheet
+of water tear itself apart into spray about halfway down, I started thinking
+less like a tourist and more like a scientist.
 
-**How well can a small neural network predict the next frame of a chaotic
-waterfall?** And how does it stack up against the kind of physics-style
-methods that weather agencies use to forecast the atmosphere?
+The waterfall is a small piece of pure turbulence: water dropping under
+gravity, breaking, mixing with air, throwing off mist that wanders sideways
+on its own little chaotic eddies. The pattern at any instant looks roughly
+the same as a second earlier, but the details are wildly different and
+genuinely impossible to predict frame-by-frame. A thought came to mind:
 
-A few weekends of GPU time later, I have an honest answer. It's more
-interesting than the usual *"AI beats physics, news at 11"* take — because
-the answer depends entirely on **how much waterfall the neural network has
-been allowed to watch**.
+> *When will an AI model be able to predict the next moment of this
+> waterfall better than a physics-based forecast can?*
+
+I pulled out my phone and tried to shoot a clean, steady 60-second clip
+that I could take home and run experiments on. A few weekends of GPU time
+later, I have an honest answer. It's more interesting than the usual
+*"AI beats physics, news at 11"* take — because the answer depends entirely
+on **how much waterfall the neural network has been allowed to watch**.
 
 ![Bridalveil Falls — full frame and the cropped region we use]({{ "/assets/figures/figure1_waterfall_and_crop.png" | relative_url }})
 *The clip. We focus on the boxed region — the cliff face, the falling column,
