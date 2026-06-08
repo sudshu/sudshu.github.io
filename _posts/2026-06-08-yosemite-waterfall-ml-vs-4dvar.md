@@ -18,10 +18,10 @@ interesting than the usual *"AI beats physics, news at 11"* take — because
 the answer depends entirely on **how much waterfall the neural network has
 been allowed to watch**.
 
-![Bridalveil Falls — sample frame and our crop region]({{ "/assets/figures/bbox_overlay_large.png" | relative_url }})
-*The clip. We focus on the boxed region (216 × 88 pixels) — the cliff face,
-the falling column, and the mist envelope — and leave the static rocks out
-of the comparison.*
+![Bridalveil Falls — full frame and the cropped region we use]({{ "/assets/figures/figure1_waterfall_and_crop.png" | relative_url }})
+*The clip. We focus on the boxed region — the cliff face, the falling column,
+and the mist envelope — and leave the static rocks and sky out of the
+comparison. The cropped region is 216 × 88 pixels.*
 
 ## A race: does the AI see the future better than physics does?
 
