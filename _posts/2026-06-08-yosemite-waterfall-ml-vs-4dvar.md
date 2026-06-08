@@ -7,8 +7,7 @@ tags: [machine-learning, fluid-dynamics, NWP, waterfall]
 
 ![Yosemite Valley with Bridalveil Falls]({{ "/assets/figures/hero_yosemite_valley.jpg" | relative_url }})
 *Yosemite Valley from the Wawona Tunnel View. **The waterfall analysed in
-this post is Bridalveil Falls** — the thin white streak halfway up the
-right-hand cliff face.*
+this post is Bridalveil Falls.***
 
 I went to Yosemite recently and stood in front of Bridalveil Falls,
 watching the water fall cleanly for a moment and then dissolve into spray.
@@ -42,6 +41,11 @@ frames (the clip is 30 frames per second) and had to predict the next
 one. Then I made it harder: each prediction was fed back as input and the
 model had to predict the *next* one — and so on, for sixty steps. Two
 seconds of water that hasn't happened yet.
+
+The whole experiment — preprocessing the video, training the neural
+network, implementing and tuning the physics baseline, building the
+figures — was carried out using
+[Claude Code](https://claude.com/claude-code), Anthropic's coding agent.
 
 The **physics baseline** estimated smooth motion in the image — an
 optical-flow field — and carried the waterfall forward by that motion. It
