@@ -166,6 +166,3 @@ The lesson isn't that ML magically beats physics. The lesson is that **ML
 needs to watch the system long enough**. With too little waterfall, physics
 wins. With enough waterfall, the neural network learns the parts of the
 motion the simple physics model cannot represent.
-
-Next time you see a benchmark claiming AI overtakes physics, ask how much
-data the AI got. The answer is the punchline.
