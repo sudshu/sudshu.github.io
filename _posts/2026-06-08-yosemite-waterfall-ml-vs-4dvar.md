@@ -181,78 +181,51 @@ neural network get to look at?"* That sets the entire context.
 
 ### Nerdy note
 
-For people who want the technical details:
+The ML model is a 1.7-M-parameter **Swin-UNet** — a U-Net whose
+convolutions are replaced with hierarchical shifted-window self-attention
+blocks
+([Liu et al. 2021](https://arxiv.org/abs/2103.14030)) — trained
+autoregressively with a **rollout curriculum** (R = 1 → 2 → 4 steps), a
+kind of scheduled-sampling fix for the exposure-bias problem in
+time-series prediction. Full architecture, loss function, and training
+pseudocode are in the [repo
+README](https://github.com/sudshu/yosemite-waterfall-ml#the-ml-model).
 
-The ML model is a **1.7-M-parameter Swin-UNet**. A Swin-UNet is a U-Net
-where the convolutions are replaced with hierarchical shifted-window
-self-attention blocks (from
-[Liu et al. 2021](https://arxiv.org/abs/2103.14030)) — so the receptive
-field grows quickly without losing locality. It takes the last 5 grayscale
-frames plus their 4 pairwise differences as 9 input channels, and predicts
-the next frame's **residual** Δ over the most recent one:
-
-> `f̂(t+1) = clamp( f(t) + Δ , 0, 1 )`
-
-Predicting the residual is much easier than predicting raw pixels because
-most of the next frame is identical to the current one. The model is
-trained with a **curriculum** of 1-step, 2-step, then 4-step autoregressive
-rollouts (gradients flowing through the chain) so the gradient signal
-stays meaningful when its own predictions are fed back as inputs — this is
-a kind of *scheduled-sampling* fix for exposure bias in time-series
-prediction.
-
-The physics model is a **4D-Var-style variational data assimilation**. It
+The physics model is a **4D-Var-style variational data assimilation** — it
 fits a single smooth velocity field `v(x, y)` to the past few frames by
-minimising
+minimising a data-fit cost (warped previous frame should match the next)
+plus a smoothness prior on `v`, then advects the most recent frame forward
+at that constant velocity. Full cost function and the TV /
+multi-incremental NWP variants are
+[here](https://github.com/sudshu/yosemite-waterfall-ml#the-physics-baseline-4d-var).
+This is "physics" in the narrow sense of *smooth optical-flow advection* —
+a full multi-phase Navier-Stokes solver with sub-grid turbulence closures
+would do dramatically better, at ~10⁵× the compute.
 
-> `J(v) = Σ ‖warp(fᵢ, v) − f_{i+1}‖₁  +  λ ‖∇v‖²`
+The combined NWP-optimised physics baseline gets down to L1 ≈ 7.32 (in
+0–255 grayscale levels) at the 1-second forecast lead. The ML model at
+full data reaches **L1 ≈ 6.29** — about 14 % better. The ML data-scaling
+curve is the median of three random subsamples per training size;
+variance is tight at large N and noisier below ~200 frames, so the
+crossover at "~300 frames" is best read as somewhere between 200 and 400.
 
-where the first term is the **data-fit cost** (the warped previous frame
-should match the next one) and the second term is a **smoothness prior**
-(rough velocity fields are penalised). Then it advects the most recent
-frame forward at that constant velocity using a semi-Lagrangian warp at
-every rollout step. I also tried TV regularisation (no improvement on this
-scene — the velocity field has no sharp discontinuities) and a
-multi-incremental coarse-to-fine optimiser (~1% improvement, the standard
-NWP trick). The combined NWP-style optimisation gets the physics floor
-down to about **L1 = 7.32** in the 0–255 grayscale range at the 1-second
-forecast lead; the ML model at full data reaches **L1 = 6.29** (about 14 %
-better). Note that this is "physics" in the narrow sense of *smooth
-optical-flow advection*; a full multi-phase Navier-Stokes solver with
-sub-grid turbulence closures would do dramatically better, at ~10⁵× the
-compute.
-
-I aligned the camera shake out of the raw clip via phase correlation
-before training. Both methods see the stabilised version. All evaluation
-is on a strictly held-out 20% test slice (last 12 seconds of the clip),
-and the ML data-scaling curve is the **median of three random subsamples**
-per training size. Variance across seeds is tight at large N and noisier
-at small N (≤ 200 frames), so the precise crossover at ~300 is best read
-as "somewhere between 200 and 400 frames for this clip."
-
-Code, scripts, and a copy of the source MOV are at
+Code, the source MOV, and the figure-generating scripts are at
 [github.com/sudshu/yosemite-waterfall-ml](https://github.com/sudshu/yosemite-waterfall-ml).
-Want to run it on your own clip? `data/yosemite_bridal.MOV` + the four
-preprocessing scripts (`extract_frames` → `find_waterfall_bbox` →
-`stabilize_frames` → `make_grayscale`) plus `train_rollout.py` should get
-you there in an evening on a single GPU.
 
 ### Honest caveats
 
-- One clip of one waterfall. The exact crossover frame count and the slope
-  are specific to this system.
+- One clip of one waterfall. Single-clip data-scaling laws are fragile —
+  the exact crossover and slope could easily differ by ~2× on a longer
+  clip or a different turbulent system.
 - The physics model is intentionally simple — smooth advection by a single
   velocity field. A full CFD simulation would do dramatically better, at
   dramatically more cost.
 - The neural network is also intentionally small. A bigger model with
   internet-scale video pretraining would shift the curves but the shape of
   the story would be similar.
-- This is a toy. The point isn't the waterfall. The point is that the same
-  shape of curve — slope versus ceiling, crossover at some data threshold —
-  shows up almost everywhere the comparison gets made.
-- Single-clip data-scaling laws are notoriously fragile. The slope and
-  crossover frame count could easily differ by ~2× on a longer clip or a
-  different turbulent system.
+- The point isn't the waterfall. It's that the same shape of curve —
+  slope versus ceiling, crossover at some data threshold — shows up almost
+  everywhere the comparison gets made.
 
 ### The takeaway
 
