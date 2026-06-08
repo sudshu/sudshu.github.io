@@ -21,7 +21,9 @@ twice. I pulled out my phone and shot a 60-second clip of it to take home.
 
 That made me wonder something concrete: **when would a neural network be
 able to predict the next few moments of this waterfall better than a
-simple physics-based model?**
+simple physics-based model?** The real video itself is the ground truth.
+Both methods are scored on how closely their predicted frames match what
+actually happens next.
 
 It is a tiny version of a bigger question now playing out in weather and
 climate science. Modern ML weather models can compete with physics-based
