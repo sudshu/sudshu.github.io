@@ -113,6 +113,24 @@ a:hover {
   box-shadow: 0 2px 14px rgba(15, 23, 41, 0.08);
 }
 
+.post-content figure.hero-video {
+  margin: 1.4em auto 1.6em;
+  text-align: center;
+}
+.post-content figure.hero-video video {
+  display: block;
+  margin: 0 auto;
+  max-width: 360px;          /* portrait phone clip — keep it tight on wide screens */
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 6px 28px rgba(15, 23, 41, 0.16);
+}
+.post-content figure.hero-video figcaption {
+  margin-top: 0.7em;
+  color: $grey-color;
+  font-size: 0.95em;
+}
+
 .post-content blockquote {
   font-style: normal;
   color: lighten($text-color, 10%);

@@ -7,10 +7,14 @@ image: /assets/figures/og_card.png
 excerpt: "How much waterfall does a neural network need to see before it beats a physics-based forecast?  A toy experiment on a 60-second Bridalveil Falls clip."
 ---
 
-![Yosemite Valley with Bridalveil Falls]({{ "/assets/figures/hero_yosemite_valley.jpg" | relative_url }})
-
-*Yosemite Valley from the Wawona Tunnel View. The waterfall analysed in
-this post is Bridalveil Falls.*
+<figure class="hero-video">
+  <video autoplay muted loop playsinline preload="metadata"
+         poster="{{ '/assets/figures/hero_bridal_poster.jpg' | relative_url }}">
+    <source src="{{ '/assets/figures/hero_bridal_clean.mp4' | relative_url }}" type="video/mp4">
+  </video>
+  <figcaption><em>Bridalveil Falls, Yosemite — 60 seconds of phone footage,
+  the entire dataset for this experiment.</em></figcaption>
+</figure>
 
 I went to Yosemite recently. It might be the most beautiful place I have
 ever visited. Standing in front of Bridalveil Falls, watching the water
