@@ -1,54 +1,163 @@
 ---
 ---
 
-$brand-color: #2c5f7c;
-$base-font-size: 17px;
-$content-width: 820px;
+/* ------------------------------------------------------------------
+ * Color palette
+ *   warm-cream background, deep-teal brand, navy headings,
+ *   coral accent for highlights. Tuned to feel science-y but warm.
+ * ------------------------------------------------------------------ */
+
+$background-color: #faf7f0;          /* warm off-white */
+$text-color:       #2c3340;          /* dark slate, easier than pure black */
+$brand-color:      #1f6e7e;          /* teal */
+$accent-color:     #d97a4f;          /* warm coral, used sparingly */
+
+$grey-color:       #7a8489;
+$grey-color-light: lighten($grey-color, 32%);
+$grey-color-dark:  #1a365d;          /* navy, for headings */
+
+$base-font-size:   17px;
+$content-width:    820px;
 
 @import "minima";
 
-/* small typographic polish */
+/* ------------------------------------------------------------------
+ * Header / footer band
+ * ------------------------------------------------------------------ */
 
 body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+.site-header {
+  background: linear-gradient(180deg, #ffffff 0%, #f3ecdc 100%);
+  border-bottom: 3px solid $brand-color;
+  border-top: 0;
+  min-height: 60px;
+}
+
 .site-title, .site-title:visited {
   font-weight: 600;
+  color: $brand-color !important;
+}
+
+.site-nav .page-link {
+  color: $grey-color-dark;
+}
+
+.site-footer {
+  background: #f3ecdc;
+  border-top: 1px solid darken(#f3ecdc, 10%);
+  color: $grey-color-dark;
+}
+
+/* ------------------------------------------------------------------
+ * Headings
+ * ------------------------------------------------------------------ */
+
+h1, h2, h3, h4, h5, h6 {
+  color: $grey-color-dark;
 }
 
 .post-title, h1.post-title {
+  color: $grey-color-dark;
   font-size: 2em;
   line-height: 1.18;
-  margin-bottom: 0.4em;
+  margin-bottom: 0.3em;
 }
 
 .post-content h2 {
-  margin-top: 1.6em;
+  margin-top: 1.7em;
+  border-bottom: 2px solid rgba($brand-color, 0.18);
+  padding-bottom: 0.25em;
+}
+
+.post-content h3 {
+  margin-top: 1.4em;
+  color: $brand-color;
 }
 
 .post-meta {
-  color: #7a8489;
+  color: $accent-color;
+  font-weight: 500;
 }
+
+/* ------------------------------------------------------------------
+ * Links
+ * ------------------------------------------------------------------ */
+
+a {
+  color: $brand-color;
+  text-decoration: none;
+}
+a:hover {
+  color: $accent-color;
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------
+ * Images, blockquotes, code
+ * ------------------------------------------------------------------ */
 
 .post-content img {
   display: block;
   margin: 1.4em auto;
   max-width: 100%;
-  border-radius: 4px;
+  border-radius: 6px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
 }
 
 .post-content blockquote {
   font-style: normal;
-  color: #4a5660;
-  border-left: 3px solid $brand-color;
+  color: lighten($text-color, 12%);
+  border-left: 4px solid $accent-color;
+  background: #fff6ec;
+  padding: 0.5em 1em;
+  border-radius: 0 4px 4px 0;
 }
 
-/* home: tighten the recent-posts list */
+code, pre {
+  background: #f5efe2;
+  border: 1px solid #e6decb;
+  border-radius: 4px;
+}
+pre {
+  padding: 0.8em 1em;
+}
+
+/* ------------------------------------------------------------------
+ * Post listings on the home page
+ * ------------------------------------------------------------------ */
+
 .post-list h3 {
-  margin: 0.2em 0 0.1em;
+  margin: 0.2em 0 0.15em;
+}
+.post-list h3 a {
+  color: $grey-color-dark;
+}
+.post-list h3 a:hover {
+  color: $brand-color;
 }
 .post-list li {
-  margin-bottom: 1em;
+  margin-bottom: 1.3em;
+  padding-bottom: 1em;
+  border-bottom: 1px dashed lighten($grey-color, 25%);
+}
+.post-list li:last-child { border-bottom: 0; }
+
+/* ------------------------------------------------------------------
+ * "Nerd note" style on post pages -- triggered by an h3 starting
+ * with the word "Nerd". Falls back gracefully on any h3.
+ * ------------------------------------------------------------------ */
+
+.post-content h3 + p {
+  margin-top: 0.4em;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba($brand-color, 0.4), transparent);
+  margin: 2.2em 0;
 }
