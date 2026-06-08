@@ -8,8 +8,8 @@ excerpt: "How much waterfall does a neural network need to see before it beats a
 ---
 
 ![Yosemite Valley with Bridalveil Falls]({{ "/assets/figures/hero_yosemite_valley.jpg" | relative_url }})
-*Yosemite Valley from the Wawona Tunnel View. **The waterfall analysed in
-this post is Bridalveil Falls.***
+*Yosemite Valley from the Wawona Tunnel View. The waterfall analysed in
+this post is Bridalveil Falls.*
 
 I went to Yosemite recently. It might be the most beautiful place I have
 ever visited. Standing in front of Bridalveil Falls, watching the water
