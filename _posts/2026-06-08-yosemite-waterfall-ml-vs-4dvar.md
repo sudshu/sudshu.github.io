@@ -8,6 +8,7 @@ excerpt: "How much waterfall does a neural network need to see before it beats a
 ---
 
 ![Yosemite Valley with Bridalveil Falls]({{ "/assets/figures/hero_yosemite_valley.jpg" | relative_url }})
+
 *Yosemite Valley from the Wawona Tunnel View. The waterfall analysed in
 this post is Bridalveil Falls.*
 
@@ -36,6 +37,7 @@ physics" — it is a **crossover**. Physics wins when data are scarce. ML
 wins once it has watched enough examples.
 
 ![Bridalveil Falls with the analysis region boxed]({{ "/assets/figures/figure2_waterfall_video.gif" | relative_url }})
+
 *The clip. We focus on the boxed region — the cliff face, the falling
 column, and the mist envelope — and leave the static rocks and sky out of
 the comparison.*
@@ -81,6 +83,7 @@ frames, 100, 200, 400, 700, or all 1,090 — and re-ran the same forecast
 against the same physics model. This is what came out:
 
 ![How much waterfall does ML need before it beats physics]({{ "/assets/figures/headline_playful.png" | relative_url }})
+
 *The data threshold. With 50 frames the neural network is much worse than
 the physics model. Around a few hundred frames — roughly 10 seconds of
 video — it catches up. With the whole clip, it wins.*
