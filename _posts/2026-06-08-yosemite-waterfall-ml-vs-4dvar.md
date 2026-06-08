@@ -17,7 +17,7 @@ fall cleanly for a moment and then dissolve into spray, I noticed
 something: from far away, the waterfall looked almost steady. Up close, it
 was chaos — mist drifting sideways, white streaks appearing and
 disappearing, the same waterfall every second but never the same frame
-twice.
+twice. I pulled out my phone and shot a 60-second clip of it to take home.
 
 That made me wonder something concrete: **when would a neural network be
 able to predict the next few moments of this waterfall better than a
