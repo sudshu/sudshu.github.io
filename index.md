@@ -3,8 +3,6 @@ layout: home
 title: Sudhanshu Pandey
 ---
 
-# Sudhanshu Pandey
-
 🛰️ Scientist at **NASA's Jet Propulsion Laboratory**.
 Methane Modeling Lead for the **U.S. Greenhouse Gas Center**.
 I quantify greenhouse-gas emissions from space — from single leaking wells
@@ -78,20 +76,6 @@ or [Google Scholar](https://scholar.google.com/citations?user=efFF_TEAAAAJ&hl=en
   wetlands during the 2011 La Niña.
   *Scientific Reports* 7, 45759.
   [doi](https://doi.org/10.1038/srep45759)
-
-## A few awards
-
-- NASA Group Achievement Award — Greenhouse Gas Center Team (2026)
-- NASA ROSES Early Career Investigator Program in Earth Science (2023)
-- INSPIRE Fellowship, Indian Department of Science & Technology (2008)
-
-## Service
-
-Reviewer for *Nature*, *Science Advances*, *Nature Climate Change*, *AMT*,
-*ACP*, *GRL*, and others. Review Editor at *Frontiers*. Proposal reviewer
-for NASA and NOAA. Poster judge at EGU and AGU. I've mentored students and
-interns at JPL and SRON drawn from Caltech, USC, Cal Poly Pomona, Harvard,
-TU Delft, and Utrecht.
 
 ### Find me elsewhere
 
