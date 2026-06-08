@@ -46,8 +46,6 @@ one. Then I made it harder: each prediction was fed back as input and the
 model had to predict the *next* one — and so on, for sixty steps. Two
 seconds of water that hasn't happened yet.
 
-*The coding was done using [Claude Code](https://claude.com/claude-code).*
-
 The **physics baseline** estimated smooth motion in the image — an
 optical-flow field — and carried the waterfall forward by that motion. It
 starts with a useful built-in assumption: most of the water is moving
@@ -158,6 +156,8 @@ Different systems, same question: **where is the data threshold at which
 learning overtakes hand-built physics?**
 
 ---
+
+*The coding was done using [Claude Code](https://claude.com/claude-code).*
 
 *More about the author Sudhanshu Pandey at
 [sudshu.github.io](https://sudshu.github.io/).*
