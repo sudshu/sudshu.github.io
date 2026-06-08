@@ -1,0 +1,54 @@
+---
+---
+
+$brand-color: #2c5f7c;
+$base-font-size: 17px;
+$content-width: 820px;
+
+@import "minima";
+
+/* small typographic polish */
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.site-title, .site-title:visited {
+  font-weight: 600;
+}
+
+.post-title, h1.post-title {
+  font-size: 2em;
+  line-height: 1.18;
+  margin-bottom: 0.4em;
+}
+
+.post-content h2 {
+  margin-top: 1.6em;
+}
+
+.post-meta {
+  color: #7a8489;
+}
+
+.post-content img {
+  display: block;
+  margin: 1.4em auto;
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+.post-content blockquote {
+  font-style: normal;
+  color: #4a5660;
+  border-left: 3px solid $brand-color;
+}
+
+/* home: tighten the recent-posts list */
+.post-list h3 {
+  margin: 0.2em 0 0.1em;
+}
+.post-list li {
+  margin-bottom: 1em;
+}
