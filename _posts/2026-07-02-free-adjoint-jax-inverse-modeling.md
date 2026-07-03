@@ -96,18 +96,17 @@ the adjoint is **already there**. You do not derive it. You do not hand-code it.
 You call `jax.grad`, and the framework walks backward through your model and
 hands you the gradient. The thing that used to cost a PhD now costs one line.
 
-This post is a tour of that idea, built out of small toy models you can run on a
-laptop. It is aimed at a curious graduate student — someone who has heard the
-words "adjoint" and "inverse problem" and would like them to stop being scary.
+Everything below is built from toy models small enough to run — and play with —
+on a laptop.
 
 ## Why anyone wants an adjoint in the first place
 
 Start with the picture that pays for a lot of Earth-observing satellites.
 
-A spectrometer in orbit — [TROPOMI](https://doi.org/10.1016/j.rse.2011.09.027) on
-Sentinel-5P, or GOSAT, OCO-2, EMIT, PRISMA — measures how much methane or CO₂
-sits in a column of air. What we actually *want* is not the concentration. It is
-the **emissions**: which well, which wetland, which city, leaking how much
+A spectrometer in orbit — [TROPOMI](https://doi.org/10.1016/j.rse.2011.09.027),
+GOSAT, OCO-2 — measures how much methane or CO₂ sits in a column of air. What we
+actually *want* is not the concentration. It is the **emissions**: which well,
+which wetland, which city, leaking how much
 ([Jacob et al., 2016](https://doi.org/10.5194/acp-16-14371-2016)).
 
 Between the two sits a forward model:
@@ -122,11 +121,9 @@ pushed through the model, best reproduce what the satellite saw. In practice you
 never invert the arrow directly. You define a mismatch — a scalar cost `J` that
 measures how far the model is from the observations (plus a term keeping you near
 a prior) — and you slide the emissions downhill until `J` is small. This is the
-whole edifice of atmospheric inverse modelling, from the classic global CO₂
-inversions ([Gurney et al., 2002](https://doi.org/10.1038/415626a);
-[Rödenbeck et al., 2003](https://doi.org/10.5194/acp-3-1919-2003)) to modern
-satellite methane ([Bergamaschi et al., 2009](https://doi.org/10.1029/2009JD012287)).
-The textbook, if you want one, is [Enting (2002)](https://doi.org/10.1017/CBO9780511535741).
+whole edifice of atmospheric inverse modelling, from global CO₂ budgets to
+satellite methane. The textbook, if you want one, is
+[Enting (2002)](https://doi.org/10.1017/CBO9780511535741).
 
 To slide downhill you need the **gradient**: how does the mismatch change if I
 nudge each emission parameter? And here is the catch that makes or breaks the
@@ -144,8 +141,8 @@ There are two ways to get it.
 - **The adjoint.** Run the model forward once, then run a single backward pass
   that propagates the sensitivity of the mismatch back through every operation,
   accumulating the derivative with respect to *every* parameter along the way.
-  One forward pass, one backward pass, the entire gradient — no matter how many
-  unknowns.
+  One forward pass, one backward pass, the entire gradient — almost regardless of
+  how many unknowns.
 
 That backward pass **is** the adjoint. If you have ever trained a neural network,
 you already know it under a different name: backpropagation. Reverse-mode
@@ -153,90 +150,8 @@ automatic differentiation, the adjoint method, and backprop are the same idea
 wearing three different lab coats ([Errico, 1997](https://doi.org/10.1175/1520-0477(1997)078%3C2577:WIAAM%3E2.0.CO;2)
 is still the friendliest one-page explanation for atmospheric scientists).
 
-The plot at the very top is exactly this trade-off, measured on a toy chemistry
-model. Finite differences get linearly more expensive as you add unknowns. The
-adjoint stays flat. By a thousand parameters it is already ~265× cheaper, and in
-a real inversion with a hundred thousand parameters the ratio is the difference
-between "runs overnight" and "never finishes."
-
-{% raw %}
-<section class="iw-card" id="iw-cost">
-  <p class="iw-eyebrow">Interactive · why the adjoint wins</p>
-  <p class="iw-title">The cost of a gradient</p>
-  <p class="iw-note">To take one step downhill you need the gradient over <em>every</em> unknown.
-  Slide the number of unknowns and watch the two ways of getting it diverge.</p>
-  <div class="iw-controls" style="margin-bottom:6px;">
-    <div class="iw-sliderbox" style="flex:1 1 100%;">
-      <label>number of unknowns, P <b id="c-pval">1,000</b></label>
-      <input type="range" class="iw" id="c-slider" min="0" max="6" step="0.01" value="3">
-    </div>
-  </div>
-  <div class="iw-controls" style="margin:2px 0 16px;">
-    <span class="iw-stat" style="color:var(--muted);">one model run takes</span>
-    <select class="iw" id="c-trun">
-      <option value="0.01">0.01 s (toy)</option>
-      <option value="0.1" selected>0.1 s (small)</option>
-      <option value="1">1 s</option>
-      <option value="60">1 min (real model)</option>
-    </select>
-  </div>
-  <div class="iw-panel" style="padding:16px;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-      <span style="width:150px; font-size:12.5px; color:var(--red); font-weight:700;">Finite differences</span>
-      <div style="flex:1; background:#f0d9d6; border-radius:5px; height:22px; overflow:hidden;">
-        <div id="c-bar-fd" style="height:100%; width:60%; background:var(--red); border-radius:5px; transition:width .15s;"></div>
-      </div>
-      <span class="iw-stat" id="c-fd-runs" style="width:120px; text-align:right; color:var(--red);">2,000 runs</span>
-    </div>
-    <div style="display:flex; align-items:center; gap:10px;">
-      <span style="width:150px; font-size:12.5px; color:var(--green); font-weight:700;">Adjoint</span>
-      <div style="flex:1; background:#dbead9; border-radius:5px; height:22px; overflow:hidden;">
-        <div id="c-bar-adj" style="height:100%; width:2%; background:var(--green); border-radius:5px; transition:width .15s;"></div>
-      </div>
-      <span class="iw-stat" id="c-adj-runs" style="width:120px; text-align:right; color:var(--green);">2 runs</span>
-    </div>
-  </div>
-  <div style="display:flex; flex-wrap:wrap; gap:10px 26px; margin-top:16px; align-items:baseline;">
-    <div><span style="font-size:30px; font-weight:700; font-family:var(--mono); color:var(--ink);" id="c-ratio">1,000×</span>
-      <span style="font-size:13px; color:var(--muted);"> cheaper with the adjoint</span></div>
-  </div>
-  <p class="iw-stat" id="c-wall" style="margin-top:8px; color:var(--muted);">—</p>
-  <p class="iw-caption">Finite differences re-run the whole model twice per unknown (2P runs). The adjoint
-  gets the entire gradient in one forward pass and one backward pass — two runs, no matter how big P is.
-  That flat green bar is the reason satellite flux inversions with tens of thousands of unknowns are possible at all.</p>
-</section>
-<script>
-(function(){
-  var sl=document.getElementById('c-slider'),trun=document.getElementById('c-trun');
-  function fmtInt(n){return Math.round(n).toLocaleString('en-US');}
-  function fmtDur(s){
-    if(s<1)return (s*1000).toFixed(0)+' ms';
-    if(s<90)return s.toFixed(1)+' s';
-    if(s<5400)return (s/60).toFixed(1)+' min';
-    if(s<172800)return (s/3600).toFixed(1)+' hours';
-    if(s<3.1e7)return (s/86400).toFixed(1)+' days';
-    return (s/3.15e7).toFixed(1)+' years';
-  }
-  function update(){
-    var P=Math.round(Math.pow(10,parseFloat(sl.value))); if(P<1)P=1;
-    var fdRuns=2*P, adjRuns=2, ratio=P, t=parseFloat(trun.value);
-    document.getElementById('c-pval').textContent=fmtInt(P);
-    document.getElementById('c-fd-runs').textContent=fmtInt(fdRuns)+' runs';
-    document.getElementById('c-adj-runs').textContent='2 runs';
-    document.getElementById('c-ratio').textContent=fmtInt(ratio)+'×';
-    // log-scaled bars vs a common max (2e6+ runs)
-    var maxL=Math.log10(2*1e6+1);
-    document.getElementById('c-bar-fd').style.width=(Math.log10(fdRuns+1)/maxL*100).toFixed(1)+'%';
-    document.getElementById('c-bar-adj').style.width=Math.max(1.5,(Math.log10(adjRuns+1)/maxL*100)).toFixed(1)+'%';
-    document.getElementById('c-wall').innerHTML='at '+fmtDur(t)+'/run &nbsp;→&nbsp; '+
-      '<span style="color:var(--red)">finite differences '+fmtDur(fdRuns*t)+'</span>'+
-      ' &nbsp;vs&nbsp; <span style="color:var(--green)">adjoint '+fmtDur(adjRuns*t)+'</span>';
-  }
-  sl.addEventListener('input',update); trun.addEventListener('change',update);
-  update();
-})();
-</script>
-{% endraw %}
+That is the trade-off in the plot at the top: at a hundred thousand parameters
+it is the difference between "runs overnight" and "never finishes."
 
 ## The free lunch, in one line
 
@@ -270,7 +185,8 @@ grad_loss = jax.grad(loss)      # <-- this is the discrete adjoint. that's it.
 
 `jax.grad(loss)` is the adjoint of your time-stepping model. Not an
 approximation of it — the exact derivative of the numerical code you wrote,
-assembled by differentiating every operation in reverse. Conceptually:
+assembled by differentiating every operation in reverse, at least for the parts
+of the model JAX can trace (more on where that breaks below). Conceptually:
 
 ```text
 forward:    kappa ──► diffusion steps ──► final state ──► mismatch J
@@ -286,9 +202,8 @@ initial guess:         0.006000
 recovered kappa:       0.035513      (1.5% off, from a 6× wrong start)
 ```
 
-Twenty years ago this specific capability — the discrete adjoint of a diffusion
-solver — would have been a homework problem that took a week of careful calculus
-and debugging. Now it is a function call.
+Twenty years ago, that would have been a week of careful calculus and debugging.
+Now it is a function call.
 
 {% raw %}
 <section class="iw-card" id="iw-diffuse">
@@ -435,9 +350,8 @@ I built a **two-box atmospheric chemistry model**: a "northern" box and a
 "southern" box that exchange air, each carrying three tracers — **CH₄, CO, and
 NOₓ**. The chemistry is deliberately nonlinear: CH₄ and CO are destroyed by the
 hydroxyl radical OH, and OH itself depends on how much CH₄, CO, and NOₓ are
-present. (This is a caricature of a very real effect — the coupling that makes
-methane's atmospheric lifetime depend on the state of the atmosphere it lives in,
-central to why methane trends are hard to attribute;
+present. (That coupling — methane's lifetime depending on the very air it sits in — is a
+real headache for explaining methane's ups and downs;
 [Bousquet et al., 2006](https://doi.org/10.1038/nature05132).)
 
 Then I hid the answer. I picked four "true" emission scale factors, generated
@@ -452,25 +366,25 @@ CH4 south      0.7500     0.7501
 CO  south      1.4000     1.4000
 ```
 
-Four decimal places, from one scalar mismatch and its adjoint gradient, through
-a nonlinear coupled-chemistry model. Same one line — `jax.value_and_grad(loss)` —
-doing the work. This is, in miniature, exactly the machinery behind operational
-methane and CO₂ flux estimation
+Four decimal places — in this clean, noise-free synthetic case — from one scalar
+mismatch and its adjoint gradient, through a nonlinear coupled-chemistry model.
+Same one line, `jax.value_and_grad(loss)`, doing the work. Recovering several
+coupled tracers at once from column measurements is exactly the shape of a real
+satellite inversion: the very first paper of my PhD was a joint CH₄/CO₂ column
+inversion of just this kind
+([Pandey et al., 2015](https://doi.org/10.5194/acp-15-8615-2015)). It is the same
+machinery behind today's operational methane and CO₂ flux estimates
 ([Meirink et al., 2008](https://doi.org/10.5194/acp-8-6341-2008);
-[Chevallier et al., 2005](https://doi.org/10.1029/2005JD006390)), including work
-I have done to make these variational inversions run an order of magnitude faster
-([Pandey et al., 2022](https://doi.org/10.5194/gmd-15-4555-2022)) and to catch
-individual super-emitters from orbit
-([Pandey et al., 2019](https://doi.org/10.1073/pnas.1908712116)).
+[Chevallier et al., 2005](https://doi.org/10.1029/2005JD006390)).
 
 ## Okay, you have the gradient. Now what do you do with it?
 
 A gradient tells you which way is downhill. It does not tell you how big a step to
 take, and this is where a lot of grad-student hours quietly disappear.
 
-The plainest choice is a first-order optimizer — Adam, the same workhorse from
-deep learning — which only ever looks at the gradient. It works, but it can be
-slow, wandering down long narrow valleys taking cautious steps.
+The plainest choice is a first-order optimizer — Adam, the workhorse from deep
+learning — which only ever looks at the gradient. It works, but it can be slow,
+wandering down long narrow valleys taking cautious steps.
 
 The alternative is to use **curvature** — second-derivative information about how
 the landscape bends. Two classic moves from the inverse-problems world:
@@ -478,19 +392,13 @@ the landscape bends. Two classic moves from the inverse-problems world:
 - **Gauss-Newton / Levenberg-Marquardt** approximates the curvature from the
   Jacobian of the residuals (`JᵀJ`). It is the default for smooth
   least-squares problems for a reason.
-- **Full Newton** uses the exact Hessian — which JAX will also just hand you,
-  `jax.hessian(loss)`, another thing that used to be unthinkable to code by hand.
+- **Full Newton** uses the exact Hessian — which JAX will hand you for a small
+  problem, `jax.hessian(loss)` (at real scale you never form it; you use
+  Hessian-vector products instead).
 
-I raced all three on the two-box model with an added nonlinear penalty. They all
-reach the *same* answer. The difference is how long they take to get there:
-
-![Convergence of Adam, Gauss-Newton, and full Newton on the nonlinear chemistry penalty]({{ "/assets/figures/jax_adjoint_curvature_race.png" | relative_url }})
-
-*Same destination, very different journeys. Adam (gradient only) needs ~180
-iterations to settle. Gauss-Newton, using curvature from the residual Jacobian,
-gets there in 7. Full Newton with the exact Hessian, in 9. Panel C shows why:
-the curvature-aware methods (green, red) cut almost straight across the valley;
-Adam (blue) zig-zags down it.*
+Get a feel for the difference on the classic test valley below: gradient descent
+only sees the slope and zig-zags for thousands of steps; curvature cuts across in
+a dozen. Drag the start point and race them.
 
 {% raw %}
 <section class="iw-card" id="iw-race">
@@ -532,8 +440,8 @@ Adam (blue) zig-zags down it.*
     for(var j=0;j<cv.height;j++){for(var i=0;i<cv.width;i++){
       var x=XLO+(i/cv.width)*(XHI-XLO), y=YLO+(1-j/cv.height)*(YHI-YLO);
       var v=Math.log10(f(x,y)+0.02), t=Math.max(0,Math.min(1,(v+1.7)/3.4));
-      // low f (valley) -> warm light; high f -> cool grey
-      var r=Math.round(251+(199-251)*t), g=Math.round(243+(205-243)*t), b=Math.round(230+(212-230)*t);
+      // darker = lower cost (the valley reads as a basin you look down into); light = high ground
+      var r=Math.round(44+(238-44)*t), g=Math.round(62+(241-62)*t), b=Math.round(88+(245-88)*t);
       var o=(j*cv.width+i)*4;data[o]=r;data[o+1]=g;data[o+2]=b;data[o+3]=255;
     }}
     bgW=cv.width;bgH=cv.height;
@@ -571,14 +479,25 @@ Adam (blue) zig-zags down it.*
     if(!bg||bgW!==cv.width||bgH!==cv.height)buildBG();
     d.putImageData(bg,0,0);
     d.setTransform(dpr,0,0,dpr,0,0);
-    // minimum marker
-    d.strokeStyle='rgba(47,107,44,.9)';d.lineWidth=1.5;d.beginPath();d.arc(px(MINX),py(MINY),7,0,6.2832);d.stroke();
-    d.beginPath();d.moveTo(px(MINX)-3,py(MINY));d.lineTo(px(MINX)+3,py(MINY));d.moveTo(px(MINX),py(MINY)-3);d.lineTo(px(MINX),py(MINY)+3);d.stroke();
-    path(d,gdPath,'#37618e',2.2);
-    path(d,gnPath,'#2f6b2c',2.4);
-    dot(d,gd,'#37618e',4);
-    dot(d,ln,'#2f6b2c',4);
-    dot(d,start,'#d97706',4.5);
+    // white halos so both paths stay visible over the dark valley
+    path(d,gdPath,'rgba(255,255,255,.85)',4.4);
+    path(d,gnPath,'rgba(255,255,255,.9)',4.8);
+    path(d,gdPath,'#5b83b0',2.4);
+    path(d,gnPath,'#4e9a4a',2.6);
+    dot(d,gd,'#5b83b0',4);
+    dot(d,ln,'#4e9a4a',4);
+    dot(d,start,'#f59e0b',4.5);
+    // minimum marker (the basin floor) + label, drawn on top so it is always visible
+    var mX=px(MINX),mY=py(MINY);
+    d.fillStyle='#4e9a4a';d.strokeStyle='#fff';d.lineWidth=2;
+    d.beginPath();d.arc(mX,mY,6,0,6.2832);d.fill();d.stroke();
+    d.font='600 11px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';d.textAlign='left';
+    d.strokeStyle='rgba(15,17,21,.75)';d.lineWidth=3;d.strokeText('minimum',mX+10,mY+4);
+    d.fillStyle='#fff';d.fillText('minimum',mX+10,mY+4);
+    // legend
+    d.fillStyle='rgba(15,17,21,.6)';d.fillRect(6,H-22,224,16);
+    d.fillStyle='#eef1f5';d.font='10px ui-monospace,Menlo,monospace';d.textAlign='left';
+    d.fillText("bird's-eye view · darker = lower cost",11,H-10);
   }
   function loop(){
     if(!racing)return;
@@ -627,10 +546,22 @@ Adam (blue) zig-zags down it.*
 </script>
 {% endraw %}
 
+The same race on our actual two-box chemistry model, with an added nonlinear
+penalty — all three reach the *same* answer, but look how long they take:
+
+![Convergence of Adam, Gauss-Newton, and full Newton on the nonlinear chemistry penalty]({{ "/assets/figures/jax_adjoint_curvature_race.png" | relative_url }})
+
+*Same destination, very different journeys. Adam (gradient only) needs ~180
+iterations to settle. Gauss-Newton, using curvature from the residual Jacobian,
+gets there in 7. Full Newton with the exact Hessian, in 9. Panel C shows why:
+the curvature-aware methods (green, red) cut almost straight across the valley;
+Adam (blue) zig-zags down it.*
+
 180 iterations versus 7. And here is the part that should make a carbon-cycle
 person sit up: **the curvature you compute to go fast is the same curvature you
-need for error bars.** For Gaussian errors, the posterior covariance — your
-uncertainty on the recovered emissions — is
+need for error bars.** For Gaussian errors and a linear approximation near the
+solution, the posterior covariance — your uncertainty on the recovered
+emissions — is
 
 ```text
 posterior covariance  ≈  ( Jᵀ R⁻¹ J  +  B⁻¹ )⁻¹
@@ -642,19 +573,14 @@ result — it is a rumour. So the method that converges fastest is *also* the on
 that tells you how much to trust the answer. You rarely get to have both; here
 you do.
 
-So which method should you actually reach for? I ran the full bake-off — wall-clock
-time, scaling, reliability, whether it gives you uncertainty, how annoying it is
-to implement — and turned it into a cheat sheet:
+So which do you actually reach for, for smooth least-squares problems like these?
 
-![Decision matrix comparing inversion algorithms across cost, scaling, reliability, and uncertainty]({{ "/assets/figures/jax_adjoint_method_matrix.png" | relative_url }})
-
-*The practical summary. For smooth least-squares inverse problems: use
-Gauss-Newton with autodiff Jacobians as the default (fast, and it gives you the
-posterior). When the number of unknowns gets genuinely large, go matrix-free —
-never form the giant Jacobian, just use its action on vectors via forward-mode
-(`Jv`) and reverse-mode (`Jᵀv`) products. Keep adjoint Adam / L-BFGS as the
-robust fallback. And finite differences? Keep them around only to check that your
-fancy derivatives are correct.*
+- **Default: Gauss-Newton / Levenberg-Marquardt** with autodiff Jacobians — fast,
+  and it hands you the posterior covariance almost for free.
+- **At scale: matrix-free Gauss-Newton** — never form the giant Jacobian; use its
+  action on vectors via forward-mode (`Jv`) and reverse-mode (`Jᵀv`) products.
+- **Fallback: adjoint Adam / L-BFGS** when Gauss-Newton is hard to stabilise.
+- **Finite differences:** keep them only to check your fancy derivatives are right.
 
 ## The trap nobody warns you about: switches
 
@@ -680,23 +606,6 @@ None of this is JAX-specific — a hand-written adjoint has exactly the same
 disease. Differentiable programming doesn't rescue you from bad math; it just
 makes the *good* math free.
 
-## Footnote: I ran all of this on a laptop
-
-There is a democratisation angle hiding in here. None of these experiments
-needed a supercomputer or a data-centre GPU. They ran on a MacBook — including on
-the laptop's own GPU, through Apple's Metal backend for JAX.
-
-Out of curiosity I swept the 1-D diffusion solver across grid sizes to see when
-the laptop GPU actually beats the laptop CPU:
-
-![Apple Metal GPU speedup over CPU as a function of problem size]({{ "/assets/figures/jax_adjoint_metal_sweep.png" | relative_url }})
-
-*The GPU is not a free win. On tiny problems the CPU is faster (launch overhead
-dominates); the GPU only pulls ahead in a middle band, peaking near 2× around a
-quarter-million grid cells, then falling back as the largest grids hit memory
-bandwidth limits. A small, honest reminder that "use the GPU" is a question, not
-an answer — but also that you can explore all of this from a coffee shop.*
-
 ## Why this is a bigger deal than a toy
 
 The toys are toys. But the shape of the result is not.
@@ -711,7 +620,7 @@ Differentiable programming drains the moat. When the gradient of any model you
 can write is free, the boundary between "simulation" and "optimisation" dissolves.
 It is the same current carrying the ML weather models — GraphCast
 ([Lam et al., 2023](https://doi.org/10.1126/science.adi2336)) and its cousins are
-differentiable end to end — and it flows straight back into classical inverse
+neural networks, differentiable by construction — and it flows straight back into classical inverse
 problems, and into the hybrid physics-ML models now being built in between, which
 need clean gradients through the physics to train at all.
 
@@ -735,12 +644,18 @@ work — the science — moved up a level, to what you point all that cheap grad
   ∝ `P`, because central differences cost `2P` model runs while the adjoint costs
   one backward pass. Convergence on the nonlinear penalty: Adam 180 iterations,
   Gauss-Newton 7–8, full Newton 9, all to the identical objective.
-- **The hardware.** Apple M2 Pro (19 GPU cores) via `jax-metal`. Metal peaked at
-  ~1.96× over CPU near 2¹⁸ grid cells; CPU won for both very small and very large
-  grids.
+- **The hardware.** Everything ran on a MacBook — no supercomputer — including on
+  the laptop's own GPU via `jax-metal`, which peaked at ~1.96× over CPU near 2¹⁸
+  grid cells (CPU won for both very small and very large grids).
 - **Code, notebooks, and figures.** The full handoff — runnable scripts, two
   tutorial notebooks, benchmark CSVs, and every figure above — lives in the
   project folder accompanying this post.
+
+![Decision matrix comparing inversion algorithms across cost, scaling, reliability, and uncertainty]({{ "/assets/figures/jax_adjoint_method_matrix.png" | relative_url }})
+
+*The full decision matrix behind those three bullets — five algorithm families
+scored on small-P speed, large-P scaling, convergence reliability, posterior
+usefulness, and implementation effort.*
 
 ## Takeaway
 
@@ -785,6 +700,7 @@ and do not reflect those of the JPL, NASA and CALTECH.*
 - Jacob et al. (2016), *Satellite observations of atmospheric methane.* ACP — [doi](https://doi.org/10.5194/acp-16-14371-2016)
 
 **My own, in this lineage**
+- Pandey et al. (2015), *On the use of satellite-derived CH₄:CO₂ columns in a joint inversion of CH₄ and CO₂ fluxes* — the first paper of my PhD. ACP — [doi](https://doi.org/10.5194/acp-15-8615-2015)
 - Pandey et al. (2019), *Satellite detection of an extreme methane well blowout.* PNAS — [doi](https://doi.org/10.1073/pnas.1908712116)
 - Pandey et al. (2022), *Order-of-magnitude speed-up of variational methane inversions.* GMD — [doi](https://doi.org/10.5194/gmd-15-4555-2022)
 
