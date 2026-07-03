@@ -89,6 +89,14 @@ Whole model versions were named after it: the GEOS-Chem adjoint
 four-dimensional variational system
 ([Meirink et al., 2008](https://doi.org/10.5194/acp-8-6341-2008)).
 
+It ate the first six months of mine. I spent them learning to build adjoints by
+hand, and being quietly floored that the recipe worked at all: apply a fixed set
+of rules, mechanically, backwards through every line of your model, and out falls
+the gradient of your cost with respect to every input. Not an approximation — the
+*exact* gradient, to the last digit. A physical simulation could be made to hand
+you its own exact sensitivities, if you were only disciplined enough about the
+bookkeeping.
+
 Then differentiable programming showed up and quietly deleted the hard part.
 
 If your forward model is written in a framework like [JAX](https://github.com/jax-ml/jax),
