@@ -303,7 +303,7 @@ Now it is a function call.
     c.fillText('more mismatch ↑',padL+2,padT+9);
     c.fillText('κ →',w-padR-24,h-4);
   }
-  function draw(){drawProfile();drawLoss();}
+  function draw(){if((prof.clientWidth||0)<20&&(lossc.clientWidth||0)<20)return;drawProfile();drawLoss();}
   function sync(){
     document.getElementById('d-slider').value=k2s(kappaGuess).toFixed(4);
     document.getElementById('d-kval').textContent=kappaGuess.toFixed(4);
@@ -311,7 +311,7 @@ Now it is a function call.
     document.getElementById('d-iter').textContent=iter;
     var st=document.getElementById('d-status');
     if(converged){st.innerHTML='✓ recovered κ = <b style="color:var(--green)">'+kappaGuess.toFixed(4)+
-      '</b> · true κ was <b style="color:var(--green)">'+kappaTrue.toFixed(4)+'</b> · '+iter+' gradient steps';}
+      '</b> · true κ was <b style="color:var(--green)">'+kappaTrue.toFixed(4)+'</b> · '+iter+' steps · press <b>Run</b> or <b>New hidden κ</b> to try again';}
     else{st.innerHTML='mismatch J = <span style="color:var(--ink)">'+lossOf(kappaGuess).toExponential(2)+
       '</span> &nbsp;·&nbsp; gradient steps: <span style="color:var(--ink)">'+iter+'</span>';}
   }
@@ -336,16 +336,17 @@ Now it is a function call.
   }
   document.getElementById('d-slider').addEventListener('input',function(e){
     if(running)stopRun(); converged=false; kappaGuess=s2k(parseFloat(e.target.value)); sync(); draw();});
-  document.getElementById('d-step').addEventListener('click',function(){if(running)stopRun();if(converged)return;gradStep();sync();draw();});
+  document.getElementById('d-step').addEventListener('click',function(){if(running)stopRun();if(converged){newTruth();return;}gradStep();sync();draw();});
   document.getElementById('d-run').addEventListener('click',function(){
     if(running){stopRun();return;}
-    if(converged){return;}
+    if(converged){newTruth();}   // re-arm: a fresh hidden kappa, then solve it again
     if(reduce){var guard=0;while(!converged&&guard<80){gradStep();guard++;}sync();draw();return;}
     running=true;this.textContent='■ stop';runLoop();});
   document.getElementById('d-new').addEventListener('click',function(){if(running)stopRun();newTruth();});
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(draw,120);});
+  if(window.ResizeObserver){var ro=new ResizeObserver(function(){draw();});ro.observe(prof.parentNode);ro.observe(lossc.parentNode);}
   newTruth();
-  setTimeout(draw,30);
+  setTimeout(draw,30);setTimeout(draw,250);setTimeout(draw,800);
 })();
 </script>
 {% endraw %}
@@ -426,9 +427,11 @@ a dozen. Drag the start point and race them.
     </span>
   </div>
   <p class="iw-stat" id="r-status" style="margin-top:10px; color:var(--muted);">Ready. Both start at the amber dot.</p>
-  <p class="iw-caption">Gradient descent (steel) only knows which way is downhill, so it zig-zags thousands of
-  times along the valley floor. Gauss–Newton (green) also knows how the valley <em>bends</em>, so it cuts almost
-  straight to the bottom in about a dozen steps. Same answer — the curvature is what pays for the shortcut.</p>
+  <p class="iw-caption">Watch the steel path: gradient descent only knows which way is <em>locally</em> downhill,
+  so it first dives to the nearest point on the valley floor — down-left, <em>away</em> from the minimum — and
+  then has to crawl thousands of steps back along the floor. Gauss–Newton (green) also knows how the valley
+  <em>bends</em>, so it ignores that plunge and cuts almost straight to the answer in about a dozen steps.
+  Same destination — curvature is what pays for the shortcut.</p>
 </section>
 <script>
 (function(){
@@ -437,7 +440,8 @@ a dozen. Drag the start point and race them.
   function f(x,y){return (A-x)*(A-x)+B*(y-x*x)*(y-x*x);}
   function grad(x,y){return [-2*(A-x)-4*B*x*(y-x*x), 2*B*(y-x*x)];}
   var cv=document.getElementById('r-canvas'),bg=null,bgW=0,bgH=0,dpr=Math.min(window.devicePixelRatio||1,2);
-  var start=[-1.0,1.0];
+  var start=[-0.6,2.0];  // deliberately off the valley floor: steepest descent dives to the
+                         // nearest floor point (down-left, AWAY from the minimum) before crawling back
   function fit(){var w=cv.clientWidth||520,h=Math.round(w*0.60);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px';return[w,h];}
   var W,H;
   function px(x){return (x-XLO)/(XHI-XLO)*W;}
@@ -465,7 +469,7 @@ a dozen. Drag the start point and race them.
     draw();
   }
   function gdAdvance(n){var lr=0.003;for(var k=0;k<n&&!gdDone;k++){var g=grad(gd[0],gd[1]);gd[0]-=lr*g[0];gd[1]-=lr*g[1];gdSteps++;
-    if(gdSteps%12===0)gdPath.push(gd.slice());
+    if(gdSteps<=50||gdSteps%12===0)gdPath.push(gd.slice());  // sample finely early to show the plunge
     if(f(gd[0],gd[1])<1e-3||gdSteps>=4000){gdDone=true;gdPath.push(gd.slice());}}}
   function gnAdvance(){ // one accepted LM step
     if(gnDone)return;
@@ -510,7 +514,7 @@ a dozen. Drag the start point and race them.
   function loop(){
     if(!racing)return;
     frames++;
-    gdAdvance(22); if(!gnDone && frames%3===0) gnAdvance();
+    gdAdvance(gdSteps<40?2:26); if(!gnDone && frames%3===0) gnAdvance();  // slow during the dive, fast on the crawl
     document.getElementById('r-gd').textContent=gdSteps.toLocaleString('en-US');
     document.getElementById('r-gn').textContent=gnSteps;
     draw();
