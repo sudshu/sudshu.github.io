@@ -214,138 +214,112 @@ Twenty years ago, that would have been a week of careful calculus and debugging.
 Now it is a function call.
 
 {% raw %}
-<section class="iw-card" id="iw-diffuse">
+<section class="iw-card" id="iw-fit">
   <p class="iw-eyebrow">Interactive · inverse problem</p>
-  <p class="iw-title">Invert it yourself</p>
-  <p class="iw-note">A hidden diffusivity <b>κ</b> blurred the sharp curve into the dots.
-  Drag to guess κ by eye — then hit <em>Run the gradient</em> and watch calculus do it for you.</p>
-  <div class="iw-canvases">
-    <div>
-      <p class="iw-cv-label">Model curve vs. observations</p>
-      <div class="iw-panel"><canvas class="iw" id="d-profile"></canvas></div>
-    </div>
-    <div>
-      <p class="iw-cv-label">Mismatch landscape J(κ)</p>
-      <div class="iw-panel"><canvas class="iw" id="d-loss"></canvas></div>
-    </div>
-  </div>
+  <p class="iw-title">Let the gradient fit the curve</p>
+  <p class="iw-note">The dots are data, blurred by a hidden amount <b>κ</b>. The amber curve is your model —
+  it starts with the <em>wrong</em> κ, too sharp to match. Press <em>Solve</em> and watch the gradient walk κ
+  until the curve settles onto the dots.</p>
+  <div class="iw-panel"><canvas class="iw" id="fit-canvas"></canvas></div>
   <div class="iw-controls">
     <div class="iw-sliderbox">
-      <label>your guess for κ <b id="d-kval">0.0100</b></label>
-      <input type="range" class="iw" id="d-slider" min="0" max="1" step="0.0001" value="0.35">
+      <label>blur strength κ <b id="fit-kval">0.0035</b></label>
+      <input type="range" class="iw" id="fit-slider" min="0" max="1" step="0.001" value="0.10">
     </div>
-    <button class="iw" id="d-step">Take one step</button>
-    <button class="iw primary" id="d-run">Run the gradient ▸</button>
-    <button class="iw" id="d-new">New hidden κ</button>
+    <button class="iw primary" id="fit-solve">Solve ▸</button>
+    <button class="iw" id="fit-new">New data</button>
   </div>
-  <p class="iw-stat" id="d-status" style="margin-top:12px; color:var(--muted);">
-    mismatch J = <span id="d-loss-val" style="color:var(--ink)">—</span>
-    &nbsp;·&nbsp; gradient steps: <span id="d-iter" style="color:var(--ink)">0</span></p>
-  <p class="iw-caption">The dots are your data; the amber line is the model for your current κ.
-  Slide it and the mismatch on the right moves with you. One button press does what your eye was
-  doing — but automatically, and it works the same way when there are a million unknowns instead of one.</p>
+  <p class="iw-stat" id="fit-status" style="margin-top:12px; color:var(--muted);">mismatch J = — · step 0</p>
+  <p class="iw-caption">The whole inverse problem in one picture: a wrong model, some data, and a gradient that
+  knows which way to nudge the one unknown. Drag κ yourself, or let <code>jax.grad</code> do it — the same one
+  line works whether there is one unknown here or a million in a real flux inversion.</p>
 </section>
 <script>
 (function(){
-  var N=96, M=60, SCALE=9;
-  function u0(){var u=new Float64Array(N);for(var i=0;i<N;i++){var x=i/N;
-    u[i]=0.9*Math.exp(-(Math.pow((x-0.35)/0.08,2)))+0.6*Math.exp(-(Math.pow((x-0.68)/0.05,2)));}return u;}
+  var N=110, M=64, SCALE=9;
+  function u0(){var u=new Float64Array(N),i;for(i=0;i<N;i++){var x=i/N;
+    u[i]=0.95*Math.exp(-(Math.pow((x-0.34)/0.07,2)))+0.62*Math.exp(-(Math.pow((x-0.66)/0.05,2)));}return u;}
   var U0=u0();
-  function forward(kappa){var d=SCALE*kappa,u=U0.slice(),t,i,nu;
+  function forward(k){var d=SCALE*k,u=U0.slice(),t,i,nu;
     for(t=0;t<M;t++){nu=new Float64Array(N);for(i=0;i<N;i++){var l=u[(i-1+N)%N],r=u[(i+1)%N];nu[i]=u[i]+d*(l-2*u[i]+r);}u=nu;}return u;}
-  // slider maps 0..1 -> kappa 0.002..0.05 (log)
   var KMIN=0.002,KMAX=0.05;
   function s2k(s){return KMIN*Math.pow(KMAX/KMIN,s);}
   function k2s(k){return Math.log(k/KMIN)/Math.log(KMAX/KMIN);}
-  var kappaTrue, uobs, lossGrid, lossMin, lossMax, kappaGuess, iter=0, converged=false, running=false, raf=null;
+  var kTrue, uobs, kGuess, step=0, converged=false, anim=null, playing=false;
   function lossOf(k){var u=forward(k),s=0,i;for(i=0;i<N;i++){var e=u[i]-uobs[i];s+=e*e;}return s/N;}
-  function buildGrid(){lossGrid=[];lossMin=1e9;lossMax=-1e9;for(var j=0;j<=90;j++){var s=j/90,k=s2k(s),L=Math.log10(lossOf(k)+1e-14);lossGrid.push([s,L]);if(L<lossMin)lossMin=L;if(L>lossMax)lossMax=L;}}
-  function newTruth(){
-    kappaTrue=0.024+Math.random()*0.020; // 0.024..0.044
-    var base=forward(kappaTrue); uobs=new Float64Array(N);
-    var mx=0,i; for(i=0;i<N;i++) if(base[i]>mx)mx=base[i];
-    for(i=0;i<N;i++) uobs[i]=base[i]+(Math.random()-0.5)*0.004*mx;
-    buildGrid();
-    kappaGuess=s2k(0.30+Math.random()*0.12); iter=0; converged=false;
-    sync(); draw();
-  }
-  var prof=document.getElementById('d-profile'), lossc=document.getElementById('d-loss');
-  function fit(cv,h){var dpr=Math.min(window.devicePixelRatio||1,2);var w=cv.clientWidth||300;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px';var c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return{c:c,w:w,h:h};}
-  function drawProfile(){
-    var o=fit(prof,150),c=o.c,w=o.w,h=o.h,padL=8,padR=8,padT=10,padB=10;
+  var cv=document.getElementById('fit-canvas');
+  function fit(h){var dpr=Math.min(window.devicePixelRatio||1,2);var w=cv.clientWidth||600;
+    cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px';
+    var c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return{c:c,w:w,h:h};}
+  function draw(){
+    if((cv.clientWidth||0)<20)return;
+    var o=fit(212),c=o.c,w=o.w,h=o.h,padL=12,padR=12,padT=16,padB=14;
     c.clearRect(0,0,w,h);
-    var yMax=1.0,gx=function(i){return padL+(i/(N-1))*(w-padL-padR);},gy=function(v){return padT+(1-v/yMax)*(h-padT-padB);};
-    // guess model line (amber)
-    var ug=forward(kappaGuess),i;
-    c.strokeStyle='#d97706';c.lineWidth=2.4;c.beginPath();
-    for(i=0;i<N;i++){var X=gx(i),Y=gy(ug[i]);i?c.lineTo(X,Y):c.moveTo(X,Y);}c.stroke();
-    // obs dots (ink)
-    c.fillStyle='#1b1d1f';for(i=0;i<N;i+=3){c.beginPath();c.arc(gx(i),gy(uobs[i]),1.9,0,6.2832);c.fill();}
-    // truth line after converge
-    if(converged){var ut=forward(kappaTrue);c.strokeStyle='rgba(47,107,44,.9)';c.lineWidth=1.4;c.setLineDash([4,3]);c.beginPath();for(i=0;i<N;i++){var X2=gx(i),Y2=gy(ut[i]);i?c.lineTo(X2,Y2):c.moveTo(X2,Y2);}c.stroke();c.setLineDash([]);}
-  }
-  function drawLoss(){
-    var o=fit(lossc,150),c=o.c,w=o.w,h=o.h,padL=10,padR=10,padT=12,padB=14;
-    c.clearRect(0,0,w,h);
-    var span=Math.max(lossMax-lossMin,1e-6);
-    var gx=function(s){return padL+s*(w-padL-padR);},gy=function(L){return padT+(1-(L-lossMin)/span)*(h-padT-padB);};
-    // axis baseline
+    var yMax=1.05,gx=function(i){return padL+(i/(N-1))*(w-padL-padR);},gy=function(v){return padT+(1-v/yMax)*(h-padT-padB);};
     c.strokeStyle='#e2e6ea';c.lineWidth=1;c.beginPath();c.moveTo(padL,h-padB);c.lineTo(w-padR,h-padB);c.stroke();
-    // curve
-    c.strokeStyle='#37618e';c.lineWidth=2;c.beginPath();
-    for(var j=0;j<lossGrid.length;j++){var X=gx(lossGrid[j][0]),Y=gy(lossGrid[j][1]);j?c.lineTo(X,Y):c.moveTo(X,Y);}c.stroke();
-    // ball at current guess
-    var sg=k2s(kappaGuess),Lg=Math.log10(lossOf(kappaGuess)+1e-14);
-    var bx=gx(Math.max(0,Math.min(1,sg))),by=gy(Math.max(lossMin,Math.min(lossMax,Lg)));
-    c.fillStyle='#d97706';c.strokeStyle='#fff';c.lineWidth=2;c.beginPath();c.arc(bx,by,6,0,6.2832);c.fill();c.stroke();
-    // labels
-    c.fillStyle='#68707a';c.font='10px ui-monospace,Menlo,monospace';c.textAlign='left';
-    c.fillText('more mismatch ↑',padL+2,padT+9);
-    c.fillText('κ →',w-padR-24,h-4);
+    var i;
+    c.fillStyle='#1b1d1f';for(i=0;i<N;i+=3){c.beginPath();c.arc(gx(i),gy(uobs[i]),2.0,0,6.2832);c.fill();}
+    var ug=forward(kGuess),col=converged?'#2f6b2c':'#d97706';
+    c.strokeStyle=col;c.lineWidth=2.8;c.beginPath();
+    for(i=0;i<N;i++){var X=gx(i),Y=gy(ug[i]);i?c.lineTo(X,Y):c.moveTo(X,Y);}c.stroke();
+    c.font='11px ui-monospace,Menlo,monospace';c.textAlign='left';
+    c.fillStyle='#1b1d1f';c.fillText('● data',padL+2,padT+1);
+    c.fillStyle=col;c.fillText('— model (κ='+kGuess.toFixed(4)+')',padL+58,padT+1);
   }
-  function draw(){if((prof.clientWidth||0)<20&&(lossc.clientWidth||0)<20)return;drawProfile();drawLoss();}
-  function sync(){
-    document.getElementById('d-slider').value=k2s(kappaGuess).toFixed(4);
-    document.getElementById('d-kval').textContent=kappaGuess.toFixed(4);
-    document.getElementById('d-loss-val').textContent=lossOf(kappaGuess).toExponential(2);
-    document.getElementById('d-iter').textContent=iter;
-    var st=document.getElementById('d-status');
-    if(converged){st.innerHTML='✓ recovered κ = <b style="color:var(--green)">'+kappaGuess.toFixed(4)+
-      '</b> · true κ was <b style="color:var(--green)">'+kappaTrue.toFixed(4)+'</b> · '+iter+' steps · press <b>Run</b> or <b>New hidden κ</b> to try again';}
-    else{st.innerHTML='mismatch J = <span style="color:var(--ink)">'+lossOf(kappaGuess).toExponential(2)+
-      '</span> &nbsp;·&nbsp; gradient steps: <span style="color:var(--ink)">'+iter+'</span>';}
+  function setStatus(){
+    var st=document.getElementById('fit-status'),J=lossOf(kGuess);
+    document.getElementById('fit-kval').textContent=kGuess.toFixed(4);
+    document.getElementById('fit-slider').value=k2s(kGuess).toFixed(3);
+    if(converged) st.innerHTML='✓ fitted — recovered κ = <b style="color:var(--green)">'+kGuess.toFixed(4)+
+      '</b> (true κ = '+kTrue.toFixed(4)+') in '+step+' steps · <b>New data</b> to try again';
+    else st.innerHTML='mismatch J = <b style="color:var(--ink)">'+J.toExponential(2)+'</b> · step '+step;
   }
-  // damped Newton step in theta=log(kappa)
-  function gradStep(){
-    var theta=Math.log(kappaGuess),h=1e-3;
-    var Jm=lossOf(Math.exp(theta-h)),J0=lossOf(kappaGuess),Jp=lossOf(Math.exp(theta+h));
-    var g=(Jp-Jm)/(2*h),H=(Jp-2*J0+Jm)/(h*h),step=-g/Math.max(Math.abs(H),1e-12);
-    var lr=1.0,nt,nJ;
-    for(var bt=0;bt<24;bt++){nt=theta+lr*step;nJ=lossOf(Math.exp(nt));if(nJ<=J0)break;lr*=0.5;}
-    kappaGuess=Math.max(KMIN,Math.min(KMAX,Math.exp(nt))); iter++;
-    if(Math.abs(g)<2e-6||nJ<1e-11) converged=true;
-    return Math.abs(g);
+  function stop(){playing=false;if(anim){cancelAnimationFrame(anim);anim=null;}document.getElementById('fit-solve').textContent='Solve ▸';}
+  function newData(){
+    stop();
+    kTrue=0.020+Math.random()*0.020;
+    var base=forward(kTrue),mx=0,i;for(i=0;i<N;i++) if(base[i]>mx)mx=base[i];
+    uobs=new Float64Array(N);for(i=0;i<N;i++) uobs[i]=base[i]+(Math.random()-0.5)*0.004*mx;
+    kGuess=0.0035; step=0; converged=false; setStatus(); draw();
+  }
+  function newtonPath(){
+    var path=[kGuess],theta=Math.log(kGuess),hh=1e-3,it;
+    for(it=0;it<12;it++){
+      var Jm=lossOf(Math.exp(theta-hh)),J0=lossOf(Math.exp(theta)),Jp=lossOf(Math.exp(theta+hh));
+      var g=(Jp-Jm)/(2*hh),Hs=(Jp-2*J0+Jm)/(hh*hh),stp=-g/Math.max(Math.abs(Hs),1e-12);
+      var lr=1.0,nt,nJ;
+      for(var bt=0;bt<24;bt++){nt=theta+lr*stp;nJ=lossOf(Math.exp(nt));if(nJ<=J0)break;lr*=0.5;}
+      theta=nt;path.push(Math.exp(theta));
+      if(Math.abs(g)<2e-6||nJ<1e-11)break;
+    }
+    return path;
   }
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  function stopRun(){running=false;if(raf){cancelAnimationFrame(raf);raf=null;}document.getElementById('d-run').textContent='Run the gradient ▸';}
-  function runLoop(){
-    if(!running)return;
-    var g=gradStep(); sync(); draw();
-    if(converged||iter>60){stopRun();return;}
-    setTimeout(function(){raf=requestAnimationFrame(runLoop);},260);
+  function solve(){
+    if(playing){stop();return;}
+    if(converged){newData();}
+    var path=newtonPath();
+    if(reduce){kGuess=path[path.length-1];step=path.length-1;converged=true;setStatus();draw();return;}
+    playing=true;document.getElementById('fit-solve').textContent='■ stop';
+    var seg=0,TW=11,f=0;
+    function ease(t){return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+    function frame(){
+      if(!playing)return;
+      if(seg>=path.length-1){kGuess=path[path.length-1];converged=true;step=path.length-1;stop();setStatus();draw();return;}
+      var a=Math.log(path[seg]),b=Math.log(path[seg+1]),t=ease(f/TW);
+      kGuess=Math.exp(a+(b-a)*t); step=seg;
+      setStatus();draw();
+      f++; if(f>TW){f=0;seg++;}
+      anim=requestAnimationFrame(frame);
+    }
+    frame();
   }
-  document.getElementById('d-slider').addEventListener('input',function(e){
-    if(running)stopRun(); converged=false; kappaGuess=s2k(parseFloat(e.target.value)); sync(); draw();});
-  document.getElementById('d-step').addEventListener('click',function(){if(running)stopRun();if(converged){newTruth();return;}gradStep();sync();draw();});
-  document.getElementById('d-run').addEventListener('click',function(){
-    if(running){stopRun();return;}
-    if(converged){newTruth();}   // re-arm: a fresh hidden kappa, then solve it again
-    if(reduce){var guard=0;while(!converged&&guard<80){gradStep();guard++;}sync();draw();return;}
-    running=true;this.textContent='■ stop';runLoop();});
-  document.getElementById('d-new').addEventListener('click',function(){if(running)stopRun();newTruth();});
+  document.getElementById('fit-slider').addEventListener('input',function(e){stop();converged=false;kGuess=s2k(parseFloat(e.target.value));step=0;setStatus();draw();});
+  document.getElementById('fit-solve').addEventListener('click',solve);
+  document.getElementById('fit-new').addEventListener('click',newData);
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(draw,120);});
-  if(window.ResizeObserver){var ro=new ResizeObserver(function(){draw();});ro.observe(prof.parentNode);ro.observe(lossc.parentNode);}
-  newTruth();
+  if(window.ResizeObserver){var ro=new ResizeObserver(function(){draw();});ro.observe(cv.parentNode);}
+  newData();
   setTimeout(draw,30);setTimeout(draw,250);setTimeout(draw,800);
 })();
 </script>
