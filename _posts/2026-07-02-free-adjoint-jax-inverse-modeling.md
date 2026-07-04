@@ -581,6 +581,19 @@ result — it is a rumour. So the method that converges fastest is *also* the on
 that tells you how much to trust the answer. You rarely get to have both; here
 you do.
 
+**An aside for the inversion crowd.** That Hessian `A = JᵀR⁻¹J + B⁻¹` is doing
+double duty: its inverse is *both* the posterior covariance *and* the one-step
+solution, because minimising a quadratic cost is just `x* = x₀ − A⁻¹∇J`. So why
+do operational CH₄/CO₂ inversions grind through hundreds of conjugate-gradient
+iterations instead of solving in one shot? Because a single gradient is only
+`A(x − x*)` — the Hessian times the error, not the error itself — and undoing
+that needs `A⁻¹`. JAX will hand you `A` exactly (`jax.hessian`), but *forming* it
+costs one adjoint pass per unknown and *inverting* it costs `N³` operations —
+fine for a handful of controls, hopeless for a million-cell flux field. So at
+scale you never build `A`; you use its action on vectors (matrix-free
+Hessian–vector products) and let conjugate gradient rebuild `A⁻¹` one direction
+at a time.
+
 So which do you actually reach for, for smooth least-squares problems like these?
 
 - **Default: Gauss-Newton / Levenberg-Marquardt** with autodiff Jacobians — fast,
