@@ -68,13 +68,134 @@ excerpt: "In carbon-cycle science the adjoint is the engine behind every emissio
   }
 </style>
 
-![Finite-difference cost versus the adjoint gradient, as the number of unknowns grows]({{ "/assets/figures/jax_adjoint_gradient_scaling.png" | relative_url }})
+{% raw %}
+<section class="iw-card" id="iw-fit">
+  <p class="iw-eyebrow">Interactive · what this whole post is about</p>
+  <p class="iw-title">Let the gradient fit the curve</p>
+  <p class="iw-note">The dots are data, blurred by a hidden amount <b>κ</b>. The amber curve is a model that
+  starts with the <em>wrong</em> κ — too sharp — and the shaded band is how badly it misses. Press
+  <em>Solve</em> (or just watch) and a gradient walks κ until the curve lands on the dots and the mismatch vanishes.</p>
+  <div class="iw-panel"><canvas class="iw" id="fit-canvas"></canvas></div>
+  <div class="iw-controls">
+    <div class="iw-sliderbox">
+      <label>blur strength κ <b id="fit-kval">0.0035</b></label>
+      <input type="range" class="iw" id="fit-slider" min="0" max="1" step="0.001" value="0.10">
+    </div>
+    <button class="iw primary" id="fit-solve">Solve ▸</button>
+    <button class="iw" id="fit-new">New data</button>
+  </div>
+  <p class="iw-stat" id="fit-status" style="margin-top:12px; color:var(--muted);">mismatch J = — · step 0</p>
+  <p class="iw-caption">That is the entire inverse problem in one picture: a wrong model, some data, and a
+  gradient that knows which way to nudge the unknown. This post is about where that gradient comes from — and why
+  the same one line of code (<code>jax.grad</code>) works whether there is one unknown here or a million in a
+  real satellite flux inversion.</p>
+</section>
+<script>
+(function(){
+  var N=110, M=64, SCALE=9;
+  function u0(){var u=new Float64Array(N),i;for(i=0;i<N;i++){var x=i/N;
+    u[i]=0.95*Math.exp(-(Math.pow((x-0.34)/0.07,2)))+0.62*Math.exp(-(Math.pow((x-0.66)/0.05,2)));}return u;}
+  var U0=u0();
+  function forward(k){var d=SCALE*k,u=U0.slice(),t,i,nu;
+    for(t=0;t<M;t++){nu=new Float64Array(N);for(i=0;i<N;i++){var l=u[(i-1+N)%N],r=u[(i+1)%N];nu[i]=u[i]+d*(l-2*u[i]+r);}u=nu;}return u;}
+  var KMIN=0.002,KMAX=0.05;
+  function s2k(s){return KMIN*Math.pow(KMAX/KMIN,s);}
+  function k2s(k){return Math.log(k/KMIN)/Math.log(KMAX/KMIN);}
+  var kTrue,uobs,kGuess,step=0,converged=false,anim=null,playing=false,userTouched=false;
+  function lossOf(k){var u=forward(k),s=0,i;for(i=0;i<N;i++){var e=u[i]-uobs[i];s+=e*e;}return s/N;}
+  var cv=document.getElementById('fit-canvas');
+  var _dpr=Math.min(window.devicePixelRatio||1,2);
+  function fit(h){var w=cv.clientWidth||600,W=Math.round(w*_dpr),Hh=Math.round(h*_dpr);
+    if(cv.width!==W||cv.height!==Hh){cv.width=W;cv.height=Hh;cv.style.height=h+'px';}
+    var c=cv.getContext('2d');c.setTransform(_dpr,0,0,_dpr,0,0);return{c:c,w:w,h:h};}
+  function trace(c,arr,gx,gy){c.beginPath();for(var i=0;i<arr.length;i++){var X=gx(i),Y=gy(arr[i]);i?c.lineTo(X,Y):c.moveTo(X,Y);}}
+  function draw(){
+    if((cv.clientWidth||0)<20)return;
+    var o=fit(224),c=o.c,w=o.w,h=o.h,padL=12,padR=12,padT=18,padB=14,i;
+    c.clearRect(0,0,w,h);
+    var yMax=1.05,gx=function(i){return padL+(i/(N-1))*(w-padL-padR);},gy=function(v){return padT+(1-v/yMax)*(h-padT-padB);};
+    c.strokeStyle='#e2e6ea';c.lineWidth=1;c.beginPath();c.moveTo(padL,h-padB);c.lineTo(w-padR,h-padB);c.stroke();
+    var ug=forward(kGuess),col=converged?'#2f6b2c':'#d97706';
+    c.fillStyle=converged?'rgba(47,107,44,0.10)':'rgba(217,119,6,0.16)';
+    c.beginPath();
+    for(i=0;i<N;i++){var Xa=gx(i),Ya=gy(ug[i]);i?c.lineTo(Xa,Ya):c.moveTo(Xa,Ya);}
+    for(i=N-1;i>=0;i--){c.lineTo(gx(i),gy(uobs[i]));}
+    c.closePath();c.fill();
+    c.fillStyle='#1b1d1f';for(i=0;i<N;i+=3){c.beginPath();c.arc(gx(i),gy(uobs[i]),2.0,0,6.2832);c.fill();}
+    c.lineJoin='round';
+    if(converged){c.strokeStyle='rgba(47,107,44,0.22)';c.lineWidth=8;trace(c,ug,gx,gy);c.stroke();}
+    c.strokeStyle=col;c.lineWidth=2.8;trace(c,ug,gx,gy);c.stroke();
+    c.font='11px ui-monospace,Menlo,monospace';c.textAlign='left';
+    c.fillStyle='#1b1d1f';c.fillText('● data',padL+2,padT-4);
+    c.fillStyle=col;c.fillText('— model  κ='+kGuess.toFixed(4),padL+56,padT-4);
+    c.textAlign='right';
+    if(converged){c.fillStyle='#2f6b2c';c.font='600 12px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';c.fillText('✓ fitted',w-padR-2,padT-4);}
+    else{c.fillStyle='#b0741f';c.fillText('shaded = mismatch',w-padR-2,padT-4);}
+  }
+  function setStatus(){
+    var st=document.getElementById('fit-status'),J=lossOf(kGuess);
+    document.getElementById('fit-kval').textContent=kGuess.toFixed(4);
+    if(converged) st.innerHTML='✓ fitted — recovered κ = <b style="color:var(--green)">'+kGuess.toFixed(4)+
+      '</b> (true κ = '+kTrue.toFixed(4)+') in '+step+' gradient steps · <b>New data</b> to try again';
+    else st.innerHTML='mismatch J = <b style="color:var(--ink)">'+J.toExponential(2)+'</b> · step '+step+' · press <b>Solve</b> or drag κ';
+  }
+  function syncSlider(){document.getElementById('fit-slider').value=k2s(kGuess).toFixed(3);}
+  function stop(){playing=false;if(anim){cancelAnimationFrame(anim);anim=null;}document.getElementById('fit-solve').textContent='Solve ▸';}
+  function newData(){
+    stop();
+    kTrue=0.020+Math.random()*0.020;
+    var base=forward(kTrue),mx=0,i;for(i=0;i<N;i++) if(base[i]>mx)mx=base[i];
+    uobs=new Float64Array(N);for(i=0;i<N;i++) uobs[i]=base[i]+(Math.random()-0.5)*0.004*mx;
+    kGuess=0.0035;step=0;converged=false;setStatus();syncSlider();draw();
+  }
+  function newtonPath(){
+    var path=[kGuess],theta=Math.log(kGuess),hh=1e-3,it;
+    for(it=0;it<12;it++){
+      var Jm=lossOf(Math.exp(theta-hh)),J0=lossOf(Math.exp(theta)),Jp=lossOf(Math.exp(theta+hh));
+      var g=(Jp-Jm)/(2*hh),Hs=(Jp-2*J0+Jm)/(hh*hh),stp=-g/Math.max(Math.abs(Hs),1e-12);
+      var lr=1.0,nt,nJ;
+      for(var bt=0;bt<24;bt++){nt=theta+lr*stp;nJ=lossOf(Math.exp(nt));if(nJ<=J0)break;lr*=0.5;}
+      theta=nt;path.push(Math.exp(theta));
+      if(Math.abs(g)<2e-6||nJ<1e-11)break;
+    }
+    return path;
+  }
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function solve(){
+    if(playing){stop();return;}
+    if(converged){newData();}
+    var path=newtonPath();
+    if(reduce){kGuess=path[path.length-1];step=path.length-1;converged=true;setStatus();syncSlider();draw();return;}
+    playing=true;document.getElementById('fit-solve').textContent='■ stop';
+    var seg=0,TW=12,f=0;
+    function ease(t){return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+    function frame(){
+      if(!playing)return;
+      if(seg>=path.length-1){kGuess=path[path.length-1];converged=true;step=path.length-1;stop();setStatus();syncSlider();draw();return;}
+      var a=Math.log(path[seg]),b=Math.log(path[seg+1]),t=ease(f/TW);
+      kGuess=Math.exp(a+(b-a)*t);step=seg;
+      setStatus();syncSlider();draw();
+      f++;if(f>TW){f=0;seg++;}
+      anim=requestAnimationFrame(frame);
+    }
+    frame();
+  }
+  var _upd=false;
+  function requestUpdate(){if(_upd)return;_upd=true;requestAnimationFrame(function(){_upd=false;setStatus();draw();});}
+  document.getElementById('fit-slider').addEventListener('input',function(e){userTouched=true;stop();converged=false;kGuess=s2k(parseFloat(e.target.value));step=0;requestUpdate();});
+  document.getElementById('fit-solve').addEventListener('click',function(){userTouched=true;solve();});
+  document.getElementById('fit-new').addEventListener('click',function(){userTouched=true;newData();});
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(draw,120);});
+  if(window.ResizeObserver){var ro=new ResizeObserver(function(){draw();});ro.observe(cv.parentNode);}
+  var autoPlayed=false;
+  function maybeAuto(){if(autoPlayed)return;autoPlayed=true;setTimeout(function(){if(!userTouched&&!playing&&!converged)solve();},900);}
+  if(window.IntersectionObserver){var io=new IntersectionObserver(function(es){for(var k=0;k<es.length;k++){if(es[k].isIntersecting){maybeAuto();io.disconnect();break;}}},{threshold:0.35});io.observe(cv);}else maybeAuto();
+  newData();
+  setTimeout(draw,30);setTimeout(draw,250);setTimeout(draw,800);
+})();
+</script>
+{% endraw %}
 
-*The whole story in one plot. To estimate a gradient, the naive way (finite
-differences) gets more expensive with every unknown you add. The adjoint
-returns the entire gradient in one backward pass, for roughly the same price
-regardless of how many unknowns there are. By 1,000 unknowns it is ~265×
-cheaper — and the gap keeps widening.*
 
 When I was a PhD student, there was a particular sentence that could silence a
 room of atmospheric modellers: *"...and then we built the adjoint."*
@@ -158,8 +279,17 @@ automatic differentiation, the adjoint method, and backprop are the same idea
 wearing three different lab coats ([Errico, 1997](https://doi.org/10.1175/1520-0477(1997)078%3C2577:WIAAM%3E2.0.CO;2)
 is still the friendliest one-page explanation for atmospheric scientists).
 
-That is the trade-off in the plot at the top: at a hundred thousand parameters
-it is the difference between "runs overnight" and "never finishes."
+Here is that trade-off, measured on a toy chemistry model — finite differences
+climb with every unknown you add, while the adjoint stays almost flat:
+
+![Finite-difference cost versus the adjoint gradient, as the number of unknowns grows]({{ "/assets/figures/jax_adjoint_gradient_scaling.png" | relative_url }})
+
+*Finite differences re-run the whole model twice per unknown; the adjoint gets the
+entire gradient in one backward pass, for roughly the same price no matter how
+many unknowns there are. By 1,000 it is ~265× cheaper — and the gap keeps widening.*
+
+At a hundred thousand parameters, that gap is the difference between "runs
+overnight" and "never finishes."
 
 ## The free lunch, in one line
 
@@ -212,121 +342,6 @@ recovered kappa:       0.035513      (1.5% off, from a 6× wrong start)
 
 Twenty years ago, that would have been a week of careful calculus and debugging.
 Now it is a function call.
-
-{% raw %}
-<section class="iw-card" id="iw-fit">
-  <p class="iw-eyebrow">Interactive · inverse problem</p>
-  <p class="iw-title">Let the gradient fit the curve</p>
-  <p class="iw-note">The dots are data, blurred by a hidden amount <b>κ</b>. The amber curve is your model —
-  it starts with the <em>wrong</em> κ, too sharp to match. Press <em>Solve</em> and watch the gradient walk κ
-  until the curve settles onto the dots.</p>
-  <div class="iw-panel"><canvas class="iw" id="fit-canvas"></canvas></div>
-  <div class="iw-controls">
-    <div class="iw-sliderbox">
-      <label>blur strength κ <b id="fit-kval">0.0035</b></label>
-      <input type="range" class="iw" id="fit-slider" min="0" max="1" step="0.001" value="0.10">
-    </div>
-    <button class="iw primary" id="fit-solve">Solve ▸</button>
-    <button class="iw" id="fit-new">New data</button>
-  </div>
-  <p class="iw-stat" id="fit-status" style="margin-top:12px; color:var(--muted);">mismatch J = — · step 0</p>
-  <p class="iw-caption">The whole inverse problem in one picture: a wrong model, some data, and a gradient that
-  knows which way to nudge the one unknown. Drag κ yourself, or let <code>jax.grad</code> do it — the same one
-  line works whether there is one unknown here or a million in a real flux inversion.</p>
-</section>
-<script>
-(function(){
-  var N=110, M=64, SCALE=9;
-  function u0(){var u=new Float64Array(N),i;for(i=0;i<N;i++){var x=i/N;
-    u[i]=0.95*Math.exp(-(Math.pow((x-0.34)/0.07,2)))+0.62*Math.exp(-(Math.pow((x-0.66)/0.05,2)));}return u;}
-  var U0=u0();
-  function forward(k){var d=SCALE*k,u=U0.slice(),t,i,nu;
-    for(t=0;t<M;t++){nu=new Float64Array(N);for(i=0;i<N;i++){var l=u[(i-1+N)%N],r=u[(i+1)%N];nu[i]=u[i]+d*(l-2*u[i]+r);}u=nu;}return u;}
-  var KMIN=0.002,KMAX=0.05;
-  function s2k(s){return KMIN*Math.pow(KMAX/KMIN,s);}
-  function k2s(k){return Math.log(k/KMIN)/Math.log(KMAX/KMIN);}
-  var kTrue, uobs, kGuess, step=0, converged=false, anim=null, playing=false;
-  function lossOf(k){var u=forward(k),s=0,i;for(i=0;i<N;i++){var e=u[i]-uobs[i];s+=e*e;}return s/N;}
-  var cv=document.getElementById('fit-canvas');
-  var _dpr=Math.min(window.devicePixelRatio||1,2);
-  function fit(h){var w=cv.clientWidth||600,W=Math.round(w*_dpr),Hh=Math.round(h*_dpr);
-    if(cv.width!==W||cv.height!==Hh){cv.width=W;cv.height=Hh;cv.style.height=h+'px';}  // realloc only on real resize
-    var c=cv.getContext('2d');c.setTransform(_dpr,0,0,_dpr,0,0);return{c:c,w:w,h:h};}
-  function draw(){
-    if((cv.clientWidth||0)<20)return;
-    var o=fit(212),c=o.c,w=o.w,h=o.h,padL=12,padR=12,padT=16,padB=14;
-    c.clearRect(0,0,w,h);
-    var yMax=1.05,gx=function(i){return padL+(i/(N-1))*(w-padL-padR);},gy=function(v){return padT+(1-v/yMax)*(h-padT-padB);};
-    c.strokeStyle='#e2e6ea';c.lineWidth=1;c.beginPath();c.moveTo(padL,h-padB);c.lineTo(w-padR,h-padB);c.stroke();
-    var i;
-    c.fillStyle='#1b1d1f';for(i=0;i<N;i+=3){c.beginPath();c.arc(gx(i),gy(uobs[i]),2.0,0,6.2832);c.fill();}
-    var ug=forward(kGuess),col=converged?'#2f6b2c':'#d97706';
-    c.strokeStyle=col;c.lineWidth=2.8;c.beginPath();
-    for(i=0;i<N;i++){var X=gx(i),Y=gy(ug[i]);i?c.lineTo(X,Y):c.moveTo(X,Y);}c.stroke();
-    c.font='11px ui-monospace,Menlo,monospace';c.textAlign='left';
-    c.fillStyle='#1b1d1f';c.fillText('● data',padL+2,padT+1);
-    c.fillStyle=col;c.fillText('— model (κ='+kGuess.toFixed(4)+')',padL+58,padT+1);
-  }
-  function setStatus(){
-    var st=document.getElementById('fit-status'),J=lossOf(kGuess);
-    document.getElementById('fit-kval').textContent=kGuess.toFixed(4);
-    if(converged) st.innerHTML='✓ fitted — recovered κ = <b style="color:var(--green)">'+kGuess.toFixed(4)+
-      '</b> (true κ = '+kTrue.toFixed(4)+') in '+step+' steps · <b>New data</b> to try again';
-    else st.innerHTML='mismatch J = <b style="color:var(--ink)">'+J.toExponential(2)+'</b> · step '+step;
-  }
-  function stop(){playing=false;if(anim){cancelAnimationFrame(anim);anim=null;}document.getElementById('fit-solve').textContent='Solve ▸';}
-  function newData(){
-    stop();
-    kTrue=0.020+Math.random()*0.020;
-    var base=forward(kTrue),mx=0,i;for(i=0;i<N;i++) if(base[i]>mx)mx=base[i];
-    uobs=new Float64Array(N);for(i=0;i<N;i++) uobs[i]=base[i]+(Math.random()-0.5)*0.004*mx;
-    kGuess=0.0035; step=0; converged=false; setStatus(); syncSlider(); draw();
-  }
-  function newtonPath(){
-    var path=[kGuess],theta=Math.log(kGuess),hh=1e-3,it;
-    for(it=0;it<12;it++){
-      var Jm=lossOf(Math.exp(theta-hh)),J0=lossOf(Math.exp(theta)),Jp=lossOf(Math.exp(theta+hh));
-      var g=(Jp-Jm)/(2*hh),Hs=(Jp-2*J0+Jm)/(hh*hh),stp=-g/Math.max(Math.abs(Hs),1e-12);
-      var lr=1.0,nt,nJ;
-      for(var bt=0;bt<24;bt++){nt=theta+lr*stp;nJ=lossOf(Math.exp(nt));if(nJ<=J0)break;lr*=0.5;}
-      theta=nt;path.push(Math.exp(theta));
-      if(Math.abs(g)<2e-6||nJ<1e-11)break;
-    }
-    return path;
-  }
-  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  function solve(){
-    if(playing){stop();return;}
-    if(converged){newData();}
-    var path=newtonPath();
-    if(reduce){kGuess=path[path.length-1];step=path.length-1;converged=true;setStatus();draw();return;}
-    playing=true;document.getElementById('fit-solve').textContent='■ stop';
-    var seg=0,TW=11,f=0;
-    function ease(t){return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
-    function frame(){
-      if(!playing)return;
-      if(seg>=path.length-1){kGuess=path[path.length-1];converged=true;step=path.length-1;stop();setStatus();syncSlider();draw();return;}
-      var a=Math.log(path[seg]),b=Math.log(path[seg+1]),t=ease(f/TW);
-      kGuess=Math.exp(a+(b-a)*t); step=seg;
-      setStatus();syncSlider();draw();
-      f++; if(f>TW){f=0;seg++;}
-      anim=requestAnimationFrame(frame);
-    }
-    frame();
-  }
-  function syncSlider(){document.getElementById('fit-slider').value=k2s(kGuess).toFixed(3);}
-  var _upd=false;
-  function requestUpdate(){if(_upd)return;_upd=true;requestAnimationFrame(function(){_upd=false;setStatus();draw();});}
-  document.getElementById('fit-slider').addEventListener('input',function(e){stop();converged=false;kGuess=s2k(parseFloat(e.target.value));step=0;requestUpdate();});
-  document.getElementById('fit-solve').addEventListener('click',solve);
-  document.getElementById('fit-new').addEventListener('click',newData);
-  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(draw,120);});
-  if(window.ResizeObserver){var ro=new ResizeObserver(function(){draw();});ro.observe(cv.parentNode);}
-  newData();
-  setTimeout(draw,30);setTimeout(draw,250);setTimeout(draw,800);
-})();
-</script>
-{% endraw %}
 
 ## A cartoon of a real methane inversion
 
