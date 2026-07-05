@@ -217,7 +217,7 @@ bookkeeping. And it did not end with the PhD: through my first postdoc I was
 still in the thick of it — squeezing an order-of-magnitude speed-up out of the
 TM5-4DVAR variational inversion system
 ([Pandey et al., 2022](https://doi.org/10.5194/gmd-15-4555-2022)), among other
-adjoint-building efforts.
+variational-inversion work.
 
 Then differentiable programming showed up and quietly deleted the hard part.
 
