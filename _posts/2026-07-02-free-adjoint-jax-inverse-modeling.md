@@ -323,6 +323,11 @@ def loss(kappa):
 grad_loss = jax.grad(loss)      # <-- this is the discrete adjoint. that's it.
 ```
 
+(One vocabulary note before anything else: the `loss` in that code is exactly
+what the inverse-modelling literature calls the **cost function** — the single
+number you minimise. Same object, two dialects; I'll use the words
+interchangeably.)
+
 `jax.grad(loss)` is the adjoint of your time-stepping model. Not an
 approximation of it — the exact derivative of the numerical code you wrote,
 assembled by differentiating every operation in reverse, at least for the parts
