@@ -252,7 +252,7 @@ never invert the arrow directly. You define a mismatch — a scalar cost that
 measures how far the model is from the observations (plus a term keeping you near
 a prior) — and you slide the emissions downhill until it is small. This is the
 heart of variational inverse modelling, from global CO₂ budgets to satellite
-methane — with some of the first global CO₂ inversions from satellite
+methane — with some of the first global CO₂ flux inversions from GOSAT total-column retrievals
 ([Basu et al., 2013](https://doi.org/10.5194/acp-13-8695-2013)) sitting in between. The textbook, if you want one, is
 [Enting (2002)](https://doi.org/10.1017/CBO9780511535741).
 
@@ -329,8 +329,8 @@ assembled by differentiating every operation in reverse, at least for the parts
 of the model JAX can trace (more on where that breaks below). Conceptually:
 
 ```text
-forward:    kappa ──► diffusion steps ──► final state ──► mismatch J
-backward:   dJ ──► d(final state) ──► back through every time step ──► dJ/dkappa
+forward:    kappa ──► diffusion steps ──► final state ──► loss
+backward:   d(loss) ──► d(final state) ──► back through every time step ──► d(loss)/dkappa
 ```
 
 No adjoint model was written. Feed that gradient to an optimizer and the inverse
@@ -573,25 +573,27 @@ that tells you how much to trust the answer. You rarely get to have both; here
 you do.
 
 **An aside for the inversion crowd.** That Gauss-Newton Hessian `A = JᵀR⁻¹J + B⁻¹` is doing
-double duty: its inverse is *both* the posterior covariance *and* the one-step
-solution, because minimising a quadratic cost is just one Newton step from a
-starting guess `x₀` to the optimum `x*`: `x* = x₀ − A⁻¹g`, with `g` the gradient. So why
+double duty: its inverse is the posterior covariance, and that same inverse
+maps the gradient straight to the answer in a single Newton step,
+`x* = x₀ − A⁻¹g` — from a starting guess `x₀` to the optimum `x*`, with `g` the
+gradient (a quadratic cost has constant curvature, so one step lands it). So why
 do operational CH₄/CO₂ inversions grind through hundreds of conjugate-gradient
 iterations instead of solving in one shot? Because that gradient is only
 `g = A(x − x*)` — the Hessian times the error, not the error itself — and undoing
-that needs `A⁻¹`. JAX will build `A` for you from Jacobian–vector products
-(`jax.jvp`/`jax.vjp`); the *full* Hessian that `jax.hessian` returns only matches
-it in this linear-Gaussian limit. But *forming* `A` costs about one pass per
-unknown and *inverting* it costs `P³` operations — fine for a handful of
+that needs `A⁻¹`. JAX gives you `A`'s action on a vector for free by composing `jax.jvp` and
+`jax.vjp` (the *full* Hessian `jax.hessian` returns would match `A` only in this
+linear-Gaussian limit). *Forming* `A` explicitly still costs about one pass per
+unknown, and *inverting* it costs `P³` operations — fine for a handful of
 controls, hopeless for a million-cell flux field. So at
 scale you never build `A`; you use its action on vectors (matrix-free
-Hessian–vector products) and let conjugate gradient rebuild `A⁻¹` one direction
-at a time.
+Hessian–vector products) and let conjugate gradient approximate the solution `A⁻¹g` one Krylov
+direction at a time.
 
 So which do you actually reach for, for smooth least-squares problems like these?
 
 - **Default: Gauss-Newton / Levenberg-Marquardt** with autodiff Jacobians — fast,
-  and it hands you the posterior covariance almost for free.
+  and the curvature it computes doubles as your posterior uncertainty — a full
+  covariance when the system is small enough to form, low-rank estimates at scale.
 - **At scale: matrix-free Gauss-Newton** — never form the giant Jacobian; use its
   action on vectors via forward-mode (`Jv`) and reverse-mode (`Jᵀv`) products.
 - **Fallback: adjoint Adam / L-BFGS** when Gauss-Newton is hard to stabilise.
@@ -717,7 +719,7 @@ and do not reflect those of the JPL, NASA and CALTECH.*
 - Gurney et al. (2002), *Towards robust regional estimates of CO₂ sources and sinks using atmospheric transport models.* Nature — [doi](https://doi.org/10.1038/415626a)
 - Rödenbeck et al. (2003), *CO₂ flux history 1982–2001 inferred from atmospheric data using a global inversion of atmospheric transport.* ACP — [doi](https://doi.org/10.5194/acp-3-1919-2003)
 - Chevallier et al. (2005), *Inferring CO₂ sources and sinks from satellite observations: method and application to TOVS data.* JGR — [doi](https://doi.org/10.1029/2005JD006390)
-- Basu et al. (2013), *Global CO₂ fluxes estimated from GOSAT retrievals of total column CO₂* — among the first global CO₂ flux inversions from satellite. ACP — [doi](https://doi.org/10.5194/acp-13-8695-2013)
+- Basu et al. (2013), *Global CO₂ fluxes estimated from GOSAT retrievals of total column CO₂* — among the first global CO₂ flux inversions from GOSAT retrievals. ACP — [doi](https://doi.org/10.5194/acp-13-8695-2013)
 - Henze et al. (2007), *Development of the adjoint of GEOS-Chem.* ACP — [doi](https://doi.org/10.5194/acp-7-2413-2007)
 - Meirink et al. (2008), *Four-dimensional variational data assimilation for inverse modelling of atmospheric methane emissions: method and comparison with synthesis inversion.* ACP — [doi](https://doi.org/10.5194/acp-8-6341-2008)
 - Bergamaschi et al. (2009), *Inverse modeling of global and regional CH₄ emissions using SCIAMACHY satellite retrievals.* JGR — [doi](https://doi.org/10.1029/2009JD012287)
