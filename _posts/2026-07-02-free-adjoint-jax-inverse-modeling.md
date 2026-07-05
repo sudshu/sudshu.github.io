@@ -248,9 +248,10 @@ Now it is a function call.
   var kTrue, uobs, kGuess, step=0, converged=false, anim=null, playing=false;
   function lossOf(k){var u=forward(k),s=0,i;for(i=0;i<N;i++){var e=u[i]-uobs[i];s+=e*e;}return s/N;}
   var cv=document.getElementById('fit-canvas');
-  function fit(h){var dpr=Math.min(window.devicePixelRatio||1,2);var w=cv.clientWidth||600;
-    cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px';
-    var c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return{c:c,w:w,h:h};}
+  var _dpr=Math.min(window.devicePixelRatio||1,2);
+  function fit(h){var w=cv.clientWidth||600,W=Math.round(w*_dpr),Hh=Math.round(h*_dpr);
+    if(cv.width!==W||cv.height!==Hh){cv.width=W;cv.height=Hh;cv.style.height=h+'px';}  // realloc only on real resize
+    var c=cv.getContext('2d');c.setTransform(_dpr,0,0,_dpr,0,0);return{c:c,w:w,h:h};}
   function draw(){
     if((cv.clientWidth||0)<20)return;
     var o=fit(212),c=o.c,w=o.w,h=o.h,padL=12,padR=12,padT=16,padB=14;
@@ -269,7 +270,6 @@ Now it is a function call.
   function setStatus(){
     var st=document.getElementById('fit-status'),J=lossOf(kGuess);
     document.getElementById('fit-kval').textContent=kGuess.toFixed(4);
-    document.getElementById('fit-slider').value=k2s(kGuess).toFixed(3);
     if(converged) st.innerHTML='✓ fitted — recovered κ = <b style="color:var(--green)">'+kGuess.toFixed(4)+
       '</b> (true κ = '+kTrue.toFixed(4)+') in '+step+' steps · <b>New data</b> to try again';
     else st.innerHTML='mismatch J = <b style="color:var(--ink)">'+J.toExponential(2)+'</b> · step '+step;
@@ -280,7 +280,7 @@ Now it is a function call.
     kTrue=0.020+Math.random()*0.020;
     var base=forward(kTrue),mx=0,i;for(i=0;i<N;i++) if(base[i]>mx)mx=base[i];
     uobs=new Float64Array(N);for(i=0;i<N;i++) uobs[i]=base[i]+(Math.random()-0.5)*0.004*mx;
-    kGuess=0.0035; step=0; converged=false; setStatus(); draw();
+    kGuess=0.0035; step=0; converged=false; setStatus(); syncSlider(); draw();
   }
   function newtonPath(){
     var path=[kGuess],theta=Math.log(kGuess),hh=1e-3,it;
@@ -305,16 +305,19 @@ Now it is a function call.
     function ease(t){return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
     function frame(){
       if(!playing)return;
-      if(seg>=path.length-1){kGuess=path[path.length-1];converged=true;step=path.length-1;stop();setStatus();draw();return;}
+      if(seg>=path.length-1){kGuess=path[path.length-1];converged=true;step=path.length-1;stop();setStatus();syncSlider();draw();return;}
       var a=Math.log(path[seg]),b=Math.log(path[seg+1]),t=ease(f/TW);
       kGuess=Math.exp(a+(b-a)*t); step=seg;
-      setStatus();draw();
+      setStatus();syncSlider();draw();
       f++; if(f>TW){f=0;seg++;}
       anim=requestAnimationFrame(frame);
     }
     frame();
   }
-  document.getElementById('fit-slider').addEventListener('input',function(e){stop();converged=false;kGuess=s2k(parseFloat(e.target.value));step=0;setStatus();draw();});
+  function syncSlider(){document.getElementById('fit-slider').value=k2s(kGuess).toFixed(3);}
+  var _upd=false;
+  function requestUpdate(){if(_upd)return;_upd=true;requestAnimationFrame(function(){_upd=false;setStatus();draw();});}
+  document.getElementById('fit-slider').addEventListener('input',function(e){stop();converged=false;kGuess=s2k(parseFloat(e.target.value));step=0;requestUpdate();});
   document.getElementById('fit-solve').addEventListener('click',solve);
   document.getElementById('fit-new').addEventListener('click',newData);
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(draw,120);});
