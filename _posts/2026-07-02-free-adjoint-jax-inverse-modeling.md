@@ -4,7 +4,7 @@ title: "The adjoint used to be a PhD. Now it's one line of JAX."
 date: 2026-07-02
 tags: [inverse-modeling, carbon-cycle, remote-sensing, data-assimilation, JAX, adjoint]
 image: /assets/figures/jax_adjoint_og_card.png
-excerpt: "In carbon-cycle science the adjoint is the engine behind every emission estimate — and it used to take years to build by hand. Then differentiable programming quietly deleted the hard part. A grad-student-level tour, with toy code, real satellites, and a laptop GPU."
+excerpt: "In carbon-cycle science the adjoint is the engine behind large-scale variational emission estimates — and it used to take years to build by hand. Then differentiable programming quietly deleted the hard part. A grad-student-level tour, with toy code, real satellites, and a laptop GPU."
 ---
 
 <style>
@@ -211,9 +211,13 @@ It ate the first six months of mine. I spent them learning to build adjoints by
 hand, and being quietly floored that the recipe worked at all: apply a fixed set
 of rules, mechanically, backwards through every line of your model, and out falls
 the gradient of your cost with respect to every input. Not an approximation — the
-*exact* gradient, to the last digit. A physical simulation could be made to hand
+*exact* gradient, to floating-point precision. A physical simulation could be made to hand
 you its own exact sensitivities, if you were only disciplined enough about the
-bookkeeping.
+bookkeeping. And it did not end with the PhD: through my first postdoc I was
+still in the thick of it — squeezing an order-of-magnitude speed-up out of the
+TM5-4DVAR variational inversion system
+([Pandey et al., 2022](https://doi.org/10.5194/gmd-15-4555-2022)), among other
+adjoint-building efforts.
 
 Then differentiable programming showed up and quietly deleted the hard part.
 
@@ -222,8 +226,8 @@ the adjoint is **already there**. You do not derive it. You do not hand-code it.
 You call `jax.grad`, and the framework walks backward through your model and
 hands you the gradient. The thing that used to cost a PhD now costs one line.
 
-Everything below is built from toy models small enough to run — and play with —
-on a laptop.
+Everything below is built from toy models small enough to run on a laptop — two of them you can play with
+right here on the page.
 
 ## Why anyone wants an adjoint in the first place
 
@@ -247,7 +251,7 @@ pushed through the model, best reproduce what the satellite saw. In practice you
 never invert the arrow directly. You define a mismatch — a scalar cost `J` that
 measures how far the model is from the observations (plus a term keeping you near
 a prior) — and you slide the emissions downhill until `J` is small. This is the
-whole edifice of atmospheric inverse modelling, from global CO₂ budgets to
+heart of variational inverse modelling, from global CO₂ budgets to
 satellite methane. The textbook, if you want one, is
 [Enting (2002)](https://doi.org/10.1017/CBO9780511535741).
 
@@ -369,7 +373,7 @@ mismatch and its adjoint gradient, through a nonlinear coupled-chemistry model.
 Same one line, `jax.value_and_grad(loss)`, doing the work. Recovering several
 coupled tracers at once from column measurements is exactly the shape of a real
 satellite inversion: the very first paper of my PhD was a joint CH₄/CO₂ column
-inversion of just this kind
+inversion of much the same shape
 ([Pandey et al., 2015](https://doi.org/10.5194/acp-15-8615-2015)). It is the same
 machinery behind today's operational methane and CO₂ flux estimates
 ([Meirink et al., 2008](https://doi.org/10.5194/acp-8-6341-2008);
@@ -547,18 +551,11 @@ a dozen. Drag the start point and race them.
 </script>
 {% endraw %}
 
-The same race on our actual two-box chemistry model, with an added nonlinear
-penalty — all three reach the *same* answer, but look how long they take:
+The same pattern holds on our actual two-box chemistry model: with a nonlinear
+penalty added, Adam grinds through about 180 iterations to settle, while
+Gauss-Newton — using curvature from the residual Jacobian — gets there in 7.
 
-![Convergence of Adam, Gauss-Newton, and full Newton on the nonlinear chemistry penalty]({{ "/assets/figures/jax_adjoint_curvature_race.png" | relative_url }})
-
-*Same destination, very different journeys. Adam (gradient only) needs ~180
-iterations to settle. Gauss-Newton, using curvature from the residual Jacobian,
-gets there in 7. Full Newton with the exact Hessian, in 9. Panel C shows why:
-the curvature-aware methods (green, red) cut almost straight across the valley;
-Adam (blue) zig-zags down it.*
-
-180 iterations versus 7. And here is the part that should make a carbon-cycle
+And here is the part that should make a carbon-cycle
 person sit up: **the curvature you compute to go fast is the same curvature you
 need for error bars.** For Gaussian errors and a linear approximation near the
 solution, the posterior covariance — your uncertainty on the recovered
@@ -574,15 +571,17 @@ result — it is a rumour. So the method that converges fastest is *also* the on
 that tells you how much to trust the answer. You rarely get to have both; here
 you do.
 
-**An aside for the inversion crowd.** That Hessian `A = JᵀR⁻¹J + B⁻¹` is doing
+**An aside for the inversion crowd.** That Gauss-Newton Hessian `A = JᵀR⁻¹J + B⁻¹` is doing
 double duty: its inverse is *both* the posterior covariance *and* the one-step
 solution, because minimising a quadratic cost is just `x* = x₀ − A⁻¹∇J`. So why
 do operational CH₄/CO₂ inversions grind through hundreds of conjugate-gradient
 iterations instead of solving in one shot? Because a single gradient is only
 `A(x − x*)` — the Hessian times the error, not the error itself — and undoing
-that needs `A⁻¹`. JAX will hand you `A` exactly (`jax.hessian`), but *forming* it
-costs one adjoint pass per unknown and *inverting* it costs `N³` operations —
-fine for a handful of controls, hopeless for a million-cell flux field. So at
+that needs `A⁻¹`. JAX will build `A` for you from Jacobian–vector products
+(`jax.jvp`/`jax.vjp`); the *full* Hessian that `jax.hessian` returns only matches
+it in this linear-Gaussian limit. But *forming* `A` costs about one pass per
+unknown and *inverting* it costs `N³` operations — fine for a handful of
+controls, hopeless for a million-cell flux field. So at
 scale you never build `A`; you use its action on vectors (matrix-free
 Hessian–vector products) and let conjugate gradient rebuild `A⁻¹` one direction
 at a time.
@@ -631,7 +630,11 @@ separated by a moat, and the moat was the adjoint. Getting derivatives through a
 physical model was so expensive that it defined what was and wasn't possible.
 
 Differentiable programming drains the moat. When the gradient of any model you
-can write is free, the boundary between "simulation" and "optimisation" dissolves.
+can write is free, the boundary between "simulation" and "optimisation" dissolves. The catch hides in *you can write*: your model has to live in a
+differentiable framework to begin with, and porting a legacy Fortran
+chemistry-transport model into JAX is its own multi-year undertaking — arguably
+where the hard part now lives.
+
 It is the same current carrying the ML weather models — GraphCast
 ([Lam et al., 2023](https://doi.org/10.1126/science.adi2336)) and its cousins are
 neural networks, differentiable by construction — and it flows straight back into classical inverse
@@ -649,15 +652,18 @@ work — the science — moved up a level, to what you point all that cheap grad
   `jax.lax.scan`. Deliberately small and non-dimensionalised — they demonstrate
   algorithmic structure, not production chemistry.
 - **The adjoint.** `jax.grad` / `jax.value_and_grad` give reverse-mode gradients
-  (`JᵀJ` structure via `jax.vjp`); `jax.jvp` gives forward-mode tangent-linear
+  (`Jᵀ`-vector products via `jax.vjp`); `jax.jvp` gives forward-mode tangent-linear
   products (`Jv`); `jax.hessian` gives the exact Hessian for small problems. The
   matrix-free Gauss-Newton route composes `jvp` then `vjp` to apply `JᵀJ` without
   ever forming it.
+- **The memory catch.** Reverse mode has to keep (or recompute) the whole forward
+  trajectory to run backward, so memory grows with time-steps × state size — the
+  real wall for long model runs, tamed by checkpointing (Griewank's revolve).
 - **The scaling numbers.** Finite-difference vs adjoint gradient on the two-box
   model: 1.2× at 4 parameters, 33.7× at 128, and 264.8× at 1,024 — growing
   ∝ `P`, because central differences cost `2P` model runs while the adjoint costs
   one backward pass. Convergence on the nonlinear penalty: Adam 180 iterations,
-  Gauss-Newton 7–8, full Newton 9, all to the identical objective.
+  Gauss-Newton 7, full Newton 9, all to the identical objective.
 - **The hardware.** Everything ran on a MacBook — no supercomputer — including on
   the laptop's own GPU via `jax-metal`, which peaked at ~1.96× over CPU near 2¹⁸
   grid cells (CPU won for both very small and very large grids).
@@ -672,7 +678,7 @@ work — the science — moved up a level, to what you point all that cheap grad
 
 ![Decision matrix comparing inversion algorithms across cost, scaling, reliability, and uncertainty]({{ "/assets/figures/jax_adjoint_method_matrix.png" | relative_url }})
 
-*The full decision matrix behind those three bullets — five algorithm families
+*The full decision matrix behind the recommendations above — five algorithm families
 scored on small-P speed, large-P scaling, convergence reliability, posterior
 usefulness, and implementation effort.*
 
