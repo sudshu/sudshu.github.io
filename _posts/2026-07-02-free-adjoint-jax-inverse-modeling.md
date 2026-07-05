@@ -664,9 +664,14 @@ work — the science — moved up a level, to what you point all that cheap grad
 - **The hardware.** Everything ran on a MacBook — no supercomputer — including on
   the laptop's own GPU via `jax-metal`, which peaked at ~1.96× over CPU near 2¹⁸
   grid cells (CPU won for both very small and very large grids).
-- **Code, notebooks, and figures.** The full handoff — runnable scripts, two
-  tutorial notebooks, benchmark CSVs, and every figure above — lives in the
-  project folder accompanying this post.
+- **Same code, any hardware.** The forward model and its adjoint are one JAX
+  source; XLA JIT-compiles them to CPU, GPU, or TPU with no changes. Exact
+  derivatives *and* accelerator speed from one codebase is the combination that
+  makes large inversions practical.
+- **Not a JAX-only story.** The same free-adjoint idea runs through Julia's SciML
+  ecosystem — where adjoint sensitivity analysis differentiates through ODE/PDE
+  solvers directly — as well as PyTorch and TensorFlow. JAX is one dialect of a
+  broader shift to differentiable programming.
 
 ![Decision matrix comparing inversion algorithms across cost, scaling, reliability, and uncertainty]({{ "/assets/figures/jax_adjoint_method_matrix.png" | relative_url }})
 
@@ -689,8 +694,8 @@ gradient is free now. Go spend it on something interesting.
 ---
 
 *The JAX experiments and figures in this post were built in a scratch coding
-session with an AI assistant; the full runnable handoff is linked above. More
-about the author at [sudshu.github.io](https://sudshu.github.io/).*
+session with an AI assistant. More about the author at
+[sudshu.github.io](https://sudshu.github.io/).*
 
 *The views and opinions expressed in this article are those of the author alone
 and do not reflect those of the JPL, NASA and CALTECH.*
