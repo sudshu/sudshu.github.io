@@ -16,3 +16,15 @@ minima:
   date_format: "%b %-d, %Y"
   social_links:
     - { platform: github, user_url: "https://github.com/sudshu" }
+
+# giscus comments (GitHub Discussions). Comments stay hidden until repo_id AND
+# category_id are filled — get both from https://giscus.app after (1) enabling
+# Discussions on this repo and (2) installing the giscus app on it.
+giscus:
+  repo: "sudshu/sudshu.github.io"
+  repo_id: ""              # <-- paste data-repo-id from giscus.app
+  category: "Announcements"
+  category_id: ""          # <-- paste data-category-id from giscus.app
+  mapping: "pathname"
+  reactions_enabled: "1"
+  theme: "preferred_color_scheme"

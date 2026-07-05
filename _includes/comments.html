@@ -1,0 +1,27 @@
+{%- comment -%}
+  giscus comments — GitHub Discussions backed, no ads, no tracking.
+  Renders ONLY once site.giscus.repo_id and site.giscus.category_id are set in _config.yml
+  (get both from https://giscus.app after enabling Discussions + installing the giscus app).
+  Until then, nothing renders — no broken widget.
+{%- endcomment -%}
+{%- if site.giscus.repo_id and site.giscus.category_id -%}
+<section class="giscus-comments" style="margin-top:2.75rem; padding-top:1.25rem; border-top:1px solid #e8e8e8;">
+  <h2 style="font-size:1.15rem; margin:0 0 .5rem;">Comments</h2>
+  <p style="font-size:.85rem; color:#828282; margin:0 0 1rem;">Sign in with GitHub to comment.</p>
+  <script src="https://giscus.app/client.js"
+          data-repo="{{ site.giscus.repo }}"
+          data-repo-id="{{ site.giscus.repo_id }}"
+          data-category="{{ site.giscus.category }}"
+          data-category-id="{{ site.giscus.category_id }}"
+          data-mapping="{{ site.giscus.mapping | default: 'pathname' }}"
+          data-strict="1"
+          data-reactions-enabled="{{ site.giscus.reactions_enabled | default: '1' }}"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="{{ site.giscus.theme | default: 'preferred_color_scheme' }}"
+          data-lang="en"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
+{%- endif -%}
