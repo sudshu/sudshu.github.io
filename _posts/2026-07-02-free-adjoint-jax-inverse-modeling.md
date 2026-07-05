@@ -197,13 +197,10 @@ excerpt: "In carbon-cycle science the adjoint is the engine behind every emissio
 {% endraw %}
 
 
-When I was a PhD student, there was a particular sentence that could silence a
-room of atmospheric modellers: *"...and then we built the adjoint."*
-
-It was said the way climbers talk about a summit. Building the **adjoint** of a
-big atmospheric transport model — the thing you need to turn satellite
-measurements into emission estimates — was a rite of passage that could eat a
-year or two of someone's PhD. People wrote papers just about *how to write the
+Building the **adjoint** of a big atmospheric transport model — the thing you
+need to turn satellite measurements into emission estimates — was a rite of
+passage, talked about the way climbers talk about a summit. It could eat a year
+or two of someone's PhD. People wrote papers just about *how to write the
 adjoint code* ([Giering & Kaminski, 1998](https://doi.org/10.1145/293686.293695)).
 Whole model versions were named after it: the GEOS-Chem adjoint
 ([Henze et al., 2007](https://doi.org/10.5194/acp-7-2413-2007)), the TM5
