@@ -167,7 +167,7 @@ excerpt: "In carbon-cycle science the adjoint is the engine behind every emissio
     var path=newtonPath();
     if(reduce){kGuess=path[path.length-1];step=path.length-1;converged=true;setStatus();syncSlider();draw();return;}
     playing=true;document.getElementById('fit-solve').textContent='■ stop';
-    var seg=0,TW=12,f=0;
+    var seg=0,TW=36,f=0;  // 36 frames/step ≈ 3× slower than before
     function ease(t){return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
     function frame(){
       if(!playing)return;
@@ -699,27 +699,27 @@ and do not reflect those of the JPL, NASA and CALTECH.*
 
 **Adjoints and variational data assimilation**
 - Errico (1997), *What is an adjoint model?* Bull. Amer. Meteor. Soc. — [doi](https://doi.org/10.1175/1520-0477(1997)078%3C2577:WIAAM%3E2.0.CO;2)
-- Talagrand & Courtier (1987), *Variational assimilation with the adjoint vorticity equation.* QJRMS — [doi](https://doi.org/10.1002/qj.49711347812)
+- Talagrand & Courtier (1987), *Variational assimilation of meteorological observations with the adjoint vorticity equation. I: Theory.* QJRMS — [doi](https://doi.org/10.1002/qj.49711347812)
 - Giering & Kaminski (1998), *Recipes for adjoint code construction.* ACM TOMS — [doi](https://doi.org/10.1145/293686.293695)
 
 **Inverse modelling of the carbon cycle and methane**
 - Enting (2002), *Inverse Problems in Atmospheric Constituent Transport.* Cambridge Univ. Press — [doi](https://doi.org/10.1017/CBO9780511535741)
-- Gurney et al. (2002), *Robust regional estimates of CO₂ sources and sinks.* Nature — [doi](https://doi.org/10.1038/415626a)
-- Rödenbeck et al. (2003), *CO₂ flux history 1982–2001 from a global inversion.* ACP — [doi](https://doi.org/10.5194/acp-3-1919-2003)
-- Chevallier et al. (2005), *Inferring CO₂ sources and sinks from satellite observations.* JGR — [doi](https://doi.org/10.1029/2005JD006390)
+- Gurney et al. (2002), *Towards robust regional estimates of CO₂ sources and sinks using atmospheric transport models.* Nature — [doi](https://doi.org/10.1038/415626a)
+- Rödenbeck et al. (2003), *CO₂ flux history 1982–2001 inferred from atmospheric data using a global inversion of atmospheric transport.* ACP — [doi](https://doi.org/10.5194/acp-3-1919-2003)
+- Chevallier et al. (2005), *Inferring CO₂ sources and sinks from satellite observations: method and application to TOVS data.* JGR — [doi](https://doi.org/10.1029/2005JD006390)
 - Henze et al. (2007), *Development of the adjoint of GEOS-Chem.* ACP — [doi](https://doi.org/10.5194/acp-7-2413-2007)
-- Meirink et al. (2008), *4D-Var for inverse modelling of methane emissions.* ACP — [doi](https://doi.org/10.5194/acp-8-6341-2008)
-- Bergamaschi et al. (2009), *Inverse modeling of CH₄ emissions using SCIAMACHY.* JGR — [doi](https://doi.org/10.1029/2009JD012287)
-- Bousquet et al. (2006), *Sources of atmospheric methane variability.* Nature — [doi](https://doi.org/10.1038/nature05132)
+- Meirink et al. (2008), *Four-dimensional variational data assimilation for inverse modelling of atmospheric methane emissions: method and comparison with synthesis inversion.* ACP — [doi](https://doi.org/10.5194/acp-8-6341-2008)
+- Bergamaschi et al. (2009), *Inverse modeling of global and regional CH₄ emissions using SCIAMACHY satellite retrievals.* JGR — [doi](https://doi.org/10.1029/2009JD012287)
+- Bousquet et al. (2006), *Contribution of anthropogenic and natural sources to atmospheric methane variability.* Nature — [doi](https://doi.org/10.1038/nature05132)
 
 **Remote sensing and satellite methane**
-- Veefkind et al. (2012), *TROPOMI on Sentinel-5 Precursor.* Remote Sens. Environ. — [doi](https://doi.org/10.1016/j.rse.2011.09.027)
-- Jacob et al. (2016), *Satellite observations of atmospheric methane.* ACP — [doi](https://doi.org/10.5194/acp-16-14371-2016)
+- Veefkind et al. (2012), *TROPOMI on the ESA Sentinel-5 Precursor: a GMES mission for global observations of the atmospheric composition for climate, air quality and ozone layer applications.* Remote Sens. Environ. — [doi](https://doi.org/10.1016/j.rse.2011.09.027)
+- Jacob et al. (2016), *Satellite observations of atmospheric methane and their value for quantifying methane emissions.* ACP — [doi](https://doi.org/10.5194/acp-16-14371-2016)
 
 **My own, in this lineage**
 - Pandey et al. (2015), *On the use of satellite-derived CH₄:CO₂ columns in a joint inversion of CH₄ and CO₂ fluxes* — the first paper of my PhD. ACP — [doi](https://doi.org/10.5194/acp-15-8615-2015)
-- Pandey et al. (2019), *Satellite detection of an extreme methane well blowout.* PNAS — [doi](https://doi.org/10.1073/pnas.1908712116)
-- Pandey et al. (2022), *Order-of-magnitude speed-up of variational methane inversions.* GMD — [doi](https://doi.org/10.5194/gmd-15-4555-2022)
+- Pandey et al. (2019), *Satellite observations reveal extreme methane leakage from a natural gas well blowout.* PNAS — [doi](https://doi.org/10.1073/pnas.1908712116)
+- Pandey et al. (2022), *Order of magnitude wall time improvement of variational methane inversions by physical parallelization: a demonstration using TM5-4DVAR.* GMD — [doi](https://doi.org/10.5194/gmd-15-4555-2022)
 
 **Differentiable ML weather models**
 - Lam et al. (2023), *Learning skillful medium-range global weather forecasting (GraphCast).* Science — [doi](https://doi.org/10.1126/science.adi2336)
