@@ -1,4 +1,7 @@
-"""Measured litter posterior: JAX Gauss-Newton, upstream SARLA2, and MCMC.
+"""Original optimized-start experiment: JAX Gauss-Newton, SARLA2, and MCMC.
+
+The current page replaces these MCMC runs using random_start_mcmc.py.
+Run this script first to retain the original SARLA and reference results.
 
 The upstream sampler is used without changes. Run with JAX, scipy, numpy,
 emcee installed. All coordinates use the webpage's prior and likelihood.
