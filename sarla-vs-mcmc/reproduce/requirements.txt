@@ -3,3 +3,4 @@ numpy==2.5.2
 scipy==1.18.1
 emcee==3.1.6
 matplotlib>=3.9
+numpyro==0.21.0
