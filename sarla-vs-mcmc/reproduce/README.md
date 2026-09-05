@@ -1,5 +1,7 @@
 # Reproduce the SARLA versus MCMC benchmark
 
+The “Before MCMC” view renders the saved final atlas mixture as a density cloud beside the numerical reference. Run `python export_atlas_cloud.py` after the replay exporters to regenerate this view. It uses direct independent mixture draws conditioned on the prior bounds, not an MCMC walk. Component weights, variance caps, and the broad Student-t tail follow the original engine. Density colors are normalized separately in the two panels (the atlas peak is estimated). Displayed mismatch values come from the original saved density-grid scoring. The `#atlas` link opens this view directly.
+
 The current page gives SARLA 16 random interior-prior seeds, then uses JAX-assisted Gauss–Newton optimization to find good fits before building Hessian charts. Both direct MCMC baselines start from 64 independent uniform prior draws and use a NumPy target with no optimization or derivatives. The measured Brandt2010 example uses four or the first two observations. The current protocol is in ../random-start-report.html; ../report.html preserves the earlier optimized-start experiment.
 
 1. Create a Python 3.12 environment and install `requirements.txt`.
