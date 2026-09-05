@@ -38,7 +38,7 @@ export function createPosterior3D({canvas, redraw, rendererFactory}) {
         float r = length(gl_PointCoord - vec2(0.5)) * 2.0;
         if (r > 1.0) discard;
         float edge = 1.0 - smoothstep(0.72, 1.0, r);
-        gl_FragColor = vec4(vColor, (0.12 + 0.72 * vSupport) * edge);
+        gl_FragColor = vec4(vColor, (0.22 + 0.73 * vSupport) * edge);
         #include <colorspace_fragment>
       }`
   });
@@ -74,7 +74,7 @@ export function createPosterior3D({canvas, redraw, rendererFactory}) {
       vertices.set(p.u, j * 3);
       convertedColor.setRGB(c[0] / 255, c[1] / 255, c[2] / 255, SRGBColorSpace);
       colors.set([convertedColor.r, convertedColor.g, convertedColor.b], j * 3);
-      support[j] = Math.exp(-p.d / 2); indices[j] = j;
+      support[j] = Math.exp(-p.d / 3); indices[j] = j;
     }
     // Release old GPU buffers when changing measurements or parameter ordering.
     geometry.dispose();
