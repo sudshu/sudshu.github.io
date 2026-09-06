@@ -3,12 +3,43 @@ layout: home
 list_title: Recent posts
 ---
 
-🛰️ Scientist at **NASA's Jet Propulsion Laboratory**.
-Methane Modeling Lead for the **U.S. Greenhouse Gas Center** at JPL.
-I quantify greenhouse gases from space — and I'm increasingly focused on how
-modern AI and classical physics, together, can tackle long-standing problems
-in atmospheric science, from atmospheric transport to weather and climate
-prediction.
+I'm a scientist at **NASA's Jet Propulsion Laboratory**. My research combines
+satellite observations, atmospheric modeling, and inverse methods to understand
+the carbon cycle and the processes shaping Earth's atmosphere and climate.
+
+<section class="research-highlights" aria-labelledby="recent-preprints">
+  <h2 id="recent-preprints">Recent preprints</h2>
+  <article class="research-highlight" aria-labelledby="dynamics-preprint-title">
+    <p class="research-highlight-meta">Preprint · 26 August 2026 · Sudhanshu Pandey</p>
+    <h3 id="dynamics-preprint-title"><a href="https://doi.org/10.21203/rs.3.rs-10781568/v1">Recovering atmospheric dynamics from atmospheric composition snapshots using machine learning</a></h3>
+    <p>Tests whether a single atmospheric-composition scene contains recoverable information about winds and boundary-layer height, using simulations and TEMPO satellite observations.</p>
+    <p class="research-highlight-links"><a href="https://doi.org/10.21203/rs.3.rs-10781568/v1">Read preprint</a> <span aria-hidden="true">·</span> <a href="https://github.com/sudshu/compass-repro">Code and reproducibility package</a></p>
+  </article>
+  <article class="research-highlight" aria-labelledby="growth-preprint-title">
+    <p class="research-highlight-meta">Preprint · 9 June 2026 · Sudhanshu Pandey et al.</p>
+    <h3 id="growth-preprint-title"><a href="https://doi.org/10.21203/rs.3.rs-9854768/v1">Time-varying errors in the atmospheric CO₂ growth rate</a></h3>
+    <p>Examines how changes in observing-network coverage affect annual CO₂ growth estimates and their interpretation in the global carbon budget.</p>
+    <p class="research-highlight-links"><a href="https://doi.org/10.21203/rs.3.rs-9854768/v1">Read preprint</a></p>
+  </article>
+</section>
+
+## About
+
+Building on this foundation, I develop AI and machine learning approaches for
+Earth-system inference and scientific discovery. I'm particularly interested in
+how we can extract physical understanding from complex and incomplete
+observations. My goal is to combine physics, learning from data, and uncertainty
+quantification to uncover underlying processes, test scientific explanations,
+and improve our understanding of a changing Earth.
+
+I also explore how agentic AI can advance the research process, from formulating
+hypotheses and designing experiments to evaluating evidence. Across these
+efforts, I'm interested in developing methods that help us ask new scientific
+questions and answer them rigorously.
+
+My broader interests include the philosophy of science and artificial
+intelligence: what constitutes scientific understanding, how prediction relates
+to explanation, and how AI is reshaping science and society.
 
 {% raw %}
 <style>
@@ -151,50 +182,19 @@ prediction.
 </script>
 {% endraw %}
 
-## About
-
-I work at the intersection of satellite remote sensing, atmospheric modeling,
-and machine learning. The threads I'm most focused on right now:
-
-- **Combining classical physics with modern AI for atmospheric science.**
-  I'm actively working out how physics-based modeling and modern AI/ML can be
-  brought together to make headway on problems that have stubbornly resisted
-  progress — representing atmospheric transport, and improving weather and
-  climate prediction. In practice that means ML emulators for atmospheric
-  tracer transport, physics–ML hybrids for inverse modeling, and LLM-based
-  agentic systems to automate and accelerate atmospheric research.
-- **Taking Earth's carbon pulse from space.** I developed satellite-derived
-  whole-atmosphere CO₂ growth-rate methods now part of the Global Carbon
-  Project workflow
-  ([AGU Adv. 2024](https://doi.org/10.1029/2023AV001145);
-  [Nat. Commun. 2025](https://doi.org/10.1038/s41467-025-61588-2);
-  [AGU Adv. 2025](https://doi.org/10.1029/2025AV002085)).
-- **Making sense of accelerating AI.** Beyond the research itself, I'm drawn to
-  the philosophical questions raised as rapid, AI-driven intelligence begins to
-  reshape science and society — and how we orient ourselves to change at this
-  pace.
-
-An earlier line of my work was catching methane leaks from orbit: our
-[2019 PNAS paper](https://doi.org/10.1073/pnas.1908712116) was the first
-satellite detection of an unreported extreme methane leak — a natural-gas
-well blowout — and helped establish a template for satellite-based
-methane-plume monitoring.
+## Background
 
 I did my **PhD in physics at Utrecht University** (2017) and an integrated
 BS-MS in Earth Sciences at IISER Kolkata. Before JPL I spent nearly six years
 at SRON, the Netherlands Institute for Space Research. My work is supported by
 a NASA Early Career Investigator Program award (2023).
 
-## What I'm working on now
-
-- Physics + AI hybrids for atmospheric transport, weather, and climate
-  prediction.
-- ML/physics approaches for global methane and CO₂ inverse modeling.
-- Combining different methane-detection approaches — satellite, plume, and
-  in-situ — into best-estimate emissions and a clearer picture of the methane
-  cycle.
-- LLM-based autonomous research agents for atmospheric inversions and
-  scientific discovery.
+My earlier work includes satellite detection of major methane leaks
+([PNAS, 2019](https://doi.org/10.1073/pnas.1908712116)) and methods to estimate
+whole-atmosphere CO₂ growth and clarify the global carbon budget
+([AGU Advances, 2024](https://doi.org/10.1029/2023AV001145);
+[Nature Communications, 2025](https://doi.org/10.1038/s41467-025-61588-2);
+[AGU Advances, 2025](https://doi.org/10.1029/2025AV002085)).
 
 ## Selected publications
 
