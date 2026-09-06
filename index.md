@@ -7,6 +7,8 @@ I'm a scientist at **NASA's Jet Propulsion Laboratory**. My research combines
 satellite observations, atmospheric modeling, and inverse methods to understand
 the carbon cycle and the processes shaping Earth's atmosphere and climate.
 
+Explore inverse problems in Earth science with my **[Inverse Modeling Explorer]({{ '/inverse-modeling/' | relative_url }})**.
+
 <style>
 .research-highlights {
   margin: 1.7rem 0 2rem;
