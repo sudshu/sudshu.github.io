@@ -7,6 +7,50 @@ I'm a scientist at **NASA's Jet Propulsion Laboratory**. My research combines
 satellite observations, atmospheric modeling, and inverse methods to understand
 the carbon cycle and the processes shaping Earth's atmosphere and climate.
 
+<style>
+.research-highlights {
+  margin: 1.7rem 0 2rem;
+}
+.research-highlights h2 {
+  margin-bottom: 0.9rem;
+}
+.research-highlight {
+  margin: 0 0 1rem;
+  padding: 1rem 1.15rem;
+  border-left: 3px solid #1e3a8a;
+  background: #edf2fa;
+  overflow-wrap: anywhere;
+}
+.research-highlight h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.research-highlight p {
+  margin-bottom: 0.65rem;
+}
+.research-highlight .research-highlight-meta {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #48576b;
+}
+.research-highlight .research-highlight-links {
+  margin-bottom: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+.research-highlight-links a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.research-highlight-links span {
+  margin: 0 0.4rem;
+}
+@media (max-width: 480px) {
+  .research-highlight { padding: 0.85rem; }
+}
+</style>
 <section class="research-highlights" aria-labelledby="recent-preprints">
   <h2 id="recent-preprints">Recent preprints</h2>
   <article class="research-highlight" aria-labelledby="dynamics-preprint-title">
