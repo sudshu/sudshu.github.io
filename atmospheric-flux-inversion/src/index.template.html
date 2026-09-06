@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="An introductory Earth science inverse-modeling explorer: compare predictions, rotate plausible parameter combinations, and see what new observations reveal."><title>Atmospheric Fluxes | Inverse Modeling Explorer</title><link rel="canonical" href="https://sudshu.github.io/atmospheric-flux-inversion/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Inverse Modeling Explorer">
+<meta property="og:title" content="Atmospheric Fluxes | Inverse Modeling Explorer">
+<meta property="og:description" content="Explore CO₂ fluxes and methane sources with a two-box atmosphere. See how concentration and isotope measurements constrain sources, mixing, and chemical loss.">
+<meta property="og:url" content="https://sudshu.github.io/atmospheric-flux-inversion/">
+<meta property="og:image" content="https://sudshu.github.io/inverse-modeling/og.png?v=full-cloud">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1733">
+<meta property="og:image:height" content="907">
+<meta property="og:image:alt" content="A large, centered purple, green and yellow conceptual 3D solution cloud on a dark background, with faint axes and no text.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Atmospheric Fluxes | Inverse Modeling Explorer">
+<meta name="twitter:description" content="Explore CO₂ fluxes and methane sources with a two-box atmosphere. See how concentration and isotope measurements constrain sources, mixing, and chemical loss.">
+<meta name="twitter:image" content="https://sudshu.github.io/inverse-modeling/og.png?v=full-cloud">
+<meta name="twitter:image:alt" content="A large, centered purple, green and yellow conceptual 3D solution cloud on a dark background, with faint axes and no text.">
+<style>
+:root{color-scheme:dark;--bg:#070e18;--panel:#121e2d;--line:#2d4055;--text:#edf4fc;--muted:#c6d5e7;--mint:#80e2cd;--gold:#ffdf93;--pink:#ff73cf}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,sans-serif}a{color:var(--mint)}button,input,select{font:inherit}button,select{background:#1c3045;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:8px 11px;min-height:40px}button{cursor:pointer}button:hover{background:#304b64}button:focus-visible,input:focus-visible,select:focus-visible,canvas:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--mint);outline-offset:3px}button[aria-pressed=true]{background:#244d43;border-color:var(--mint)}button:disabled{opacity:.4;cursor:default}[hidden]{display:none!important}
+header{padding:20px 26px 17px;border-bottom:1px solid var(--line)}.eyebrow{margin:0;font-weight:500;line-height:1.55;font-size:12px;letter-spacing:.1em;color:var(--mint);text-transform:uppercase}h1{font-size:clamp(24px,2.4vw,32px);font-weight:580;letter-spacing:-.025em;line-height:1.25;margin:5px 0 9px}h2{font-size:19px;font-weight:580;margin:0 0 9px}h3{font-size:16px;font-weight:600;margin:0 0 6px}.intro{max-width:1120px;color:var(--muted);margin:0;font-size:16px}.intro strong{color:var(--text);font-weight:550}.problem-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;font-size:14px}.problem-nav span{color:var(--muted);margin-right:3px}.problem-nav a{padding:5px 10px;border:1px solid var(--line);border-radius:6px;text-decoration:none}.problem-nav a[aria-current=page]{background:#244d43;border-color:var(--mint);color:var(--text)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px}.workspace{min-width:0}.case-intro{padding:17px 24px 12px}.case-intro h2{margin-bottom:4px}.case-intro p{font-size:14px;color:var(--muted);margin:4px 0}.case-intro .provenance{font-size:12px;color:var(--mint)}.axis-strip{padding:10px 24px;background:#142338;font-size:14px;display:flex;gap:6px 20px;flex-wrap:wrap;color:#c9d8e9}.axis-strip b{color:var(--mint);font-weight:600}.plot{position:relative;height:460px;overflow:hidden;background:radial-gradient(ellipse at center,#102039 0,#050c15 76%)}#main{width:100%;height:100%;display:block;touch-action:none;cursor:grab}.toolbar{position:absolute;top:12px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:start;gap:10px}.tabs,.viewbuttons,.buttons{display:flex;gap:7px;flex-wrap:wrap}.toolbar button{font-size:13px;padding:6px 9px}.viewbuttons{justify-content:flex-end;max-width:190px}.viewbuttons #rotate{flex-basis:100%}.hint{position:absolute;bottom:12px;left:22px;right:18px;font-size:12px;color:var(--muted);pointer-events:none}#static-notice{position:absolute;top:45%;left:20px;right:20px;background:#183047;padding:10px;text-align:center;font-size:14px}#fallback{display:none}.error{display:none;padding:12px;color:var(--gold)}
+.reading-strip{display:grid;grid-template-columns:220px minmax(0,1fr);gap:25px;padding:16px 24px;border-top:1px solid var(--line)}.legend{font-size:12px;color:var(--muted)}.legend-title{font-size:14px;color:var(--text);margin-bottom:8px}.gradient{height:10px;border-radius:5px;background:linear-gradient(90deg,#5b70ff,#2bacfa,#00d8d6,#6be883,#d0f53f,#fff443);margin:6px 0}.legend span{display:flex;justify-content:space-between}.legend b{font-weight:450}.legend p{line-height:1.5;margin:7px 0}.explain{font-size:14px;color:var(--muted)}.explain p{margin:0 0 9px}.explain strong{color:var(--text);font-weight:550}.plot-guide{margin:0;padding:14px 24px;border-top:1px solid var(--line)}.plot-guide .intro{margin-top:12px;font-size:14px}.plot-key{display:grid;grid-template-columns:1fr 1fr;gap:15px 24px;margin:15px 0}.plot-key dt{color:var(--mint);font-weight:600;font-size:14px}.plot-key dd{margin:3px 0 0;color:var(--muted);font-size:14px}.axis-key{font-size:14px;color:var(--muted)}
+.lower{border-top:1px solid var(--line);padding:22px 24px}.plot2{height:270px;position:relative}.plot2 canvas{width:100%;height:100%;display:block}.swatch{display:inline-block;width:17px;height:3px;vertical-align:middle;margin:0 5px 3px 0}.small{font-size:14px;color:var(--muted);margin:8px 0}.readout{font-size:13px;color:var(--muted)}.fit-feedback{border-left:2px solid var(--pink);padding:9px 12px;font-size:14px;color:var(--text);margin:12px 0}.try-prompt{font-size:14px;color:var(--muted);padding:12px 14px;background:#16293b;border-radius:7px;margin:12px 0}.try-prompt strong{color:var(--mint)}
+.sidebar{border-left:1px solid var(--line);background:var(--panel);padding:21px}.section{border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:20px}.section:last-child{border:0;margin-bottom:0}.section h2{font-size:17px}.row{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:13px;font-size:14px}.row label{max-width:75%}output{font-size:13px;color:var(--mint);font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:var(--mint);margin:10px 0 2px}.check{display:flex;gap:9px;align-items:center;font-size:14px;margin:12px 0}.check input{width:16px;height:16px;accent-color:var(--mint)}.buttons button{font-size:13px;flex:1}.full{width:100%;font-size:14px}.preset-buttons{display:grid;gap:8px}.preset-buttons button{text-align:left;font-size:14px}.metric{background:#1c3043;padding:10px 12px;font-size:13px;color:var(--muted);border-radius:7px;margin-top:13px}.metric strong{color:var(--gold);font-weight:550}.model-status{font-size:14px;color:var(--muted);margin:12px 0 0}.sidebar details{font-size:14px}.sidebar details p{font-size:13px;color:var(--muted)}#tracer-view{max-width:230px}
+details{margin:15px 0;font-size:15px}summary{color:var(--text);cursor:pointer;padding:4px 0}table{border-collapse:collapse;width:100%;font-size:14px;margin:13px 0}th,td{text-align:left;border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:top}th{font-weight:600;color:var(--text)}.stats th,.stats td{font-size:12px;padding:7px 3px}.table-scroll{overflow-x:auto}.lesson,.technical{border-top:1px solid var(--line);padding:25px 26px;color:var(--muted)}.lesson>p{max-width:1040px}.lesson h2,.lesson h3,.technical h2{color:var(--text)}.lesson-grid,.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px}.lesson-grid{grid-template-columns:repeat(3,1fr);margin:20px 0}.lesson-grid p{font-size:15px;margin:0}.lesson strong,.technical strong{color:var(--text);font-weight:600}.notes{padding:18px 0}.notes p{margin:12px 0}.math{padding:13px 16px;border-left:2px solid var(--mint);font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;color:var(--text)}.model-diagram{display:flex;align-items:center;justify-content:center;gap:18px;margin:17px 0;color:var(--mint)}.pool{padding:10px 17px;border:1px solid #50756c;border-radius:7px;text-align:center}.glossary{display:grid;grid-template-columns:140px 1fr;gap:10px 20px;max-width:1040px}.glossary dt{color:var(--mint);font-weight:600}.glossary dd{margin:0}footer{padding:0 26px 22px;color:var(--muted);font-size:13px}
+@media(min-width:1450px){.plot{height:500px}}@media(max-width:980px){.layout{grid-template-columns:minmax(0,1fr) 300px}.sidebar{padding:18px}.plot{height:420px}.reading-strip{grid-template-columns:1fr;gap:12px}.legend{max-width:260px}.viewbuttons{max-width:130px}.viewbuttons #reset{display:none}.lesson-grid{gap:20px}}
+@media(max-width:720px){header{padding:18px}h1{font-size:25px}.intro{font-size:15px}.layout{display:flex;flex-direction:column}.workspace{display:contents}.case-intro{order:1;padding:16px 18px}.axis-strip{order:2;padding:9px 18px;font-size:13px}.plot{order:3;height:410px}.reading-strip{order:4;padding:15px 18px}.sidebar{order:5;border-left:0;border-top:1px solid var(--line);padding:19px;display:grid;grid-template-columns:1fr 1fr;gap:20px}.sidebar .section{margin:0}.sidebar .section:last-child{grid-column:1/-1}.lower{order:6;padding:20px 18px}.plot-guide{order:7;padding:14px 18px}.error{order:8}.lesson,.technical{padding:22px 18px}.lesson-grid,.notes-grid{grid-template-columns:1fr;gap:20px}.glossary{grid-template-columns:1fr;gap:3px}.glossary dd{margin-bottom:10px}.plot-key{gap:15px}.toolbar{left:12px;right:12px}.toolbar button{font-size:12px;min-height:38px}.hint{left:16px;font-size:11px}.viewbuttons{max-width:128px}.tabs{max-width:215px}}
+@media(max-width:440px){.sidebar{display:block}.sidebar .section{margin-bottom:20px}.plot{height:385px}.tabs{max-width:118px}.plot-key{grid-template-columns:1fr}.problem-nav{font-size:13px;gap:6px}.problem-nav a{padding:5px 8px}}
+
+/* Mobile-first opening: title, animated plot, then supporting context. */
+@media(max-width:720px){
+ header{padding:12px 16px}
+ header .eyebrow{font-size:14px;font-weight:650;letter-spacing:.035em;text-transform:none}
+ .plot{order:1;height:clamp(300px,calc(100svh - 80px),460px);flex-shrink:0}
+ .axis-strip{order:2}
+ .page-context{order:3;padding:18px;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+ .page-context .problem-nav{order:-1;margin:0 0 15px}
+ .page-context h1{font-size:23px;margin:0 0 10px}
+ .case-intro{order:4}
+ .reading-strip{order:5}
+ .sidebar{order:6}
+ .lower{order:7}
+ .plot-guide{order:8}
+ .error{order:9}
+}
+
+/* Keep a selected parameter combination and its prediction in one view. */
+.layout{grid-template-columns:minmax(0,3fr) minmax(320px,1fr);align-items:start}
+.layout>.case-intro{grid-column:1/-1;border-bottom:1px solid var(--line)}
+.inspection{position:sticky;top:16px;align-self:start;max-height:calc(100svh - 32px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;border-left:1px solid var(--line);background:var(--panel)}
+.inspection .lower{padding:18px 22px 10px;border-top:0;background:var(--panel)}
+.inspection .lower h2{font-size:19px;margin:0 0 6px}
+.inspection .plot2{height:230px;margin-top:12px}
+.inspection .fit-feedback{margin:10px 0 0;padding:8px 11px}
+.fit-help{margin:6px 0 0;font-size:14px}
+.fit-help summary{color:var(--muted)}
+.inspection .sidebar{padding:12px 22px 20px;border-left:0;display:block}
+.inspection .section{margin-bottom:16px;padding-bottom:16px}
+.inspection .section h2{margin-bottom:5px}
+.inspection .row{margin-top:8px}
+.inspection .sidebar .small{margin:6px 0}
+.workspace>.try-prompt{margin:12px 24px}
+.reading-strip{grid-template-columns:1fr;gap:12px}
+.reading-strip .legend{max-width:300px}
+@media(min-width:981px){.plot{height:clamp(620px,80svh,1000px)}}
+@media(max-width:980px) and (min-width:721px){
+ .layout{grid-template-columns:minmax(0,1fr) 300px}
+ .inspection .lower{padding:16px 14px 8px}
+ .inspection .sidebar{padding:12px 14px 18px}
+ .inspection .lower h2{font-size:17px}
+ .inspection .plot2{height:220px}
+ .axis-strip{padding:10px 16px}
+ .toolbar{left:10px;right:10px}
+ .tabs{max-width:140px}
+ .viewbuttons{max-width:125px}
+}
+@media(max-width:720px){
+ .layout{display:flex;flex-direction:column;align-items:stretch}
+ .workspace{display:contents}
+ .inspection{display:contents;position:static;max-height:none;overflow:visible}
+ .plot{order:1}
+ .inspection .lower{order:2;border-top:1px solid var(--line);padding:18px}
+ .inspection .plot2{height:230px}
+ .axis-strip{order:3}
+ .inspection .sidebar{order:4;padding:18px;border-top:1px solid var(--line)}
+ .page-context{order:5}
+ .layout>.case-intro{order:6}
+ .reading-strip{order:7}
+ .workspace>.try-prompt{order:8;margin:12px 18px}
+ .plot-guide{order:9}
+ .error{order:10}
+}
+
+.gas-picker{padding:18px 22px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+.gas-picker h2{font-size:17px;margin:0 0 10px}
+.gas-picker .buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.gas-picker button{font-size:14px;min-height:44px;padding:8px}
+@media(max-width:980px) and (min-width:721px){.gas-picker{padding:16px 14px}}
+@media(max-width:720px){.gas-picker{order:2;padding:18px}}
+
+#volume-canvas{position:absolute;inset:0;width:100%;height:100%;display:none;pointer-events:none}
+#main{position:relative;z-index:1}
+.toolbar,.hint,#static-notice{z-index:3}
+.inspection .plot2{background:#09131f;border-radius:6px}
+</style></head><body>
+<header><h1 class="eyebrow">Inverse Modeling Explorer</h1><div class="page-context"><p class="intro">We “invert” measurements to infer processes such as carbon storage or greenhouse-gas emissions. <strong>A good fit can have several explanations:</strong> explore which answers the data support and which new measurements help tell them apart.</p><nav class="problem-nav" aria-label="Choose an Earth science example"><span>Explore</span><a href="/inverse-modeling/">Land carbon</a><a href="/trace-gas-retrieval/">Trace-gas retrieval</a><a href="/atmospheric-flux-inversion/" aria-current="page">Atmospheric fluxes</a></nav></div></header><main class="layout"><div class="case-intro"><p class="provenance" id="case-data"></p><h2 id="case-question"></h2><p id="case-description"></p></div><section class="workspace"><div class="axis-strip"><span id="x-key"></span><span id="y-key"></span><span id="z-key"></span></div><div class="plot" id="plot"><div id="fallback"></div><canvas id="volume-canvas" aria-hidden="true"></canvas><canvas id="main" tabindex="0" aria-label="Plausible parameter combinations. In 3D, drag or use arrow keys to rotate and select a dot. In the 2D map, select a location. Sliders also select parameters."></canvas><div class="toolbar"><div class="tabs"><button id="volume-view" aria-pressed="true">3D combinations</button><button id="surface-view" aria-pressed="false">2D map</button></div><div class="viewbuttons"><button id="zoom-in" aria-label="Zoom in">+</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="reset">Reset view</button><button id="rotate" aria-pressed="true">Pause rotation</button></div></div><div class="hint" id="plot-hint"></div><div id="static-notice">Preparing the explorer… JavaScript is needed for the interactive plots.</div></div><div class="reading-strip"><div class="legend"><div class="legend-title" id="legend-title">Posterior density</div><div class="gradient" aria-hidden="true"></div><span><b id="legend-min">0.25%</b><b id="legend-mid">5%</b><b>100%</b></span><p>Brighter = higher density · 100% = peak.</p></div><div class="explain"><p id="view-explanation"></p><p id="geometry-copy" aria-live="polite"></p><p class="prior-note"><strong>Prior choice:</strong> No external estimates of the three fitted quantities are used as priors. Within the chosen ranges, the prior is uniform in the plotted coordinates, so the 3D density is proportional to the data likelihood.</p></div></div><div class="error" id="error" role="alert"></div><details class="plot-guide"><summary>What do these parameters mean?</summary><p class="intro" id="model-intro"></p><dl class="plot-key" id="parameter-key"></dl><p class="axis-key" id="axis-key"></p></details><div class="try-prompt"><strong>Try this:</strong> <span id="learning-prompt"></span></div></section><aside class="inspection" aria-label="Selected prediction and parameter controls"><section class="gas-picker" aria-labelledby="gas-picker-title"><h2 id="gas-picker-title">Choose a gas</h2><div class="buttons" role="group" aria-label="Flux inversion gas"><button id="gas-co2" aria-pressed="true">CO₂ fluxes</button><button id="gas-ch4" aria-pressed="false">Methane + OH</button></div></section><div class="lower"><h2>Does your selection fit the observations?</h2><p class="small"><span class="swatch" style="background:#f8fbff;height:4px"></span>Best fit <span class="swatch" style="background:var(--pink);margin-left:12px"></span>Your selection</p><label class="row" for="tracer-view">Show measurements of <select id="tracer-view"><option value="0">CO₂ anomaly</option></select></label><div class="plot2" id="fit-wrap"><canvas id="fit" aria-label="Observed measurements with best-fitting and selected model predictions."></canvas></div><p class="fit-feedback" id="fit-feedback" aria-live="polite"></p><details class="fit-help"><summary>Reading the observations and curves</summary><p class="small" id="fit-note"></p></details></div><div class="sidebar"><section class="section"><h2>Try another explanation</h2><p class="small">Move a slider or select a dot. The pink ring and curve show the same selected parameters.</p><label class="row" for="tau1"><span id="p1-label"></span><output id="tau1-out"></output></label><input type="range" id="tau1" min="1" max="8" step="0.01" value="5"><label class="row" for="tau2"><span id="p2-label"></span><output id="tau2-out"></output></label><input type="range" id="tau2" min="-3" max="3" step="0.01" value="0"><label class="row" for="fraction"><span id="p3-label"></span><output id="fraction-out"></output></label><input type="range" id="fraction" min="0.3" max="2.5" step="0.01" value="1"><div class="buttons" style="margin:14px 0 9px"><button id="best">Show best fit</button></div><button id="swap" class="full">Another explanation</button><p class="small" id="partner-note"></p></section><section class="section"><h2>Change the measurements</h2><p class="small" id="gas-note"></p><div class="preset-buttons"><button id="one">Global average</button><button id="early" aria-pressed="true">Both hemispheres at year 3</button><button id="all">Both hemispheres over time</button></div><p class="model-status" id="information"></p></section><section class="section"><details><summary>Errors, ranges and fit details</summary><label class="row" for="sigma">Multiply assumed errors by <output id="sigma-out"></output></label><input id="sigma" type="range" min="0.75" max="2" step="0.25" value="1"><p id="error-description"></p><p>Larger errors allow greater differences between predictions and measurements. The simulated measurements stay fixed.</p><div class="metric" id="best-summary"></div><button class="full" id="truth">Show values used to simulate data</button><table class="stats"><caption>Each parameter: median and central 90% range</caption><thead><tr><th>Parameter</th><th>Median</th><th>90% range</th></tr></thead><tbody id="uncertainty"></tbody></table><p>Each range contains approximately 90% of that parameter’s posterior probability, after accounting for the others. The chosen parameter bounds can limit these ranges.</p><p class="readout" id="prediction-readout"></p></details></section></div></aside></main><section class="lesson"><h2>The same reasoning across Earth science</h2><p>A <strong>forward model</strong> predicts observations from a set of parameters. An <strong>inverse problem</strong> uses observations to work back to plausible parameters. The difficulty is that different parameters can produce similar signals.</p><div class="lesson-grid"><section><h3>1 · Propose an explanation</h3><p>Choose values for the unknown quantities, such as a decay time or an emission rate.</p></section><section><h3>2 · Predict and compare</h3><p>Run the physical model. Compare its prediction with the measurements, allowing for errors.</p></section><section><h3>3 · Keep the uncertainty</h3><p>Examine all supported combinations. Ask which new observation would tell them apart.</p></section></div><div class="table-scroll"><table><thead><tr><th>Example</th><th>What we observe</th><th>What we infer</th></tr></thead><tbody><tr><td>Land carbon</td><td>Plant material remaining over time</td><td>Decay times and starting amounts</td></tr><tr><td>Atmospheric remote sensing</td><td>Light absorbed at different wavelengths</td><td>Gas amount, light path, surface brightness</td></tr><tr><td>Atmospheric fluxes</td><td>Gas concentrations and isotope ratios</td><td>Sources, atmospheric mixing, or chemical loss</td></tr><tr><td>Seismology <span class="small">(analogy)</span></td><td>Seismic-wave arrival times</td><td>Earthquake location and wave speeds</td></tr></tbody></table></div><p><strong>Why the shape matters:</strong> a long band means quantities can compensate for each other. Separate regions can mean different explanations, or simply different names for the same components. A compact region means the parameters are better constrained <em>under the chosen model and assumptions</em>.</p><p>More measurements help most when they respond differently to the unknowns. Even a very good fit can give uncertain predictions, especially beyond the times or conditions observed.</p><details><summary>The Bayesian vocabulary, in plain language</summary><dl class="glossary"><dt>Parameter</dt><dd>An unknown quantity we want to estimate.</dd><dt>Prior</dt><dd>The ranges and relative plausibility assigned before using these observations.</dd><dt>Likelihood</dt><dd>How well a prediction explains the observations under an assumed error model.</dd><dt>Posterior</dt><dd>The probability distribution over parameters after combining the likelihood and prior.</dd><dt>Marginalization</dt><dd>Adding up posterior density over a parameter to describe the others. The 2D map does this for the third parameter.</dd></dl><p class="math">posterior ∝ likelihood × prior</p><p>Here, the prior is constant in the linear parameter coordinates inside the stated bounds and zero outside. Those bounds can still influence the uncertainty.</p><p>A best fit is a single combination. The posterior also describes uncertainty around it. Probability belongs to a region of parameter space: the color of a single point is a density, expressed here relative to the peak.</p></details></section><section class="technical"><details><summary>Equations, assumptions, data and references</summary><p>The display omits density below exp(−6), about 0.25% of the peak, for readability. The calculated uncertainty includes the full bounded posterior. Each selection of observations and each view has its own peak, so compare the <em>width and shape</em> of the supported region when changing observations. The cloud shows grid locations, with transparent dots that can overlap. The 2D map integrates over the third parameter; selecting a map location shows its conditional best-fitting third value, which is a representative prediction for that location. All three examples use a teaching model, chosen error assumptions, and finite parameter ranges. The uncertainty shown covers only the three fitted quantities; fixed inputs and model structure are not varied.</p><section class="notes"><div class="notes-grid"><section><h2>Two hemispheres, one mass balance</h2><p>Each box contains half the atmospheric air mass. Surface fluxes enter their respective hemispheres, and exchange moves gas between the two boxes. Exchange conserves the global burden.</p><div class="math">dCₙ/dt = vFₙ − (Cₙ − Cₛ)/(2τ) − λCₙ<br>dCₛ/dt = vFₛ + (Cₙ − Cₛ)/(2τ) − λCₛ<br>d[(Cₙ + Cₛ)/2]/dt = v(Fₙ + Fₛ)/2 − λ(Cₙ + Cₛ)/2</div><p>The definition of τ follows the original Python model: without sources or loss, the north–south difference decays as exp(−t/τ). The exchange coefficient in each box is 1/(2τ).</p><p><strong>CO₂ mode:</strong> λ = 0. Fₙ and Fₛ are net surface fluxes, combining emissions and land/ocean exchange; positive flux adds carbon to the atmosphere. They are constant over this experiment. The plotted CO₂ anomaly starts at zero in both boxes relative to a fixed initial state. This is a prescribed net-flux experiment, without a separate land/ocean reservoir or an OH sink.</p><p>We use v = 1/1.062 ppm per PgC for a single hemisphere, corresponding to 2.124 PgC per global ppm. Thus the global CO₂ increase depends on Fₙ + Fₛ. Hemispheric differences add information about where carbon enters and how rapidly it mixes.</p></section><section><h2>Methane sources and OH chemistry</h2><p><strong>CH₄ mode:</strong> the unknowns are global biogenic emissions Eᵦ, global fossil emissions E𝒇, and a shared OH loss factor h. Northern source fractions are fixed at 0.65 and 0.90, respectively. The transport time is fixed at 1 year, and the reference methane lifetime is 11.5 years.</p><div class="math">Fₙ = 0.65Eᵦ + 0.90E𝒇<br>Fₛ = 0.35Eᵦ + 0.10E𝒇<br>λ = h / 11.5 yr⁻¹<br>Qᵣ = C(1 + δᵣ/1000)<br>λᵣ = λ / KIEᵣ<br>δᵣ = 1000(Qᵣ/C − 1)</div><p>The normalized isotope-abundance tracers Q₁₃ and Qᴰ are transported like bulk methane, but their chemical loss is slower. This uses the dilute-isotope approximation; isotope ratios are recovered after transporting and removing abundance tracers. A source supplies Q at its emission rate multiplied by (1 + δsource/1000).</p><table><thead><tr><th>Toy source / sink</th><th>δ¹³C (‰) / KIE</th><th>δD (‰) / KIE</th></tr></thead><tbody><tr><td>Biogenic source</td><td>−62</td><td>−320</td></tr><tr><td>Fossil source</td><td>−44</td><td>−192</td></tr><tr><td>Kinetic isotope effect</td><td>1.0065</td><td>1.276</td></tr></tbody></table><p>The two source fingerprints are fixed illustrative endmembers. KIE values are dimensionless. The reference lifetime, KIEs, exchange convention, and methane conversion v = 0.7178 ppb per hemispheric Tg CH₄ follow the earlier Python box model. Here all methane loss scales with h; stratospheric loss, soil uptake, and chlorine are not separately resolved.</p></section></div>
+<details><summary>The published box-model connection</summary><p><a href="https://acp.copernicus.org/articles/26/8601/2026/"><strong>Dasgupta, Pandey et al. (2026): Global methane emission estimates from a dual-isotope inversion: new constraints from δD-CH₄</strong></a>, Atmospheric Chemistry and Physics, 26, 8601–8616.</p><p>The paper combines hemispheric methane and both isotope records in a Bayesian two-box inversion. Its full model has five source categories, multiple sink processes, and time-varying inferred emissions. Here the CH₄ → +δ¹³C → +δD sequence illustrates that measurement principle with two constant source totals and one loss multiplier.</p><p>This page uses a compact analytic implementation of the source, exchange, and first-order chemistry structure in Sudhanshu Pandey's <em>twoboxCH4</em> code. All plotted observations are newly generated synthetic data. The page does not reproduce the paper's fitted time series, posterior estimates, or complete inversion method. The CO₂ option is a separate adaptation of the atmospheric exchange equations.</p></details>
+<details><summary>How the observations change the solution space</summary><p><strong>CO₂:</strong> the global mean constrains the total flux but contains no information about its hemispheric split or transport time. Two hemispheric measurements at one time constrain the total and a flux-difference–transport combination, producing a curved ridge. Measurements during the transient evolution help distinguish transport from the flux split.</p><p><strong>CH₄:</strong> more emissions and stronger OH loss can compensate in the concentration record. Carbon isotopes add information about the source mixture. Hydrogen isotopes add a different combination of source and sink sensitivity. The amount of improvement depends on the source fingerprints, kinetic isotope effects, errors, and observation times assumed here.</p><p>“Another explanation” selects a second solution that matches the selected endpoint concentrations. Compare its other predictions to see what additional observations can distinguish. These trade-offs arise from the forward equations. No artificial modes or bridges are added.</p></details>
+<details><summary>Synthetic observations, prior choices, and numerical method</summary><p>CO₂ truth: (Fₙ, Fₛ, τ) = (5, 0, 1), with fluxes in PgC yr⁻¹ and τ in years. Observations at 0.25, 0.5, 1, 2, and 3 years have a base error of 0.16 ppm. The global-mean series is the average of the same paired hemispheric observations, with error 0.16/√2 ppm. It is used separately from those observations, so the likelihood never counts a derived mean and its constituents as independent data.</p><p>CH₄ truth: (Eᵦ, E𝒇, h) = (370, 130, 1), with emissions in Tg CH₄ yr⁻¹. Initial methane is 1900 ppb north and 1800 ppb south; δ¹³C is −47 and −47.3‰, and δD is −90 and −92‰. Observations at 0.5, 1, 2, 3, and 5 years have base errors of 6 ppb, 0.18‰ and 1‰. The initial state is known and excluded from the likelihood. The fixed Gaussian noise realizations use seeds 82 (CO₂) and 317 (CH₄).</p><p>Independent uniform priors in the linear display coordinates: CO₂ Fₙ ∈ [1, 8], Fₛ ∈ [−3, 3], τ ∈ [0.3, 2.5]; CH₄ Eᵦ ∈ [250, 550], E𝒇 ∈ [50, 220], h ∈ [0.6, 1.5]. These wide bounds and errors are teaching choices. Increasing the error multiplier changes the likelihood uncertainty without changing the observations.</p><div class="math">J(θ) = ½ Σⱼ [(modelⱼ(θ) − yⱼ)/(error multiplier × σⱼ)]²<br>p(θ | y) ∝ exp[−J(θ)] inside the bounds</div><p>For constant coefficients, mean and difference equations have exact exponential solutions. The page evaluates these analytic solutions directly, then computes the posterior on an 81 × 81 × 81 grid. A grid search followed by local refinement gives a representative best fit. Grid dots are not MCMC samples; the posterior is not a Hessian approximation.</p><p>The 2D map integrates out the third parameter using trapezoidal quadrature. The uncertainty table uses the same quadrature over the full 3D grid, including densities below the display threshold. Intervals are approximate grid quantiles. Each view is normalized to its own density maximum. The color mapping is logarithmic; 100% is peak density, not certainty.</p></details>
+<details><summary>Other references and limits of a two-box atmosphere</summary><p><a href="https://acp.copernicus.org/articles/19/407/2019/">Naus, Montzka, Pandey et al. (2019), Constraints and biases in a tropospheric two-box model of OH</a>: discusses biases from representing transport, OH exposure, and observations with two hemispheric boxes. This explorer cannot resolve regional fluxes, vertical gradients, spatially varying chemistry, or station sampling.</p><p><a href="https://essd.copernicus.org/articles/17/965/2025/">Global Carbon Budget 2024, Table 1</a>: supplies the global conversion 1 ppm CO₂ = 2.124 PgC. Using half that atmospheric mass per box is an idealized equal-hemisphere approximation.</p></details>
+<details><summary>Exact synthetic observations used by this view</summary><div class="table-scroll"><table><thead><tr><th>Time (yr)</th><th>Quantity</th><th>Hemisphere</th><th>Value</th><th>Assumed σ</th><th>Used</th></tr></thead><tbody id="observations"></tbody></table></div></details>
+</section></details></section><footer>Rotate, compare, and ask what you would measure next. Each page runs offline after downloading.</footer>
+
+<script id="responsive-layout">
+(()=>{
+ const header=document.querySelector('header');
+ const context=document.querySelector('.page-context');
+ const workspace=document.querySelector('.workspace');
+ const plot=document.querySelector('.plot');
+ const mobile=window.matchMedia('(max-width:720px)');
+ function placeContext(){
+  if(mobile.matches){workspace.insertBefore(context,plot.nextSibling);}
+  else{header.appendChild(context);}
+ }
+ placeContext();
+ mobile.addEventListener('change',placeContext);
+})();
+</script>
+<!--THREE_BUNDLE-->
+<script>
+'use strict';
+(()=>{
+const EXAMPLE='flux';
+const $=id=>document.getElementById(id),TAU=2*Math.PI,GN=81,FN=81,SN=61;
+const CONFIG={
+ co2:{bounds:[[1,8],[-3,3],[.3,2.5]],truth:[5,0,1],times:[.25,.5,1,2,3],unit:'PgC/year',labels:['North flux Fₙ','South flux Fₛ','Mixing time τ'],short:['Fₙ','Fₛ','τ'],sigma:[.16],initial:[0,0]},
+ ch4:{bounds:[[250,550],[50,220],[.6,1.5]],truth:[370,130,1],times:[.5,1,2,3,5],unit:'Tg CH₄/year',labels:['Biological emissions Eᵦ','Fossil emissions E𝒇','OH loss factor h'],short:['Eᵦ','E𝒇','h'],sigma:[6,.18,1],initial:[1900,1800]}
+};
+const state={gas:'co2',n:2,sigma:1,level:6,view:'volume',selected:CONFIG.co2.truth.slice()},camera={yaw:-.74,pitch:.48,zoom:1};
+let best={p:state.selected.slice(),sse:Infinity},grid=[],cloud=[],marginal=[],maxLogMarg=0,stats=[],data=[],active=[],basisCache=[],costKey='',costs=null,drawDirty=true,posteriorDirty=true,rotating=true,hitPoints=[],lastTime=0;
+const main=$('main'),mc=main.getContext('2d'),fit=$('fit'),fc=fit.getContext('2d');let view={w:900,h:560,dpr:1},fitSize={w:590,h:300};
+let gpu3d=null;
+try{if(window.createPosterior3D)gpu3d=window.createPosterior3D({canvas:$('volume-canvas'),redraw:()=>{drawDirty=true;}});}catch(error){console.info('Using the Canvas solution view:',error.message);}
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],mul=(a,s)=>a.map(v=>v*s),add=(a,b)=>a.map((v,i)=>v+b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm=a=>mul(a,1/Math.hypot(...a));
+const config=()=>CONFIG[state.gas],at=(i,k)=>config().bounds[k][0]+(config().bounds[k][1]-config().bounds[k][0])*i/(GN-1);
+const physical=u=>u.map((x,k)=>{const [l,h]=config().bounds[k];return (l+h)/2+x*(h-l)/2;}),world=p=>p.map((x,k)=>{const [l,h]=config().bounds[k];return (2*x-l-h)/(h-l);});
+const response=(rate,t)=>Math.abs(rate)<1e-12?t:-Math.expm1(-rate*t)/rate;
+function basis(t,z,gas){
+ if(gas==='co2'){
+  const v=1/1.062,tau=z,common=v*t/2,contrast=v*response(1/tau,t)/2;
+  return [[0,common+contrast,common-contrast],[0,common-contrast,common+contrast]];
+ }
+ const result=[],init=[1900,1800],dinit=[[-47,-47.3],[-90,-92]],dsources=[[-62,-44],[-320,-192]],kies=[1,1.0065,1.276],v=.7178,tau=1;
+ for(let kind=0;kind<3;kind++){
+  const c0=init.map((c,h)=>c*(kind===0?1:1+dinit[kind-1][h]/1000)),mu0=(c0[0]+c0[1])/2,diff0=c0[0]-c0[1],rate=z/11.5/kies[kind],em=Math.exp(-rate*t),ed=Math.exp(-(rate+1/tau)*t),sm=response(rate,t),sd=response(rate+1/tau,t),fb=kind===0?1:1+dsources[kind-1][0]/1000,ff=kind===0?1:1+dsources[kind-1][1]/1000;
+  for(const sign of [1,-1])result.push([mu0*em+sign*diff0*ed/2, v*fb*(sm+sign*.30*sd)/2, v*ff*(sm+sign*.80*sd)/2]);
+ }
+ return result;
+}
+const linear=(c,p)=>c[0]+c[1]*p[0]+c[2]*p[1];
+function modelValue(b,p,kind,hemi,gas){
+ if(hemi===2)return (linear(b[0],p)+linear(b[1],p))/2;
+ const bulk=linear(b[hemi],p);
+ return gas==='co2'||kind===0?bulk:1000*(linear(b[kind*2+hemi],p)/bulk-1);
+}
+function prediction(t,p,kind=0,hemi=0,gas=state.gas){return modelValue(basis(t,p[2],gas),p,kind,hemi,gas);}
+function dataFor(gas){
+ const c=CONFIG[gas];let seed=gas==='co2'?82:317;const uniform=()=>{seed=(1664525*seed+1013904223)>>>0;return (seed+.5)/4294967296;};const gaussian=()=>Math.sqrt(-2*Math.log(uniform()))*Math.cos(TAU*uniform());const rows=[];
+ for(const t of c.times)for(let kind=0;kind<(gas==='co2'?1:3);kind++)for(let hemi=0;hemi<2;hemi++){const sig=c.sigma[kind];rows.push({t,kind,hemi,sigma:sig,y:prediction(t,c.truth,kind,hemi,gas)+sig*gaussian()});}
+ if(gas==='co2')for(const t of c.times){const both=rows.filter(d=>d.t===t);rows.push({t,kind:0,hemi:2,sigma:c.sigma[0]/Math.sqrt(2),y:(both[0].y+both[1].y)/2});}
+ return rows;
+}
+const DATA={co2:dataFor('co2'),ch4:dataFor('ch4')};
+function used(d){return state.gas==='co2'?(state.n===1?d.hemi===2:state.n===2?d.hemi<2&&d.t===3:d.hemi<2):d.kind<state.n;}
+function setData(){data=DATA[state.gas];active=data.filter(used);costKey='';}
+function packets(z){const cache=new Map();return active.map(d=>{if(!cache.has(d.t))cache.set(d.t,basis(d.t,z,state.gas));return [d,cache.get(d.t)];});}
+function packetCost(p,pkt){let total=0;for(const [d,b] of pkt){const r=(modelValue(b,p,d.kind,d.hemi,state.gas)-d.y)/d.sigma;total+=r*r;}return total;}
+function sse(p){return packetCost(p,packets(p[2]));}
+function delta(p){if(p.some((v,k)=>v<config().bounds[k][0]-1e-9||v>config().bounds[k][1]+1e-9))return Infinity;return Math.max(0,(sse(p)-best.sse)/(2*state.sigma**2));}
+function refine(start){let candidate={p:start.p.slice(),sse:start.sse},step=1/(GN-1);for(let it=0;it<180&&step>1e-8;it++){let moved=false;for(let k=0;k<3;k++)for(const dir of [-1,1]){const p=candidate.p.slice(),[lo,hi]=config().bounds[k];p[k]=Math.max(lo,Math.min(hi,p[k]+dir*step*(hi-lo)));const v=sse(p);if(v<candidate.sse-1e-11){candidate={p,sse:v};moved=true;}}if(!moved)step*=.5;}return candidate;}
+function buildCosts(){
+ setData();basisCache=Array.from({length:GN},(_,k)=>packets(at(k,2)));costs=new Float64Array(GN*GN*GN);let candidate={p:config().truth.slice(),sse:sse(config().truth)};
+ for(let k=0;k<GN;k++)for(let j=0;j<GN;j++)for(let i=0;i<GN;i++){const p=[at(i,0),at(j,1),at(k,2)],v=packetCost(p,basisCache[k]);costs[(j*GN+i)*GN+k]=v;if(v<candidate.sse-1e-10)candidate={p,sse:v};}
+ best=refine(candidate);costKey=state.gas+':'+state.n;
+}
+function buildPosterior(){
+ if(costKey!==state.gas+':'+state.n||!costs)buildCosts();cloud=[];marginal=[];maxLogMarg=-Infinity;const weights=[new Float64Array(GN),new Float64Array(GN),new Float64Array(GN)],den=2*state.sigma**2;
+ for(let j=0;j<GN;j++)for(let i=0;i<GN;i++){
+  let lmMax=-Infinity;const lmValues=[];
+  for(let k=0;k<GN;k++){const d=Math.max(0,(costs[(j*GN+i)*GN+k]-best.sse)/den),edge=k===0||k===GN-1?.5:1,logw=-d+Math.log(edge);lmValues.push(logw);lmMax=Math.max(lmMax,logw);const w=Math.exp(-d)*edge*(i===0||i===GN-1?.5:1)*(j===0||j===GN-1?.5:1);weights[0][i]+=w;weights[1][j]+=w;weights[2][k]+=w;if(d<=10)cloud.push({u:[-1+2*i/(GN-1),-1+2*j/(GN-1),-1+2*k/(GN-1)],d});}
+  const lm=lmMax+Math.log(lmValues.reduce((s,v)=>s+Math.exp(v-lmMax),0));marginal.push(lm);maxLogMarg=Math.max(maxLogMarg,lm);
+ }
+ stats=weights.map((w,k)=>{const total=w.reduce((a,b)=>a+b,0);return [.05,.5,.95].map(f=>{let sum=0;for(let i=0;i<GN;i++){sum+=w[i];if(sum>=f*total)return at(i,k);}return at(GN-1,k);});});
+ posteriorDirty=false;drawDirty=true;updateSummary();updateSelected();
+}
+setData();
+function viewNormal(){return [-Math.sin(camera.yaw)*Math.cos(camera.pitch),Math.cos(camera.yaw)*Math.cos(camera.pitch),Math.sin(camera.pitch)];}
+
+
+const corners=[];for(const z of [-1,1])for(const y of [-1,1])for(const x of [-1,1])corners.push([x,y,z]);const edges=[];for(let i=0;i<8;i++)for(let j=i+1;j<8;j++)if([1,2,4].includes(i^j))edges.push([corners[i],corners[j]]);
+
+const densityColors=[[91,112,255],[43,172,250],[0,216,214],[107,232,131],[208,245,63],[255,244,67]];
+function rgb(d){const t=Math.max(0,Math.min(1,1-d/state.level))*(densityColors.length-1),i=Math.min(densityColors.length-2,Math.floor(t)),f=t-i;return densityColors[i].map((v,k)=>Math.round(v*(1-f)+densityColors[i+1][k]*f));}
+function color(d,alpha=1){return 'rgba('+rgb(d).join(',')+','+alpha+')';}
+
+function scale(){return Math.min(view.w*.285,view.h*.225)*camera.zoom;}
+function project(p){const cy=Math.cos(camera.yaw),sy=Math.sin(camera.yaw),cp=Math.cos(camera.pitch),sp=Math.sin(camera.pitch),xx=cy*p[0]+sy*p[1],z=-sy*p[0]+cy*p[1],y=cp*p[2]-sp*z;return [view.w/2+scale()*xx,view.h*.49-scale()*y];}
+function depth(p){return dot(p,viewNormal());}
+function drawLabel(text,p,dy=0,col='#c4d5e9'){const [x,y0]=project(p),y=y0+dy;mc.font='13px system-ui';const width=mc.measureText(text).width;if(x-width/2<4||x+width/2>view.w-4||y<70||y>view.h-58)return;mc.fillStyle='rgba(10,18,29,.86)';mc.fillRect(x-width/2-4,y-10,width+8,21);mc.fillStyle=col;mc.textAlign='center';mc.textBaseline='middle';mc.fillText(text,x,y);}
+
+
+function formatValue(v,k){return state.gas==='ch4'&&k<2?v.toFixed(1):v.toFixed(2);}
+function quantityName(kind){return state.gas==='co2'?'CO₂ anomaly (ppm)':['CH₄ (ppb)','δ¹³C-CH₄ (‰)','δD-CH₄ (‰)'][kind];}
+function drawFit(){
+ const c=config(),kind=state.gas==='co2'?0:Number($('tracer-view').value)||0,global=state.gas==='co2'&&$('tracer-view').value==='global',hemis=global?[2]:[0,1],obs=data.filter(d=>d.kind===kind&&(global?d.hemi===2:d.hemi<2)),end=c.times[c.times.length-1],w=fitSize.w,h=fitSize.h,L=57,R=16,top=28,bottom=43;
+ const values=obs.flatMap(d=>[d.y-d.sigma*state.sigma,d.y+d.sigma*state.sigma]);for(const p of [best.p,state.selected])for(const hemi of hemis)for(let i=0;i<=70;i++)values.push(prediction(end*i/70,p,kind,hemi));
+ let ymin=Math.min(...values),ymax=Math.max(...values),span=Math.max(ymax-ymin,state.gas==='co2'?.5:kind===0?15:.5);ymin-=.12*span;ymax+=.12*span;
+ const x=t=>L+t/end*(w-L-R),y=v=>h-bottom-(v-ymin)/(ymax-ymin)*(h-top-bottom);fc.clearRect(0,0,w,h);fc.font='12px system-ui';fc.textBaseline='middle';fc.strokeStyle='#3c536b';fc.fillStyle='#deebf9';
+ for(let i=0;i<=4;i++){const v=ymin+(ymax-ymin)*i/4;fc.beginPath();fc.moveTo(L,y(v));fc.lineTo(w-R,y(v));fc.stroke();fc.textAlign='right';fc.fillText(state.gas==='ch4'&&kind===0?v.toFixed(0):v.toFixed(1),L-7,y(v));}
+ for(let i=0;i<=5;i++){const t=i*end/5;fc.textAlign='center';fc.fillText(t.toFixed(1),x(t),h-bottom+15);}fc.textAlign='left';fc.fillText(quantityName(kind)+(global?' · global mean':''),L,11);fc.textAlign='center';fc.fillText('Time since initial state (years)',(w+L-R)/2,h-8);
+ for(const [p,color] of [[best.p,'#f8fbff'],[state.selected,'#ff73cf']])for(const hemi of hemis){fc.beginPath();for(let i=0;i<=100;i++){const t=i*end/100,yy=y(prediction(t,p,kind,hemi));if(!i)fc.moveTo(x(t),yy);else fc.lineTo(x(t),yy);}fc.strokeStyle=color;fc.lineWidth=color==='#f8fbff'?5:2.6;fc.setLineDash(hemi===1?[5,4]:[]);fc.stroke();}
+ fc.setLineDash([]);for(const d of obs){const xx=x(d.t),yy=y(d.y),err=d.sigma*state.sigma;fc.strokeStyle=used(d)?'#ffffff':'#bdcde0';fc.fillStyle=used(d)?'#ffffff':'#070e18';fc.lineWidth=1.4;fc.beginPath();fc.moveTo(xx,y(d.y-err));fc.lineTo(xx,y(d.y+err));fc.stroke();fc.beginPath();if(d.hemi===1)fc.rect(xx-3,yy-3,6,6);else fc.arc(xx,yy,3.8,0,TAU);fc.fill();fc.stroke();}
+ $('fit-note').textContent=(global?'Global-mean observations. ':'North: circles / solid curves. South: squares / dashed curves. ')+'Filled points are used in the fit; hollow points are available but not used. Bars show one assumed standard deviation of error.';
+}
+function densityPercent(d){const v=100*Math.exp(-d);return Number(v.toPrecision(2)).toString()+'%';}
+
+function configureControls(){
+ const c=config();for(const [id,k] of [['tau1',0],['tau2',1],['fraction',2]]){const e=$(id);e.min=String(c.bounds[k][0]);e.max=String(c.bounds[k][1]);e.step=String((c.bounds[k][1]-c.bounds[k][0])/400);e.value=String(state.selected[k]);}
+ $('tracer-view').innerHTML=state.gas==='co2'?'<option value="0">CO₂ · hemispheres</option><option value="global">CO₂ · global mean</option>':'<option value="0">CH₄ concentration</option><option value="1">δ¹³C-CH₄</option><option value="2">δD-CH₄</option>';
+ $('tracer-view').value=state.gas==='co2'&&state.n===1?'global':'0';
+ $('gas-co2').setAttribute('aria-pressed',String(state.gas==='co2'));$('gas-ch4').setAttribute('aria-pressed',String(state.gas==='ch4'));
+ for(let k=0;k<3;k++)$('p'+(k+1)+'-label').textContent=c.labels[k];
+ $('gas-note').textContent=state.gas==='co2'?'Synthetic CO₂ observations constrain net surface fluxes and atmospheric exchange. CO₂ has no OH loss here.':'Synthetic methane and isotope observations constrain source strengths and OH loss. Inspired by Dasgupta, Pandey et al. (2026).';
+ $('one').textContent=state.gas==='co2'?'1 · Global CO₂ mean':'1 · CH₄ concentrations only';$('early').textContent=state.gas==='co2'?'2 · Both hemispheres at year 3':'2 · Add carbon isotopes (δ¹³C)';$('all').textContent=state.gas==='co2'?'3 · Both hemispheres over time':'3 · Add hydrogen isotopes (δD)';
+ $('swap').textContent=state.gas==='co2'?'Follow the flux–transport trade-off':'Follow the emissions–OH trade-off';
+ $('partner-note').textContent=state.gas==='co2'?'Match the same endpoint CO₂ in both boxes using different fluxes and exchange time. Earlier observations can distinguish the pair.':'Match the same endpoint methane in both boxes using different source strengths and OH. Isotopes can distinguish the pair.';
+}
+function updateSummary(){
+ const c=config(),volume=state.view==='volume',co2=state.gas==='co2';
+ $('x-key').innerHTML='<b>X</b> '+c.labels[0]+' ('+c.unit+')';$('y-key').innerHTML='<b>Y</b> '+c.labels[1];
+ 
+ 
+ const cp=co2?['<strong>The global increase measures total net flux.</strong> Northern and southern fluxes can offset each other, and changing transport leaves this mean unchanged.','<strong>A concentration gradient depends on both emissions and mixing.</strong> Different flux splits and exchange times can match both endpoint concentrations. Try the trade-off button, then add earlier observations.','<strong>The time evolution separates transport from the flux split.</strong> Earlier hemispheric observations constrain how fast the concentration difference builds up. The supported region becomes more localized.']:['<strong>Emissions and removal can compensate.</strong> Different biogenic and fossil emissions can accompany different OH strengths and produce similar methane records. Inspect the isotope predictions before including them.','<strong>Carbon isotopes constrain the source mixture.</strong> Their signatures help distinguish biogenic from fossil methane. Change the plotted variable to δD to inspect predictions from measurements still held out.','<strong>Hydrogen isotopes provide a different source–sink constraint.</strong> Their stronger fractionation during oxidation adds information about OH under the assumed source signatures and chemistry.'];
+ 
+ $('sigma-out').textContent=state.sigma.toFixed(2)+'×';$('error-description').textContent=co2?'Base error: 0.16 ppm per hemisphere; 0.16/√2 ppm for its derived global mean. Synthetic observations stay fixed.':'Base errors: 6 ppb CH₄, 0.18‰ δ¹³C, 1‰ δD. Synthetic observations stay fixed.';
+ $('best-summary').innerHTML='<strong>Representative best fit</strong><br>'+c.labels.map((label,k)=>label+' = '+formatValue(best.p[k],k)).join('<br>')+'<br>Total flux = '+formatValue(best.p[0]+best.p[1],0)+' '+c.unit;
+ $('uncertainty').innerHTML=stats.map((r,k)=>'<tr><td>'+c.short[k]+(k<2?(co2?' (PgC/yr)':' (Tg/yr)'):co2?' (yr)':'')+'</td><td>'+formatValue(r[1],k)+'</td><td>'+formatValue(r[0],k)+'–'+formatValue(r[2],k)+'</td></tr>').join('');
+ $('legend-min').textContent=densityPercent(state.level);$('legend-mid').textContent=densityPercent(state.level/2);for(const [id,n] of [['one',1],['early',2],['all',3]])$(id).setAttribute('aria-pressed',String(state.n===n));
+ $('model-intro').textContent=co2?'An atmosphere with northern and southern boxes receives net CO₂ fluxes from the surface. Observations see the accumulated carbon after transport. Estimate the two hemispheric fluxes and the exchange time from this synthetic experiment.':'Two atmospheric boxes receive biogenic and fossil methane with different isotope fingerprints. OH removes methane and preferentially removes the lighter isotopes. Estimate both global source totals and a shared OH factor from synthetic concentration and isotope records.';
+ const explanations=co2?['Net carbon entering the northern atmosphere, including emissions and land/ocean exchange. 1 PgC is 1 billion tonnes of carbon.','Net carbon entering the southern atmosphere. Negative values mean net removal by the surface.','Time for an initial north–south concentration difference to fall to about 37% through mixing alone.']:['Global methane emissions from biological sources. 1 Tg is 1 million tonnes. A fixed 65% enters the northern box.','Global fossil methane emissions. A fixed 90% enters the northern box.','Strength of methane removal by OH. A larger factor removes methane faster. The lifetime is 11.5/h years.'];
+ $('parameter-key').innerHTML=c.labels.map((l,k)=>'<div><dt>'+l+'</dt><dd>'+explanations[k]+'</dd></div>').join('')+'<div><dt>Color · Relative posterior density</dt><dd>Density increases from purple through green to yellow. The three axes use linear coordinates.</dd></div>';
+ $('observations').innerHTML=data.map(d=>'<tr><td>'+d.t+'</td><td>'+quantityName(d.kind)+'</td><td>'+['North','South','Global mean'][d.hemi]+'</td><td>'+d.y.toFixed(5)+'</td><td>'+(d.sigma*state.sigma).toFixed(4)+'</td><td>'+(used(d)?'Yes':'Held out')+'</td></tr>').join('');
+syncTeaching();}
+function updateSelected(){const c=config(),p=state.selected;for(const [id,k] of [['tau1',0],['tau2',1],['fraction',2]]){$(id).value=String(p[k]);$(id+'-out').textContent=formatValue(p[k],k)+(k<2?'':state.gas==='co2'?' yr':'×');}const d=delta(p),pct=100*Math.exp(-d);$('prediction-readout').textContent='Selected: '+(pct<.001?'< 0.001':pct.toFixed(3))+'% of peak density · total flux '+formatValue(p[0]+p[1],0)+' '+c.unit+' · RMS standardized residual '+(Math.sqrt(sse(p)/active.length)/state.sigma).toFixed(2)+'.';drawFit();drawDirty=true;syncFitFeedback();}
+function choose(p){state.selected=p.slice();updateSelected();}
+function dataChange(n){state.n=n;setData();if(state.gas==='co2')$('tracer-view').value=n===1?'global':'0';posteriorDirty=true;}
+function changeGas(gas){if(state.gas===gas)return;state.gas=gas;state.n=gas==='co2'?2:1;state.selected=config().truth.slice();best={p:state.selected.slice(),sse:Infinity};state.sigma=1;$('sigma').value='1';setData();configureControls();posteriorDirty=true;}
+function partner(p){const end=config().times.at(-1),target=[prediction(end,p,0,0),prediction(end,p,0,1)],bounds=config().bounds;let chosen=p.slice(),distance=-1;for(let k=0;k<=120;k++){const z=bounds[2][0]+(bounds[2][1]-bounds[2][0])*k/120,b=basis(end,z,state.gas),a=b[0],c=b[1],d=a[1]*c[2]-a[2]*c[1];if(Math.abs(d)<1e-14)continue;const u=target[0]-a[0],v=target[1]-c[0],x=(u*c[2]-v*a[2])/d,y=(v*a[1]-u*c[1])/d;if(x<bounds[0][0]||x>bounds[0][1]||y<bounds[1][0]||y>bounds[1][1])continue;const dist=Math.abs(z-p[2]);if(dist>distance){distance=dist;chosen=[x,y,z];}}return chosen;}
+for(const [id,n] of [['one',1],['early',2],['all',3]])$(id).addEventListener('click',()=>dataChange(n));for(const gas of ['co2','ch4'])$('gas-'+gas).addEventListener('click',()=>changeGas(gas));
+$('sigma').addEventListener('input',()=>{state.sigma=+$('sigma').value;posteriorDirty=true;});$('tracer-view').addEventListener('change',drawFit);
+for(const [id,viewName] of [['volume-view','volume'],['surface-view','surface']])$(id).addEventListener('click',()=>{state.view=viewName;$('volume-view').setAttribute('aria-pressed',String(viewName==='volume'));$('surface-view').setAttribute('aria-pressed',String(viewName==='surface'));drawDirty=true;updateSummary();});
+for(const [id,k] of [['tau1',0],['tau2',1],['fraction',2]])$(id).addEventListener('input',()=>{state.selected[k]=+$(id).value;updateSelected();});$('best').addEventListener('click',()=>choose(best.p));$('truth').addEventListener('click',()=>choose(config().truth));$('swap').addEventListener('click',()=>choose(partner(state.selected)));
+$('zoom-in').addEventListener('click',()=>{camera.zoom=Math.min(2.6,camera.zoom*1.15);drawDirty=true;});$('zoom-out').addEventListener('click',()=>{camera.zoom=Math.max(.65,camera.zoom/1.15);drawDirty=true;});
+function setRotating(active){rotating=active;$('rotate').setAttribute('aria-pressed',String(active));$('rotate').textContent=active?'Pause rotation':'Resume rotation';}$('rotate').addEventListener('click',()=>setRotating(!rotating));$('reset').addEventListener('click',()=>{camera.yaw=-.74;camera.pitch=.48;camera.zoom=1;setRotating(false);cameraChanged();});function cameraChanged(){drawDirty=true;}
+const pointers=new Map();let down=null,pinch=0,gestureMoved=false;main.addEventListener('pointerdown',e=>{main.setPointerCapture(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);down=[e.clientX,e.clientY];pinch=0;if(pointers.size===1)gestureMoved=false;else gestureMoved=true;if(state.view==='volume')setRotating(false);});main.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId)||state.view!=='volume')return;if(down&&Math.hypot(e.clientX-down[0],e.clientY-down[1])>=5)gestureMoved=true;const old=pointers.get(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===1){camera.yaw+=(e.clientX-old[0])*.008;camera.pitch=Math.max(-1.48,Math.min(1.48,camera.pitch+(e.clientY-old[1])*.007));}else{const p=[...pointers.values()],d=Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1]);if(pinch)camera.zoom=Math.min(2.6,Math.max(.65,camera.zoom*d/pinch));pinch=d;}cameraChanged();});main.addEventListener('pointerup',e=>{if(down&&!gestureMoved&&state.view==='surface'&&Math.hypot(e.clientX-down[0],e.clientY-down[1])<5){const r=main.getBoundingClientRect();selectMap(e.clientX-r.left,e.clientY-r.top);}if(down&&!gestureMoved&&Math.hypot(e.clientX-down[0],e.clientY-down[1])<5&&state.view==='volume'){const r=main.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;if(gpu3d&&gpu3d.isAvailable()){const u=gpu3d.pick(x,y,e.pointerType==='touch'?18:12);if(u)choose(physical(u));}else{let near=null,bestD=144;for(const p of hitPoints){const d=(p.xy[0]-x)**2+(p.xy[1]-y)**2;if(d<bestD){bestD=d;near=p;}}if(near)choose(physical(near.u));}}pointers.delete(e.pointerId);down=null;pinch=0;});for(const ev of ['pointercancel','lostpointercapture'])main.addEventListener(ev,e=>{pointers.delete(e.pointerId);pinch=0;});main.addEventListener('keydown',e=>{if(state.view!=='volume')return;let yes=true;if(e.key==='ArrowLeft')camera.yaw-=.09;else if(e.key==='ArrowRight')camera.yaw+=.09;else if(e.key==='ArrowUp')camera.pitch=Math.min(1.48,camera.pitch+.09);else if(e.key==='ArrowDown')camera.pitch=Math.max(-1.48,camera.pitch-.09);else if(e.key==='+'||e.key==='=')camera.zoom=Math.min(2.6,camera.zoom*1.1);else if(e.key==='-')camera.zoom=Math.max(.65,camera.zoom/1.1);else yes=false;if(yes){e.preventDefault();cameraChanged();}});
+function resize(){const r=$('plot').getBoundingClientRect(),fr=$('fit-wrap').getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);view={w:r.width,h:r.height,dpr};main.width=Math.round(r.width*dpr);main.height=Math.round(r.height*dpr);mc.setTransform(dpr,0,0,dpr,0,0);fitSize={w:fr.width,h:fr.height};fit.width=Math.round(fr.width*dpr);fit.height=Math.round(fr.height*dpr);fc.setTransform(dpr,0,0,dpr,0,0);drawDirty=true;drawFit();}new ResizeObserver(resize).observe($('plot'));new ResizeObserver(resize).observe($('fit-wrap'));resize();
+configureControls();function frame(t){const dt=Math.min(50,t-lastTime||16);lastTime=t;if(!document.hidden){if(posteriorDirty)buildPosterior();if(rotating&&state.view==='volume'){camera.yaw+=dt*.00014;cameraChanged();}if(drawDirty)render();}requestAnimationFrame(frame);}requestAnimationFrame(frame);
+// Shared teaching interface. The forward models and posterior calculations are unchanged.
+function plotAxes(){
+ if(EXAMPLE==='carbon')return {labels:['Decay time τ₁ (months)','Decay time τ₂ (months)','Starting fraction f'],short:['τ₁ (months)','τ₂ (months)','Fraction f'],third:'the starting fraction f',ticks:[[-.769,'1'],[0,'10'],[.769,'100']]};
+ if(EXAMPLE==='retrieval')return {labels:['Methane amount q','Light-path factor m','Surface brightness A'],short:['Methane q','Light path m','Brightness A'],third:'surface brightness A'};
+ const c=config();return {labels:c.labels,short:c.short,third:state.gas==='co2'?'the exchange time τ':'the OH loss factor h'};
+}
+function tickValues(k){return EXAMPLE==='carbon'&&k<2?plotAxes().ticks:[-1,0,1].map(u=>{const v=physical([k===0?u:0,k===1?u:0,k===2?u:0])[k];return [u,EXAMPLE==='flux'?formatValue(v,k):v.toFixed(2)];});}
+function mapBounds(){return {x:70,y:116,w:Math.max(80,view.w-100),h:Math.max(80,view.h-186)};}
+function drawMarginal(){
+ const b=mapBounds(),x=u=>b.x+(u+1)*b.w/2,y=v=>b.y+(1-v)*b.h/2;
+ mc.fillStyle='#0d1a29';mc.fillRect(b.x,b.y,b.w,b.h);
+ for(let j=0;j<GN;j++)for(let i=0;i<GN;i++){
+  if(state.ordered&&i>j)continue;
+  const d=Math.max(0,maxLogMarg-marginal[j*GN+i]);if(d>state.level||!Number.isFinite(d))continue;
+  const left=Math.max(0,(i-.5)/(GN-1)),right=Math.min(1,(i+.5)/(GN-1)),bottom=Math.max(0,(j-.5)/(GN-1)),top=Math.min(1,(j+.5)/(GN-1));
+  mc.fillStyle=color(d);mc.fillRect(b.x+left*b.w,b.y+(1-top)*b.h,(right-left)*b.w+.2,(top-bottom)*b.h+.2);
+ }
+ mc.strokeStyle='#667e99';mc.lineWidth=1;mc.strokeRect(b.x,b.y,b.w,b.h);mc.font='13px system-ui';mc.fillStyle='#d4e3f4';mc.textBaseline='middle';
+ for(const [u,label] of tickValues(0)){mc.textAlign='center';mc.fillText(label,x(u),b.y+b.h+17);}
+ for(const [u,label] of tickValues(1)){mc.textAlign='right';mc.fillText(label,b.x-9,y(u));}
+ const axes=plotAxes();mc.textAlign='center';mc.fillText(axes.labels[0],b.x+b.w/2,b.y+b.h+39);mc.save();mc.translate(15,b.y+b.h/2);mc.rotate(-Math.PI/2);mc.fillText(axes.labels[1],0,0);mc.restore();
+ const p=world(state.selected);if(!state.ordered||p[0]<=p[1]){mc.beginPath();mc.arc(x(p[0]),y(p[1]),6,0,TAU);mc.lineWidth=6;mc.strokeStyle='#050c15';mc.stroke();mc.lineWidth=2.5;mc.strokeStyle='#ff73cf';mc.stroke();}
+}
+function selectMap(x,y){
+ const b=mapBounds();if(x<b.x||x>b.x+b.w||y<b.y||y>b.y+b.h)return;
+ const p=physical([2*(x-b.x)/b.w-1,1-2*(y-b.y)/b.h,0]);if(state.ordered&&p[0]>p[1])return;
+ if(EXAMPLE!=='flux')choose(prof(p[0],p[1]).p);
+ else {let candidate=p.slice(),cost=Infinity;for(let k=0;k<GN;k++){p[2]=at(k,2);const v=sse(p);if(v<cost){cost=v;candidate=p.slice();}}choose(candidate);}
+}
+function render(){
+ mc.clearRect(0,0,view.w,view.h);hitPoints=[];
+ if(state.view==='surface'){if(gpu3d)gpu3d.hide();drawMarginal();}
+ else {
+  let usingGPU=false;
+  if(gpu3d)try{usingGPU=gpu3d.render({cloud,ordered:state.ordered,level:state.level,rgb,view,pose:camera,pixelsPerUnit:scale()});}catch(error){gpu3d.hide();gpu3d.dispose();gpu3d=null;console.info('Using the Canvas solution view:',error.message);}
+  if(!usingGPU){
+  const queue=[];function line(a,b,c,w=1){queue.push({p:[a,b],c,w,z:(depth(a)+depth(b))/2});}
+  for(const edge of edges)line(...edge,'rgba(160,190,225,.65)');
+  for(const t of [-1,-.5,0,.5,1]){line([t,-1,-1],[t,1,-1],'rgba(130,162,198,.25)');line([-1,t,-1],[1,t,-1],'rgba(130,162,198,.25)');}
+  const visible=cloud.filter(p=>p.d<=state.level&&(!state.ordered||p.u[0]<=p.u[1])),stride=Math.max(1,Math.ceil(visible.length/18000));
+  for(let i=0;i<visible.length;i+=stride){const p=visible[i];queue.push({point:p.u,c:color(p.d,.22+.73*Math.exp(-p.d/3)),r:Math.max(1.6,scale()*.018),z:depth(p.u),d:p.d});}
+  queue.sort((a,b)=>a.z-b.z);
+  for(const item of queue){
+   if(item.point){const xy=project(item.point);mc.beginPath();mc.arc(...xy,item.r,0,TAU);mc.fillStyle=item.c;mc.fill();if(item.d<state.level*.85)hitPoints.push({xy,u:item.point});}
+   else {mc.beginPath();mc.moveTo(...project(item.p[0]));mc.lineTo(...project(item.p[1]));mc.strokeStyle=item.c;mc.lineWidth=item.w;mc.stroke();}
+  }
+  }
+  const a=plotAxes();drawLabel(a.short[0],[0,-1.15,-1],32);drawLabel(a.short[1],[-1.12,0,-1],22);drawLabel(a.short[2],[-1,-1,.77]);
+  for(let k=0;k<3;k++)for(const [u,label] of tickValues(k)){const p=[-1,-1,-1];p[k]=u;drawLabel(label,p,k<2?8:0);}
+  const bp=world(best.p);if(!state.ordered||bp[0]<=bp[1]){mc.beginPath();mc.arc(...project(bp),4,0,TAU);mc.fillStyle='#f8fbff';mc.fill();drawLabel('Best fit',bp,-17,'#f8fbff');}
+  const p=world(state.selected);if(!state.ordered||p[0]<=p[1]){mc.beginPath();mc.arc(...project(p),6,0,TAU);mc.lineWidth=6;mc.strokeStyle='#050c15';mc.stroke();mc.lineWidth=2.5;mc.strokeStyle='#ff73cf';mc.stroke();drawLabel('Your selection',p,-39,'#ff73cf');}
+ }
+ $('fallback').style.display='none';$('static-notice').style.display='none';drawDirty=false;
+}
+function syncTeaching(){
+ const volume=state.view==='volume',a=plotAxes();
+ $('legend-title').textContent=volume?'Posterior density · 3D':'Posterior density · 2D';$('legend-min').textContent=densityPercent(state.level);$('legend-mid').textContent=densityPercent(state.level/2);
+ $('view-explanation').textContent=volume?'Each dot is one combination of three unknown quantities. Brighter colors mean greater support from the data and our assumptions. Stretched shapes show quantities that can compensate for each other.':'This map adds up the support across all allowed values of '+a.third+'. Statisticians call this marginalization. Select a location to inspect its best-fitting third value.';
+ $('axis-key').textContent=volume?'All three axes represent unknown quantities. The pink ring marks your selected combination.':'Both axes represent unknown quantities. Color shows posterior density summed over the third quantity.';
+ $('z-key').innerHTML=volume?'<b>Z</b> '+a.labels[2]:'<b>Summed over</b> '+a.third;
+ $('plot-hint').textContent=volume?'Drag or use arrow keys to rotate · select a dot · + / − to zoom':'Select a colored location · change either parameter with the sliders';
+ main.style.cursor=volume?'grab':'crosshair';
+ for(const id of ['rotate','reset','zoom-in','zoom-out'])$(id).disabled=!volume;
+ $('case-data').textContent=EXAMPLE==='carbon'?'Measured litter decomposition observations':'Simulated observations from a simplified physical model';
+ if(EXAMPLE==='carbon'){
+  $('case-question').textContent='How long does carbon stay in decomposing plant material?';
+  $('case-description').textContent='We measure the material remaining, then infer two decay times and how much material starts in each component. The time axes run from about 0.5 to 200 months on log scales.';
+  $('information').textContent=state.n===2?'Start with a short record. How many decay times could explain these two measurements?':'A longer record rules out many combinations that looked possible early on.';
+  $('geometry-copy').innerHTML='<strong>'+ (state.n===2?'Few observations leave a wide range of possibilities.':'More observations narrow the possible decay times.')+'</strong> '+(state.ordered?'Ordering the decay times hides the duplicate created by swapping component names; it does not add observations.':'The two matching regions come from swapping the component names; both give the same physical mixture.');
+  $('learning-prompt').textContent='Try moving a decay-time slider. Compare the pink curve with the data, then switch between the first two measurements and all four. Do the long-term predictions still agree?';
+  $('best-summary').innerHTML='<strong>One best-fitting combination</strong><br>'+ (10**best.p[0]).toFixed(1)+' and '+(10**best.p[1]).toFixed(1)+' months; '+(100*best.p[2]).toFixed(0)+'% starts in the faster component.';
+ }else if(EXAMPLE==='retrieval'){
+  $('case-question').textContent='How much methane is in the atmosphere?';
+  $('case-description').textContent='A spectrometer measures reflected sunlight. Methane amount, the distance light travels, and surface brightness all affect the signal.';
+  $('information').textContent=state.n===1?'One brightness measurement leaves many explanations.':state.n===12?'More methane channels help, but methane amount and path length remain linked.':'CO₂ absorption gives separate information about the path length.';
+  $('geometry-copy').innerHTML=state.n===1?'<strong>A broad sheet of possibilities.</strong> One measurement can be matched by changing gas amount, light path, or surface brightness.':state.n===12?'<strong>A curved band of possibilities.</strong> More methane over a shorter light path can produce exactly the same methane spectrum.':'<strong>A smaller region of possibilities.</strong> The known CO₂ amount helps determine the light path, allowing methane amount to be estimated separately.';
+  $('learning-prompt').textContent='Choose “Another explanation” and compare the methane predictions. Then add CO₂ measurements: do both explanations still agree with the observations?';
+ }else{
+  const co2=state.gas==='co2';
+  $('x-key').innerHTML='<b>X</b> '+config().labels[0]+' ('+config().unit+')';$('y-key').innerHTML='<b>Y</b> '+config().labels[1]+' ('+config().unit+')';
+  if(volume)$('z-key').innerHTML='<b>Z</b> '+config().labels[2]+(co2?' (years)':' (1 = reference loss)');
+  $('case-question').textContent=co2?'Where is CO₂ entering the atmosphere?':'Why is atmospheric methane changing?';
+  $('case-description').textContent=co2?'We measure CO₂ in two hemispheres, then infer the net carbon input in each hemisphere and how quickly air mixes between them.':'We measure methane and its isotope fingerprints, then infer biological emissions, fossil emissions, and chemical removal by OH.';
+  $('information').textContent=co2?[null,'The global average tells us total input, but leaves its location and mixing uncertain.','Two measurements at one time leave a trade-off between fluxes and mixing.','Measurements over time help separate the fluxes from mixing.'][state.n]:[null,'More emissions can be offset by faster chemical removal.','Carbon isotope fingerprints help distinguish biological and fossil sources.','Hydrogen isotope fingerprints add information about sources and chemical removal.'][state.n];
+  $('geometry-copy').innerHTML=co2?[null,'<strong>Total input can be known while its location stays uncertain.</strong> The global mean combines both hemispheres and hides the effect of exchange.','<strong>Different fluxes and mixing rates can explain the same endpoint.</strong> A curved band shows these compensating changes.','<strong>Timing adds information.</strong> Earlier measurements show how quickly the north–south difference develops, narrowing the possible exchange times.'][state.n]:[null,'<strong>Sources and removal can compensate.</strong> Similar methane concentrations can come from different emissions and OH loss rates.','<strong>Isotopes help identify the source mixture.</strong> Their distinct chemical fingerprints add information beyond methane concentration.','<strong>A second isotope adds another constraint.</strong> Its response to sources and chemical removal helps narrow the possibilities under this model.'][state.n];
+  $('learning-prompt').textContent=co2?'Choose “Another explanation” with measurements at year 3. Compare the curves, then add measurements from earlier years. What distinguishes the two explanations?':'Choose “Another explanation,” then compare the isotope predictions before including them in the fit. Which extra measurements help distinguish the sources?';
+  $('gas-note').textContent=co2?'A flux is a rate of carbon entering or leaving the atmosphere. Positive values add carbon.':'OH, the hydroxyl radical, removes methane through chemical reactions. Isotopes are forms of the same element with different masses.';
+  $('swap').textContent='Another explanation';
+  $('partner-note').textContent=co2?'Changes fluxes and mixing while matching the selected year-3 concentrations. Other times can distinguish the pair.':'Changes emissions and OH while matching the selected year-5 methane concentrations. Other times and isotopes can distinguish the pair.';
+ }
+}
+function syncFitFeedback(){
+ const d=delta(state.selected),ratio=Math.sqrt(sse(state.selected)/(EXAMPLE==='carbon'?state.n:EXAMPLE==='retrieval'?state.n:active.length))/state.sigma;
+ const text=!Number.isFinite(d)?'This combination is outside the allowed parameter region.':ratio<=1?'The selected prediction is close to the observations at the assumed error scale.':ratio<=2?'The selected prediction has differences comparable to the assumed errors.':'The average mismatch is larger than the assumed error scale.';
+ $('fit-feedback').textContent=text+' The best-fitting curve is white; your choice is pink.';
+}
+
+window.fluxInverse={rendererInfo:()=>gpu3d?gpu3d.inspect():null,state,camera,prediction,basis,response,sse,delta,buildPosterior,render,drawFit,resize,choose,physical,world,partner,used,dataChange,changeGas,getState:()=>({best,stats,cloud,marginal,maxLogMarg,view,gridN:GN,data,active,CONFIG,DATA,rotating})};
+})();
+</script></body></html>
+
