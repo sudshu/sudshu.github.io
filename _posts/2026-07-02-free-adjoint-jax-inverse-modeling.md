@@ -6,6 +6,8 @@ tags: [inverse-modeling, carbon-cycle, remote-sensing, data-assimilation, JAX, a
 image: /assets/figures/jax_adjoint_og_card.png
 excerpt: "In carbon-cycle science the adjoint is the engine behind large-scale variational emission estimates — and it used to take years to build by hand. Then differentiable programming quietly deleted the hard part. A grad-student-level tour, with toy code, real satellites, and a laptop GPU."
 summary: "A grad-student-level tour, with toy code, real satellites, and a laptop GPU."
+thumbnail: /assets/writing/adjoint-640.jpg
+thumbnail_alt: "A model curve fitted to data points, with the mismatch shaded"
 ---
 
 <style>

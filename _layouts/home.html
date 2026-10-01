@@ -22,12 +22,15 @@ layout: default
 
   <section class="part" id="writing" aria-labelledby="writing-h">
     <h2 id="writing-h">Writing</h2>
-    <ul class="posts">
+    <ul class="cards">
       {%- for post in site.posts %}
-      <li>
-        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: site.date_format }}</time>
-        <div>
-          <a href="{{ post.url | relative_url }}">{% if post.title_html %}{{ post.title_html }}{% else %}{{ post.title | escape }}{% endif %}</a>
+      <li class="card">
+        {%- if post.thumbnail %}
+        <img class="card-img" src="{{ post.thumbnail | relative_url }}" width="640" height="360" loading="lazy" decoding="async" alt="{{ post.thumbnail_alt | escape }}">
+        {%- endif %}
+        <div class="card-body">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: site.date_format }}</time>
+          <h3 class="card-title"><a href="{{ post.url | relative_url }}">{% if post.title_html %}{{ post.title_html }}{% else %}{{ post.title | escape }}{% endif %}</a></h3>
           {%- if post.summary %}
           <p>{{ post.summary | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
           {%- endif %}

@@ -7,6 +7,8 @@ date: 2026-09-30
 summary: "A short poem about measuring CO<sub>2</sub> from the ground and from space."
 description: "A short poem about measuring CO₂ from the ground and from space, with a note on the science behind it."
 image: /assets/social/card.png
+thumbnail: /assets/writing/poem-640.jpg
+thumbnail_alt: "The first two lines of the poem"
 ---
 
 I wrote this poem in July 2025. It is about a question behind my work on CO<sub>2</sub> growth rates: how the long, careful record from surface stations compares with the fast, global view from satellites.
