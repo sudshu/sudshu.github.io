@@ -4,7 +4,12 @@
   (get both from https://giscus.app after enabling Discussions + installing the giscus app).
   Until then, nothing renders — no broken widget.
 {%- endcomment -%}
-{%- if site.giscus.repo_id and site.giscus.category_id -%}
+{%- comment -%} Liquid treats "" as true, so test for non-empty values explicitly. {%- endcomment -%}
+{%- assign giscus_ready = false -%}
+{%- if site.giscus.repo_id and site.giscus.repo_id != "" and site.giscus.category_id and site.giscus.category_id != "" -%}
+  {%- assign giscus_ready = true -%}
+{%- endif -%}
+{%- if giscus_ready -%}
 <section class="giscus-comments" style="margin-top:2.75rem; padding-top:1.25rem; border-top:1px solid #e8e8e8;">
   <h2 style="font-size:1.15rem; margin:0 0 .5rem;">Comments</h2>
   <p style="font-size:.85rem; color:#828282; margin:0 0 1rem;">Sign in with GitHub to comment.</p>
