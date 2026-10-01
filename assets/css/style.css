@@ -1,0 +1,198 @@
+/* sudshu.github.io stylesheet. Plain CSS (no Sass), loaded by _includes/head.html. */
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("../fonts/newsreader-latin-opsz-normal.woff2") format("woff2-variations"),
+       url("../fonts/newsreader-latin-opsz-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/public-sans-latin-wght-normal.woff2") format("woff2-variations"),
+       url("../fonts/public-sans-latin-wght-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Public Sans";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/public-sans-latin-wght-italic.woff2") format("woff2-variations"),
+       url("../fonts/public-sans-latin-wght-italic.woff2") format("woff2");
+}
+
+:root {
+  --bg: #ffffff;
+  --ink: #18222d;
+  --muted: #4f5d6b;
+  --accent: #1f5c99;
+  --rule: #e1e6eb;
+  --panel: #f4f6f8;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --wrap: 70rem;
+}
+
+/* ---------- base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); color: var(--ink); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--accent); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+main:focus { outline: none; }
+sub, sup { font-size: 0.7em; line-height: 0; }
+img { max-width: 100%; height: auto; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 2.5rem); }
+
+.skip {
+  position: absolute; left: 1rem; top: -3rem; z-index: 10;
+  padding: 0.5rem 0.9rem; background: var(--ink); color: #fff; border-radius: 3px; text-decoration: none;
+}
+.skip:focus { top: 0.75rem; }
+
+/* ---------- header and footer ---------- */
+
+.site-header { border-bottom: 1px solid var(--rule); }
+.site-header .wrap {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+  gap: 0.5rem 1.5rem; min-height: 4.25rem; padding-top: 0.6rem; padding-bottom: 0.6rem;
+}
+.site-name { font-family: var(--serif); font-size: 1.2rem; font-weight: 500; line-height: 1.2; color: var(--ink); text-decoration: none; }
+.site-nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: 0.9375rem; }
+.site-nav a { color: var(--muted); text-decoration: none; }
+.site-nav a:hover { color: var(--ink); text-decoration: underline; }
+
+.site-footer { margin-top: 1rem; border-top: 1px solid var(--rule); padding: 2rem 0 3rem; color: var(--muted); font-size: 0.875rem; }
+.site-footer p { margin: 0; }
+.contact-row, .links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; margin: 0 0 0.8rem; padding: 0; list-style: none; }
+
+/* ---------- homepage ---------- */
+
+.intro { padding: clamp(3rem, 8vh, 5rem) 0 clamp(2.5rem, 6vh, 4rem); }
+.intro h1 {
+  margin: 0 0 0.6rem; font-family: var(--serif); font-weight: 500;
+  font-size: clamp(2.4rem, 4.4vw, 3.4rem); line-height: 1.05; letter-spacing: -0.015em;
+}
+.intro .title { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.5; }
+.intro .lead { margin: 1.6rem 0 0; max-width: 42rem; font-size: 1.25rem; line-height: 1.55; }
+.intro .links { margin: 1.6rem 0 0; font-size: 0.9375rem; }
+.links .email, .contact-row .email { color: var(--muted); }
+
+section.part { padding: clamp(2.5rem, 6vh, 3.75rem) 0; border-top: 1px solid var(--rule); scroll-margin-top: 1rem; }
+section.part > h2 {
+  margin: 0 0 1.75rem; font-family: var(--serif); font-weight: 500;
+  font-size: clamp(1.7rem, 2.6vw, 2.1rem); line-height: 1.15; letter-spacing: -0.01em;
+}
+
+.topic {
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; margin: 0 0 clamp(3rem, 7vh, 4.5rem);
+}
+.topic:last-child { margin-bottom: 0; }
+.topic h3 { margin: 0 0 0.8rem; font-family: var(--serif); font-weight: 500; font-size: 1.55rem; line-height: 1.2; }
+.topic p { margin: 0 0 0.85rem; }
+.topic .status {
+  display: inline-block; margin: 0 0 0.8rem; padding: 0.1rem 0.45rem; border-radius: 3px;
+  background: #fbf1dc; color: #6a4a08; font-size: 0.8125rem; font-weight: 600;
+}
+.papers-h { margin: 1.1rem 0 0.4rem !important; font-size: 0.9375rem; font-weight: 600; }
+.papers { margin: 0; padding: 0; list-style: none; font-size: 0.9375rem; line-height: 1.5; }
+.papers li { margin: 0 0 0.45rem; }
+.also { margin-top: 1rem; color: var(--muted); font-size: 0.9375rem; }
+.topic-fig { margin: 0; }
+.fig { background: var(--panel); border-radius: 4px; padding: clamp(0.6rem, 1.4vw, 1rem); }
+.fig img { display: block; width: 100%; height: auto; background: #fff; }
+.topic-fig figcaption, .prose figcaption { margin-top: 0.6rem; color: var(--muted); font-size: 0.8125rem; line-height: 1.5; }
+
+.interests { margin: 0; padding: 0 0 0 1.1rem; max-width: 46rem; }
+.interests li { margin: 0 0 0.6rem; padding-left: 0.2rem; }
+
+.pubs .note { margin: 0 0 1.4rem; color: var(--muted); }
+.pubs h3 { margin: 1.6rem 0 0.8rem; font-size: 1rem; font-weight: 600; line-height: 1.3; }
+.pubs h3:first-of-type { margin-top: 0; }
+.pubs ol { margin: 0; padding: 0; list-style: none; max-width: 52rem; }
+.pubs li { margin: 0 0 0.85rem; font-size: 0.96875rem; line-height: 1.55; }
+
+.posts { margin: 0; padding: 0; list-style: none; max-width: 52rem; }
+.posts li { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--rule); }
+.posts li:first-child { padding-top: 0; }
+.posts time { color: var(--muted); font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+.posts a { font-family: var(--serif); font-size: 1.2rem; font-weight: 500; line-height: 1.35; text-decoration: none; }
+.posts a:hover { text-decoration: underline; }
+.posts p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.9375rem; }
+
+.explainer { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
+.explainer h3 { margin: 0 0 0.6rem; font-family: var(--serif); font-weight: 500; font-size: 1.4rem; line-height: 1.25; }
+.explainer p { margin: 0; }
+.explainer img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; }
+
+.about p { max-width: 46rem; margin: 0 0 0.9rem; }
+
+/* ---------- posts and pages ---------- */
+
+.prose { max-width: 44rem; margin: 0 auto; padding: clamp(2.5rem, 7vh, 4rem) 0 2rem; line-height: 1.7; }
+.post-header { margin-bottom: 2rem; }
+.post-title, .page-title {
+  margin: 0 0 0.5rem; font-family: var(--serif); font-weight: 500;
+  font-size: clamp(2rem, 4vw, 2.7rem); line-height: 1.12; letter-spacing: -0.015em;
+}
+.post-meta { margin: 0; color: var(--muted); font-size: 0.9375rem; }
+.prose h1, .prose h2, .prose h3, .prose h4 { font-family: var(--serif); font-weight: 500; line-height: 1.25; }
+.prose h1 { font-size: 2.1rem; }
+.prose h2 { margin: 2.4rem 0 0.8rem; font-size: 1.6rem; }
+.prose h3 { margin: 2rem 0 0.6rem; font-size: 1.3rem; }
+.prose h4 { margin: 1.6rem 0 0.5rem; font-size: 1.1rem; }
+.prose p, .prose ul, .prose ol, .prose blockquote, .prose table, .prose pre { margin: 0 0 1.1rem; }
+.prose ul, .prose ol { padding-left: 1.4rem; }
+.prose li { margin: 0 0 0.4rem; }
+.prose img { display: block; margin: 1.6rem auto; border-radius: 4px; }
+.prose figure { margin: 1.6rem 0; }
+.prose blockquote { margin-left: 0; padding: 0.2rem 0 0.2rem 1rem; border-left: 3px solid var(--rule); color: var(--muted); }
+.prose hr { margin: 2.4rem 0; border: 0; border-top: 1px solid var(--rule); }
+.prose table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; display: block; overflow-x: auto; }
+.prose th, .prose td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; }
+.prose th { font-weight: 600; }
+.prose code { font-family: var(--mono); font-size: 0.88em; background: var(--panel); border-radius: 3px; padding: 0.1em 0.3em; }
+.prose pre { overflow-x: auto; padding: 0.9rem 1.1rem; background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; line-height: 1.5; }
+.prose pre code { background: none; padding: 0; font-size: 0.85rem; }
+.post-back { margin-top: 3rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); font-size: 0.9375rem; }
+
+/* poem posts */
+.poem { margin: 2rem 0 2.4rem; font-family: var(--serif); font-size: 1.2rem; line-height: 1.6; }
+.poem p { margin: 0 0 1.4rem; }
+
+/* code highlighting (Rouge), light */
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs, .highlight .cp { color: #5b6b79; font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kc, .highlight .ow { color: #8a2c5a; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sd, .highlight .se, .highlight .si, .highlight .sx { color: #2a6a35; }
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh, .highlight .il { color: #9a5200; }
+.highlight .nf, .highlight .fm, .highlight .nc { color: #1f5c99; }
+.highlight .nb, .highlight .bp { color: #6a4a08; }
+.highlight .o, .highlight .p { color: #3b4a58; }
+.highlight .gd { color: #a12d2d; }
+.highlight .gi { color: #2a6a35; }
+.highlight .err { color: inherit; background: none; }
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 760px) {
+  .site-nav { width: 100%; gap: 0.25rem 1.1rem; font-size: 0.9rem; }
+  .topic, .explainer { grid-template-columns: 1fr; }
+  .posts li { grid-template-columns: 1fr; gap: 0.2rem; }
+  .intro .lead { font-size: 1.15rem; }
+}

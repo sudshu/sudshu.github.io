@@ -1,21 +1,25 @@
 title: Sudhanshu Pandey
+tagline: Scientist, NASA Jet Propulsion Laboratory
 description: >-
-  Earth-system science, satellite observations, inverse modeling, and AI
-  for scientific discovery.
+  Scientist at NASA's Jet Propulsion Laboratory studying greenhouse gases, air
+  quality, and the carbon cycle with satellite observations, atmospheric models,
+  and machine learning.
+author: Sudhanshu Pandey
 baseurl: ""
 url: "https://sudshu.github.io"
 github_username: sudshu
 
+# The site's own layouts in _layouts/ replace all of minima's. The theme stays
+# listed so GitHub Pages builds exactly as before.
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
 
 show_excerpts: true
+date_format: "%b %-d, %Y"
 
-minima:
-  date_format: "%b %-d, %Y"
-  social_links:
-    - { platform: github, user_url: "https://github.com/sudshu" }
+# Homepage text lives in _data/home.yml.
 
 # giscus comments (GitHub Discussions). Comments stay hidden until repo_id AND
 # category_id are filled — get both from https://giscus.app after (1) enabling

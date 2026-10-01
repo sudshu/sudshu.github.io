@@ -1,0 +1,7 @@
+{%- assign contact = site.data.home.contact -%}
+<ul class="{{ include.class }}">
+  <li class="email">{{ contact.email_display }}</li>
+  {%- for link in contact.links %}
+  <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+  {%- endfor %}
+</ul>
