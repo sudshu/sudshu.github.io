@@ -29,7 +29,7 @@ research:
   - id: co2-growth-rate
     title: "How fast CO<sub>2</sub> is building up in the atmosphere"
     text: |
-      Satellites such as NASA's OCO-2 measure carbon dioxide all over the globe. I developed satellite-derived whole-atmosphere CO<sub>2</sub> growth-rate methods now adopted in Global Carbon Project workflow.
+      Satellites such as NASA's OCO-2 measure carbon dioxide all over the globe. I developed methods to estimate the growth rate of atmospheric CO<sub>2</sub> from satellite observations.
 
       They give an early, independent measure of how fast CO<sub>2</sub> is building up in the atmosphere, which, compared with emissions, shows how much of what we emit stays in the air.
     papers:
