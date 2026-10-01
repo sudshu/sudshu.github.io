@@ -1,0 +1,117 @@
+# Homepage content. Edit this file to update the homepage (_layouts/home.html renders it).
+# Text fields are Markdown. Write subscripts as CO<sub>2</sub>.
+# Keep list strings in double quotes: many start with ** or contain ": ".
+
+intro:
+  titles:
+    - "Scientist, Earth Science Section, NASA Jet Propulsion Laboratory, California Institute of Technology"
+    - "Methane Modeling Lead, U.S. Greenhouse Gas Center"
+  lead: >-
+    I study greenhouse gases, air quality, and the carbon cycle using satellite
+    observations, atmospheric models, and machine learning. Sometimes satellite
+    data can tell us more than the instrument was designed to measure, and I try
+    to find out what.
+
+contact:
+  email_display: "sudhanshu.pandey [at] jpl.nasa.gov"
+  links:
+    - label: "Google Scholar"
+      url: "https://scholar.google.com/citations?user=efFF_TEAAAAJ&hl=en"
+    - label: "CV (PDF)"
+      url: "https://science.jpl.nasa.gov/documents/1475/CV_Sudhanshu_Pandey_20260415.pdf"
+    - label: "JPL profile"
+      url: "https://science.jpl.nasa.gov/people/pandeysu/"
+
+research:
+  - id: co2-growth-rate
+    title: "How fast CO<sub>2</sub> is building up in the atmosphere"
+    text: |
+      Satellites such as NASA's OCO-2 measure carbon dioxide all over the globe. I developed satellite-derived whole-atmosphere CO<sub>2</sub> growth-rate methods now adopted in Global Carbon Project workflow.
+
+      They give an early, independent measure of how fast CO<sub>2</sub> is building up in the atmosphere, which, compared with emissions, shows how much of what we emit stays in the air.
+    papers:
+      - "Pandey et al. (2024), *AGU Advances*. [doi:10.1029/2023AV001145](https://doi.org/10.1029/2023AV001145)"
+      - "Pandey et al. (2025), *Nature Communications*. [doi:10.1038/s41467-025-61588-2](https://doi.org/10.1038/s41467-025-61588-2)"
+      - "Pandey (2025), *AGU Advances*. [doi:10.1029/2025AV002085](https://doi.org/10.1029/2025AV002085)"
+      - "Pandey et al. (2026), preprint, under review. [doi:10.21203/rs.3.rs-9854768/v1](https://doi.org/10.21203/rs.3.rs-9854768/v1)"
+    also_post: traveling-co2
+    also_text: "a short poem about this work."
+    figure:
+      base: /assets/research/co2-growth-rate
+      width: 1247
+      height: 942
+      alt: "Two panels. Top: deseasonalized monthly CO2 growth rate from NASA's OCO-2 satellite, 2015 to 2025, shown with fossil fuel emissions and global surface temperature. Bottom: the growth rate in four latitude bands, with labeled events such as El Niño fires and drought, the Canadian fires, and Amazon fires."
+      caption: "Monthly CO<sub>2</sub> growth rate from NASA's OCO-2 satellite, for the whole globe (top) and by latitude band (bottom). From Pandey (2025), *AGU Advances*, CC BY-NC."
+
+  - id: methane-leaks
+    title: "Finding methane leaks from space"
+    text: |
+      Methane is a strong greenhouse gas, and large leaks can go unnoticed on the ground. I led the first satellite detection of an unreported extreme methane leak, helping catalyze remote-sensing-based methane plume detection.
+
+      The leak came from a natural gas well blowout, and satellites are now widely used to find such leaks so they can be fixed.
+    papers:
+      - "Pandey et al. (2019), *PNAS*. [doi:10.1073/pnas.1908712116](https://doi.org/10.1073/pnas.1908712116)"
+      - "Pandey et al. (2023), *Remote Sensing of Environment*, on finding leaks daily with the Sentinel-3 satellites. [doi:10.1016/j.rse.2023.113716](https://doi.org/10.1016/j.rse.2023.113716)"
+    figure:
+      base: /assets/research/methane-blowout
+      width: 1600
+      height: 1063
+      alt: "Four map panels. A: eastern North America with the study region boxed. B: TROPOMI methane measurements on 27 February 2018, during the blowout, with high values downwind of the well. C and D: the same region on 28 November 2017 and 20 April 2018, before and after the blowout."
+      caption: "Methane measured by the TROPOMI satellite around the blowout well in Ohio (star) during the blowout on 27 February 2018 (B), before it (C), and after it (D). Arrows show winds near the surface. From Pandey et al. (2019), *PNAS*."
+
+  - id: compass
+    title: "Learning about winds from air-pollution maps"
+    status: "Preprint, under review"
+    text: |
+      NASA's TEMPO mission was built to measure air pollution, not winds. In COMPASS, I asked whether maps of air pollution also hold information about the winds that shaped them.
+
+      The study finds that snapshots of atmospheric composition carry information about the winds and boundary-layer structure that shaped them, in model simulations and in real TEMPO observations. The boundary layer is the lowest part of the atmosphere, where air from the surface mixes.
+    papers:
+      - "Pandey (2026), preprint, under review. [doi:10.21203/rs.3.rs-10781568/v1](https://doi.org/10.21203/rs.3.rs-10781568/v1)"
+    figure:
+      base: /assets/research/compass-winds
+      width: 1370
+      height: 536
+      alt: "Six global maps. Top row: surface wind speed, 500 hPa wind speed, and boundary-layer height from a global atmospheric model. Bottom row: the same fields predicted by a neural network from a single snapshot of atmospheric composition."
+      caption: "Winds and boundary-layer height from a global model (top) and as predicted from one snapshot of atmospheric composition (bottom). From Pandey (2026), preprint under review."
+
+interests:
+  - "Agentic AI that helps with research, from forming hypotheses to weighing evidence, while scientists make the key decisions."
+  - "Machine learning and data-driven equation discovery: finding simple equations behind patterns in Earth observations."
+  - "Fast inverse modeling with JAX-based optimizers, which makes it practical to test many possible explanations of the same data."
+  - "The philosophy of science and AI: what counts as understanding, and how prediction relates to explanation."
+
+publications:
+  note: "The full list is on [Google Scholar](https://scholar.google.com/citations?user=efFF_TEAAAAJ&hl=en) and in my [CV](https://science.jpl.nasa.gov/documents/1475/CV_Sudhanshu_Pandey_20260415.pdf)."
+  preprints:
+    - "**Pandey, S.** (2026). Recovering atmospheric dynamics from atmospheric composition snapshots using machine learning. [doi:10.21203/rs.3.rs-10781568/v1](https://doi.org/10.21203/rs.3.rs-10781568/v1)"
+    - "**Pandey, S.**, et al. (2026). Time-varying errors in the atmospheric CO<sub>2</sub> growth rate. [doi:10.21203/rs.3.rs-9854768/v1](https://doi.org/10.21203/rs.3.rs-9854768/v1)"
+  selected:
+    - "Worden, J., **Pandey, S.**, et al. (2026). Top-down benchmark of US methane inventories reveals regional discrepancies in activity-based estimates. *Atmospheric Chemistry and Physics* 26, 8855–8873. [doi:10.5194/acp-26-8855-2026](https://doi.org/10.5194/acp-26-8855-2026)"
+    - "Dasgupta, B., **Pandey, S.**, et al. (2026). Global methane emission estimates from a dual-isotope inversion: new constraints from δD-CH<sub>4</sub>. *Atmospheric Chemistry and Physics* 26, 8601–8616. [doi:10.5194/acp-26-8601-2026](https://doi.org/10.5194/acp-26-8601-2026)"
+    - "Friedlingstein, P., et al. (incl. **Pandey, S.**) (2026). Global Carbon Budget 2025. *Earth System Science Data* 18, 3211–3288. [doi:10.5194/essd-18-3211-2026](https://doi.org/10.5194/essd-18-3211-2026)"
+    - "**Pandey, S.** (2025). Taking Earth's carbon pulse from space. *AGU Advances*. [doi:10.1029/2025AV002085](https://doi.org/10.1029/2025AV002085)"
+    - "**Pandey, S.**, et al. (2025). Reduction in Earth's carbon budget imbalance. *Nature Communications* 16, 6818. [doi:10.1038/s41467-025-61588-2](https://doi.org/10.1038/s41467-025-61588-2)"
+    - "**Pandey, S.**, et al. (2025). Relating multi-scale plume detection and area estimates of methane emissions: a theoretical and empirical analysis. *Environmental Science & Technology* 59, 7931–7947. [doi:10.1021/acs.est.4c07415](https://doi.org/10.1021/acs.est.4c07415)"
+    - "**Pandey, S.**, et al. (2024). Toward low-latency estimation of atmospheric CO<sub>2</sub> growth rates using satellite observations: evaluating sampling errors of satellite and in situ observing approaches. *AGU Advances* 5, e2023AV001145. [doi:10.1029/2023AV001145](https://doi.org/10.1029/2023AV001145)"
+    - "**Pandey, S.**, et al. (2023). Daily detection and quantification of methane leaks using Sentinel-3: a tiered satellite observation approach with Sentinel-2 and Sentinel-5P. *Remote Sensing of Environment* 296, 113716. [doi:10.1016/j.rse.2023.113716](https://doi.org/10.1016/j.rse.2023.113716)"
+    - "**Pandey, S.**, et al. (2022). Order-of-magnitude wall-time improvement of variational methane inversions by physical parallelization: a demonstration using TM5-4DVAR. *Geoscientific Model Development* 15, 4555–4567. [doi:10.5194/gmd-15-4555-2022](https://doi.org/10.5194/gmd-15-4555-2022)"
+    - "**Pandey, S.**, et al. (2019). Satellite observations reveal extreme methane leakage from a natural gas well blowout. *PNAS* 116(52), 26376–26381. [doi:10.1073/pnas.1908712116](https://doi.org/10.1073/pnas.1908712116)"
+    - "**Pandey, S.**, et al. (2017). Enhanced methane emissions from tropical wetlands during the 2011 La Niña. *Scientific Reports* 7, 45759. [doi:10.1038/srep45759](https://doi.org/10.1038/srep45759)"
+
+explainers:
+  - title: "Inverse Modeling Explorer"
+    url: /inverse-modeling/
+    text: "One set of observations can support many possible explanations. Rotate solution spaces, compare predictions, and explore inverse modeling through land carbon, atmospheric gases, and emissions."
+    image: /assets/explainers/inverse-modeling.jpg
+    width: 960
+    height: 600
+    alt: "The Inverse Modeling Explorer, showing a 3D cloud of parameter combinations that fit litter decomposition observations, next to a plot of the observations and fitted curves."
+
+about: >-
+  I did my PhD in physics at Utrecht University (2017) and an integrated BS-MS
+  in Earth Sciences at IISER Kolkata. Before JPL, I spent more than five years
+  at SRON, the Netherlands Institute for Space Research. My work is supported by
+  a NASA Early Career Investigator Program award (2023).
+
+footer_note: "Views and weekend experiments here are my own and don't represent NASA or JPL."

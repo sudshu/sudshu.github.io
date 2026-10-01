@@ -1,0 +1,121 @@
+---
+layout: default
+---
+{%- assign home = site.data.home -%}
+<div class="wrap">
+
+  <section class="intro" aria-labelledby="name">
+    <h1 id="name">{{ site.title | escape }}</h1>
+    {%- for line in home.intro.titles %}
+    <p class="title">{{ line }}</p>
+    {%- endfor %}
+    <p class="lead">{{ home.intro.lead | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
+    {%- include contact-links.html class="links" %}
+  </section>
+
+  <section class="part" id="research" aria-labelledby="research-h">
+    <h2 id="research-h">Research</h2>
+    {%- for item in home.research %}
+    <article class="topic" id="{{ item.id }}">
+      <div class="topic-text">
+        <h3>{{ item.title }}</h3>
+        {%- if item.status %}
+        <p class="status">{{ item.status }}</p>
+        {%- endif %}
+        {{ item.text | markdownify }}
+        <p class="papers-h" id="{{ item.id }}-papers">{% if item.papers.size == 1 %}Paper{% else %}Papers{% endif %}</p>
+        <ul class="papers" aria-labelledby="{{ item.id }}-papers">
+          {%- for paper in item.papers %}
+          <li>{{ paper | markdownify | remove: '<p>' | remove: '</p>' | strip }}</li>
+          {%- endfor %}
+        </ul>
+        {%- if item.also_post %}
+        {%- assign also = site.posts | where: "ref", item.also_post | first %}
+        {%- if also %}
+        <p class="also">Also: <a href="{{ also.url | relative_url }}">{{ also.title_html | default: also.title }}</a>, {{ item.also_text }}</p>
+        {%- endif %}
+        {%- endif %}
+      </div>
+      {%- if item.figure %}
+      {%- capture full %}{{ item.figure.base }}-{{ item.figure.width }}.jpg{% endcapture %}
+      {%- capture small %}{{ item.figure.base }}-900.jpg{% endcapture %}
+      <figure class="topic-fig">
+        <div class="fig">
+          <img src="{{ full | relative_url }}"
+               srcset="{{ small | relative_url }} 900w, {{ full | relative_url }} {{ item.figure.width }}w"
+               sizes="(min-width: 761px) 40rem, 100vw"
+               width="{{ item.figure.width }}" height="{{ item.figure.height }}"
+               {% unless forloop.first %}loading="lazy" {% endunless %}decoding="async"
+               alt="{{ item.figure.alt | escape }}">
+        </div>
+        <figcaption>{{ item.figure.caption | markdownify | remove: '<p>' | remove: '</p>' | strip }}</figcaption>
+      </figure>
+      {%- endif %}
+    </article>
+    {%- endfor %}
+  </section>
+
+  <section class="part" id="interests" aria-labelledby="interests-h">
+    <h2 id="interests-h">Other interests</h2>
+    <ul class="interests">
+      {%- for interest in home.interests %}
+      <li>{{ interest | markdownify | remove: '<p>' | remove: '</p>' | strip }}</li>
+      {%- endfor %}
+    </ul>
+  </section>
+
+  <section class="part pubs" id="publications" aria-labelledby="publications-h">
+    <h2 id="publications-h">Publications</h2>
+    <p class="note">{{ home.publications.note | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
+    <h3>Preprints under review</h3>
+    <ol>
+      {%- for pub in home.publications.preprints %}
+      <li>{{ pub | markdownify | remove: '<p>' | remove: '</p>' | strip }}</li>
+      {%- endfor %}
+    </ol>
+    <h3>Selected publications</h3>
+    <ol>
+      {%- for pub in home.publications.selected %}
+      <li>{{ pub | markdownify | remove: '<p>' | remove: '</p>' | strip }}</li>
+      {%- endfor %}
+    </ol>
+  </section>
+
+  <section class="part" id="writing" aria-labelledby="writing-h">
+    <h2 id="writing-h">Writing</h2>
+    <ul class="posts">
+      {%- for post in site.posts %}
+      <li>
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: site.date_format }}</time>
+        <div>
+          <a href="{{ post.url | relative_url }}">{% if post.title_html %}{{ post.title_html }}{% else %}{{ post.title | escape }}{% endif %}</a>
+          {%- if post.summary %}
+          <p>{{ post.summary | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
+          {%- endif %}
+        </div>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+
+  <section class="part" id="explainers" aria-labelledby="explainers-h">
+    <h2 id="explainers-h">Interactive explainers</h2>
+    {%- for ex in home.explainers %}
+    <div class="explainer">
+      <div>
+        <h3><a href="{{ ex.url | relative_url }}">{{ ex.title }}</a></h3>
+        <p>{{ ex.text }}</p>
+      </div>
+      <a href="{{ ex.url | relative_url }}" tabindex="-1" aria-hidden="true">
+        <img src="{{ ex.image | relative_url }}" width="{{ ex.width }}" height="{{ ex.height }}" loading="lazy" decoding="async" alt="{{ ex.alt | escape }}">
+      </a>
+    </div>
+    {%- endfor %}
+  </section>
+
+  <section class="part about" id="about" aria-labelledby="about-h">
+    <h2 id="about-h">About</h2>
+    {{ home.about | markdownify }}
+  </section>
+
+</div>
