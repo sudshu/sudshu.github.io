@@ -12,36 +12,14 @@ image: /assets/social/card.png
 I wrote this poem in July 2025. It is about a question behind my work on CO<sub>2</sub> growth rates: how the long, careful record from surface stations compares with the fast, global view from satellites.
 
 <div class="poem" markdown="0">
-<p>In a quiet town, a CO<sub>2</sub> did reside,<br>
-Dreaming of adventures and the world outside.<br>
-She yearned to see Hawaii’s distant shore, 🏝️<br>
-Where Mr. In Situ awaited—perfect to his core.</p>
-<p>Determined and eager, she caught a train, 🚆<br>
-Hoping the journey wouldn’t be in vain.<br>
-But fate had plans she didn’t foresee;<br>
-She boarded the wrong one, not where wished to be.</p>
-<p>In the stratosphere, time moved slow,<br>
-Trains were scarce, with nowhere to go.<br>
-She waited and pondered under the sky so blue,<br>
-Until she met OCO—fast and new. 🚀</p>
-<p>OCO was swift, full of energy and light, ⚡<br>
-Circling the Earth in a swift flight. 🌎<br>
-“I’ll meet you daily,” he’d often declare,<br>
-But clouds and rain would keep him elsewhere. ☁️🌧️</p>
-<p>Sometimes he’d vanish for weeks on end,<br>
-Leaving CO<sub>2</sub> without her friend.<br>
-Yet slowly he improved, braving the rain, ☔<br>
-Making efforts not to disappear again.</p>
-<p>After two long years, a train arrived at last, 🚆<br>
-CO<sub>2</sub> hopped aboard, leaving the past.<br>
-She reached Hawaii’s shores so grand,<br>
-And met Mr. In Situ upon the sand. 🏖️</p>
-<p>He came from royalty, a noble line,<br>
-His family’s legacy stood the test of time. ⌛<br>
-Accurate and steady, a reliable guide, 📏<br>
-CO<sub>2</sub> admired him, standing by his side.</p>
-<p>Now she faces a choice that’s tough and true:<br>
-Fast-paced OCO 🚀 or Mr. In Situ? 🏖️</p>
+<p><span class="line">In a quiet town, a CO<sub>2</sub> did reside,</span><span class="line">Dreaming of adventures and the world outside.</span><span class="line">She yearned to see Hawaii’s distant shore, 🏝️</span><span class="line">Where Mr. In Situ awaited—perfect to his core.</span></p>
+<p><span class="line">Determined and eager, she caught a train, 🚆</span><span class="line">Hoping the journey wouldn’t be in vain.</span><span class="line">But fate had plans she didn’t foresee;</span><span class="line">She boarded the wrong one, not where wished to be.</span></p>
+<p><span class="line">In the stratosphere, time moved slow,</span><span class="line">Trains were scarce, with nowhere to go.</span><span class="line">She waited and pondered under the sky so blue,</span><span class="line">Until she met OCO—fast and new. 🚀</span></p>
+<p><span class="line">OCO was swift, full of energy and light, ⚡</span><span class="line">Circling the Earth in a swift flight. 🌎</span><span class="line">“I’ll meet you daily,” he’d often declare,</span><span class="line">But clouds and rain would keep him elsewhere. ☁️🌧️</span></p>
+<p><span class="line">Sometimes he’d vanish for weeks on end,</span><span class="line">Leaving CO<sub>2</sub> without her friend.</span><span class="line">Yet slowly he improved, braving the rain, ☔</span><span class="line">Making efforts not to disappear again.</span></p>
+<p><span class="line">After two long years, a train arrived at last, 🚆</span><span class="line">CO<sub>2</sub> hopped aboard, leaving the past.</span><span class="line">She reached Hawaii’s shores so grand,</span><span class="line">And met Mr. In Situ upon the sand. 🏖️</span></p>
+<p><span class="line">He came from royalty, a noble line,</span><span class="line">His family’s legacy stood the test of time. ⌛</span><span class="line">Accurate and steady, a reliable guide, 📏</span><span class="line">CO<sub>2</sub> admired him, standing by his side.</span></p>
+<p><span class="line">Now she faces a choice that’s tough and true:</span><span class="line">Fast-paced OCO 🚀 or Mr. In Situ? 🏖️</span></p>
 </div>
 
 ## The science behind the poem
