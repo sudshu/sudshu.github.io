@@ -9,7 +9,7 @@ The “Before MCMC” view renders the saved final atlas mixture as a density cl
 The current page gives SARLA 16 random interior-prior seeds, then uses JAX-assisted Gauss–Newton optimization to find good fits before building Hessian charts. Both gradient-free MCMC baselines start from 64 independent uniform prior draws and use a NumPy target with no optimization or derivatives. The measured Brandt2010 example uses four or the first two observations. The current protocol is in ../random-start-report.html; ../report.html preserves the earlier optimized-start experiment.
 
 1. Create a Python 3.12 environment and install `requirements.txt`.
-2. Save the unmodified [pinned SARLA2 engine](https://raw.githubusercontent.com/sudshu/sarla-autoresearch/842e93785f2fc9220869e371a9d937a202922eee/code/sarla2.py) as `upstream/code/sarla2.py` beside `benchmark.py`.
+2. Save the unmodified pinned SARLA2 engine (`code/sarla2.py` at revision `842e93785f2fc9220869e371a9d937a202922eee`) as `upstream/code/sarla2.py` beside `benchmark.py`.
 3. Set `OPENBLAS_NUM_THREADS=1` and `OMP_NUM_THREADS=1`.
 4. Run `python benchmark.py`. This writes reference arrays, raw chain states, and `results/results.json`.
 5. Run `python analyze.py` and `python make_report.py` to generate the figures, summary, standalone report, and complete source/data ZIP.
