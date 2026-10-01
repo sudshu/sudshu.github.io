@@ -13,6 +13,23 @@ layout: default
     {%- include contact-links.html class="links" %}
   </section>
 
+  <section class="part" id="writing" aria-labelledby="writing-h">
+    <h2 id="writing-h">Writing</h2>
+    <ul class="posts">
+      {%- for post in site.posts %}
+      <li>
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: site.date_format }}</time>
+        <div>
+          <a href="{{ post.url | relative_url }}">{% if post.title_html %}{{ post.title_html }}{% else %}{{ post.title | escape }}{% endif %}</a>
+          {%- if post.summary %}
+          <p>{{ post.summary | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
+          {%- endif %}
+        </div>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+
   <section class="part" id="research" aria-labelledby="research-h">
     <h2 id="research-h">Research</h2>
     {%- for item in home.research %}
@@ -55,6 +72,26 @@ layout: default
     {%- endfor %}
   </section>
 
+  <section class="part" id="explainers" aria-labelledby="explainers-h">
+    <h2 id="explainers-h">Interactive explainers</h2>
+    {%- for ex in home.explainers %}
+    <div class="explainer">
+      <div>
+        <h3><a href="{{ ex.url | relative_url }}">{{ ex.title }}</a></h3>
+        <p>{{ ex.text }}</p>
+      </div>
+      <div class="explainer-media">
+        <a class="explainer-link" href="{{ ex.url | relative_url }}" tabindex="-1" aria-hidden="true">
+          <video class="explainer-video" muted loop playsinline preload="metadata" width="{{ ex.width }}" height="{{ ex.height }}" poster="{{ ex.poster | relative_url }}">
+            <source src="{{ ex.video | relative_url }}" type="video/mp4">
+          </video>
+        </a>
+        <button class="video-toggle" type="button" aria-pressed="false" aria-label="Pause the rotating preview">Pause</button>
+      </div>
+    </div>
+    {%- endfor %}
+  </section>
+
   <section class="part" id="interests" aria-labelledby="interests-h">
     <h2 id="interests-h">Other interests</h2>
     <ul class="interests">
@@ -64,58 +101,37 @@ layout: default
     </ul>
   </section>
 
-  <section class="part pubs" id="publications" aria-labelledby="publications-h">
-    <h2 id="publications-h">Publications</h2>
-    <p class="note">{{ home.publications.note | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
-    <h3>Preprints under review</h3>
-    <ol>
-      {%- for pub in home.publications.preprints %}
-      <li>{{ pub | markdownify | remove: '<p>' | remove: '</p>' | strip }}</li>
-      {%- endfor %}
-    </ol>
-    <h3>Selected publications</h3>
-    <ol>
-      {%- for pub in home.publications.selected %}
-      <li>{{ pub | markdownify | remove: '<p>' | remove: '</p>' | strip }}</li>
-      {%- endfor %}
-    </ol>
-  </section>
-
-  <section class="part" id="writing" aria-labelledby="writing-h">
-    <h2 id="writing-h">Writing</h2>
-    <ul class="posts">
-      {%- for post in site.posts %}
-      <li>
-        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: site.date_format }}</time>
-        <div>
-          <a href="{{ post.url | relative_url }}">{% if post.title_html %}{{ post.title_html }}{% else %}{{ post.title | escape }}{% endif %}</a>
-          {%- if post.summary %}
-          <p>{{ post.summary | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
-          {%- endif %}
-        </div>
-      </li>
-      {%- endfor %}
-    </ul>
-  </section>
-
-  <section class="part" id="explainers" aria-labelledby="explainers-h">
-    <h2 id="explainers-h">Interactive explainers</h2>
-    {%- for ex in home.explainers %}
-    <div class="explainer">
-      <div>
-        <h3><a href="{{ ex.url | relative_url }}">{{ ex.title }}</a></h3>
-        <p>{{ ex.text }}</p>
-      </div>
-      <a href="{{ ex.url | relative_url }}" tabindex="-1" aria-hidden="true">
-        <img src="{{ ex.image | relative_url }}" width="{{ ex.width }}" height="{{ ex.height }}" loading="lazy" decoding="async" alt="{{ ex.alt | escape }}">
-      </a>
-    </div>
-    {%- endfor %}
-  </section>
-
   <section class="part about" id="about" aria-labelledby="about-h">
     <h2 id="about-h">About</h2>
     {{ home.about | markdownify }}
   </section>
 
 </div>
+
+<script>
+  /* Explainer preview: plays silently while on screen; still image for reduced motion; Pause/Play button. */
+  (function () {
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.explainer-media').forEach(function (box) {
+      var video = box.querySelector('video'), btn = box.querySelector('.video-toggle');
+      if (!video || !btn) return;
+      var userPaused = still, visible = false;
+      function label() {
+        var playing = !video.paused;
+        btn.textContent = playing ? 'Pause' : 'Play';
+        btn.setAttribute('aria-pressed', String(!playing));
+        btn.setAttribute('aria-label', (playing ? 'Pause' : 'Play') + ' the rotating preview');
+      }
+      function update() {
+        if (visible && !userPaused) { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
+        else video.pause();
+      }
+      video.addEventListener('play', label); video.addEventListener('pause', label);
+      btn.addEventListener('click', function () { userPaused = !video.paused; if (!userPaused) visible = true; update(); });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; update(); }, { threshold: 0.25 }).observe(video);
+      } else { visible = true; update(); }
+      label();
+    });
+  })();
+</script>

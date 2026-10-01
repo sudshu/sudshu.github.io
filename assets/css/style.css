@@ -122,12 +122,6 @@ section.part > h2 {
 .interests { margin: 0; padding: 0 0 0 1.1rem; max-width: 46rem; }
 .interests li { margin: 0 0 0.6rem; padding-left: 0.2rem; }
 
-.pubs .note { margin: 0 0 1.4rem; color: var(--muted); }
-.pubs h3 { margin: 1.6rem 0 0.8rem; font-size: 1rem; font-weight: 600; line-height: 1.3; }
-.pubs h3:first-of-type { margin-top: 0; }
-.pubs ol { margin: 0; padding: 0; list-style: none; max-width: 52rem; }
-.pubs li { margin: 0 0 0.85rem; font-size: 0.96875rem; line-height: 1.55; }
-
 .posts { margin: 0; padding: 0; list-style: none; max-width: 52rem; }
 .posts li { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--rule); }
 .posts li:first-child { padding-top: 0; }
@@ -139,9 +133,33 @@ section.part > h2 {
 .explainer { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
 .explainer h3 { margin: 0 0 0.6rem; font-family: var(--serif); font-weight: 500; font-size: 1.4rem; line-height: 1.25; }
 .explainer p { margin: 0; }
-.explainer img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; }
+.explainer-media { position: relative; }
+.explainer-video { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; background: #0b1622; }
+.video-toggle {
+  position: absolute; right: 0.6rem; bottom: 0.6rem; z-index: 2;
+  font: 500 0.8125rem/1 var(--sans); color: #e6edf3; background: rgba(8, 17, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px; padding: 0.45rem 0.8rem; cursor: pointer;
+}
+.video-toggle:hover { background: rgba(8, 17, 28, 0.9); }
+.video-toggle:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
 
 .about p { max-width: 46rem; margin: 0 0 0.9rem; }
+
+/* Figures pop slightly when the mouse is over them (pointer devices only). */
+.topic-fig .fig, .explainer-video { position: relative; z-index: 0; }
+.topic-fig .fig { transform-origin: 50% 100%; }  /* grow upward so the caption below stays clear */
+@media (hover: hover) and (pointer: fine) {
+  .topic-fig .fig, .explainer-video { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .topic-fig .fig:hover, .explainer-link:hover .explainer-video {
+    z-index: 1;
+    transform: scale(1.05);
+    box-shadow: 0 14px 36px rgba(24, 34, 45, 0.2);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .topic-fig .fig, .explainer-video { transition: box-shadow 0.25s ease; }
+  .topic-fig .fig:hover, .explainer-link:hover .explainer-video { transform: none; }
+}
 
 /* ---------- posts and pages ---------- */
 
@@ -197,7 +215,7 @@ section.part > h2 {
 
 @media (max-width: 900px) {
   .topic, .explainer { grid-template-columns: 1fr; }
-  .topic-fig, .explainer img { max-width: 44rem; }
+  .topic-fig, .explainer-media { max-width: 44rem; }
 }
 @media (max-width: 760px) {
   .site-nav { width: 100%; gap: 0.25rem 1.1rem; font-size: 0.9rem; }
