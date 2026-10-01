@@ -5,12 +5,19 @@ layout: default
 <div class="wrap">
 
   <section class="intro" aria-labelledby="name">
+    <div class="intro-text">
     <h1 id="name">{{ site.title | escape }}</h1>
     {%- for line in home.intro.titles %}
     <p class="title">{{ line }}</p>
     {%- endfor %}
     <p class="lead">{{ home.intro.lead | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
     {%- include contact-links.html class="links" %}
+    </div>
+    {%- if home.intro.photo %}
+    <img class="portrait" src="{{ home.intro.photo.base | append: '-640.jpg' | relative_url }}"
+         srcset="{{ home.intro.photo.base | append: '-320.jpg' | relative_url }} 320w, {{ home.intro.photo.base | append: '-640.jpg' | relative_url }} 640w"
+         sizes="(min-width: 761px) 17rem, 8.5rem" width="640" height="640" alt="{{ home.intro.photo.alt | escape }}">
+    {%- endif %}
   </section>
 
   <section class="part" id="writing" aria-labelledby="writing-h">

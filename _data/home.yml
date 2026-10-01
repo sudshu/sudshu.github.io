@@ -5,6 +5,9 @@
 intro:
   titles:
     - "Scientist, Earth Science Section, NASA Jet Propulsion Laboratory, California Institute of Technology"
+  photo:
+    base: /assets/img/sudhanshu-pandey
+    alt: "Sudhanshu Pandey"
   lead: >-
     My research has focused on the carbon cycle, atmospheric composition, and
     satellite remote sensing for more than a decade. I now develop machine
