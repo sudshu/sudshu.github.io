@@ -21,4 +21,18 @@ layout: default
     <p class="post-back"><a href="{{ '/#writing' | relative_url }}">Back to all writing</a></p>
     <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
   </article>
+  <script>
+    /* Let keyboard users scroll code blocks that are wider than the column. */
+    (function () {
+      function mark() {
+        document.querySelectorAll('.post-content pre').forEach(function (pre, i) {
+          var wide = pre.scrollWidth > pre.clientWidth + 1;
+          if (wide) { pre.tabIndex = 0; pre.setAttribute('role', 'region'); pre.setAttribute('aria-label', 'Code example ' + (i + 1)); }
+          else { pre.removeAttribute('tabindex'); pre.removeAttribute('role'); pre.removeAttribute('aria-label'); }
+        });
+      }
+      mark();
+      var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(mark, 200); });
+    })();
+  </script>
 </div>

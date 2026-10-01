@@ -79,7 +79,7 @@ summary: "A grad-student-level tour, with toy code, real satellites, and a lapto
   <div class="iw-panel"><canvas class="iw" id="fit-canvas"></canvas></div>
   <div class="iw-controls">
     <div class="iw-sliderbox">
-      <label>blur strength κ <b id="fit-kval">0.0035</b></label>
+      <label for="fit-slider">blur strength κ <b id="fit-kval">0.0035</b></label>
       <input type="range" class="iw" id="fit-slider" min="0" max="1" step="0.001" value="0.10">
     </div>
     <button class="iw primary" id="fit-solve">Solve ▸</button>
